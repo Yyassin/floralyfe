@@ -39,4 +39,4 @@ ___
   
 6. ***Is anything blocking you that you need from others?*** _(What do you need from whom)_
      - Nothing is really blocking me so far, there's a lot to still prototype and brainstorm.
-     - I do need to meet with the team and decide on a backend database structure to start planning how we'll be storing and receiving our data. A basic protoype cna be made without this but having a meeting will be useful.
+     - I do need to meet with the team and decide on a backend database structure to start planning how we'll be storing and receiving our data. A basic protoype can be made without this but having a meeting will be useful.
