@@ -2,15 +2,13 @@
 
 ### Garden Care
 
-
-
 ### Major Features
+
+- **Make system work for muiltiple plants - circle of plants with camera servo that rotates between. Data collected and info for all plants.**
 
 - Monitoring system that delivers a live feed from each plant (video/frames).
   
   - Camera on controllable servo: monitor plant environment 360.
-  
-  
 
 - Monitoring plant vitals: temperature, soil moisture, humidity and light received.
   
@@ -25,38 +23,32 @@
   - **Display visual icons on sensehat** to communicate info as well (GUI not as necessary if at home).
     
     - Allow visual override from GUI
-      
-      
 
 - Plant recognition with confidence. Based on camera feed frames, display the most likely 3 plants that the current one would be.
   
   - Also allow user to override with their own specification.
   
   - Used for vital optimization.
-  
-  
 
-- Watering system when soil moisture is low (based on api).
+- Watering system when soil moisture is low (based on api) [Water tank and valve]
   
   - When moisture is too low, actuator activated to water plant (closed-loop: water -> check moisture, repeat). 
   
   - Sends notification to user when done.
   
   - Sends notification if water tank needs to be refilled (and display tank info)
-  
-  
+
+- *Display artificial light if light is low*
 
 - Object Detection: Detect human and animals (pets): dogs and cats. 
   
   - Send notification (possibly with picture) when detected.
   
-  - Activate speaker to alert or deter animal.
-  
-  
+  - Activate speaker to alert or diter animal.
+
+- *Distance based recognition (Ultrasonic Sensor)*
 
 - *Monitor growth via how much green or plant length - this one is iffy*
-
-
 
 ### Components
 
@@ -67,14 +59,10 @@
 - Websocket, Node Server (Express)
 
 - 3 Raspberry Pis, each hosting a system
-  
-  
 
 ### Structure
 
 - Users -> Plants -> Vitals
-
-
 
 ### Requirements
 
@@ -87,9 +75,11 @@
   
   - Also, several cloud systems.
 
-- **Is at least one RPi in headless mode?**
+- !!!**Is at least one RPi in headless mode?**
   
-  - Come back to this one.
+  - All raspberry pis are headless [could optionally run website on it too].
+    
+    - !!!**Check if ok.**
 
 #### Hardware Components
 
@@ -113,7 +103,19 @@
 
 - **Does the computer hosting the database have other responsibilities?**
   
-  - So local and global? This would be headless if local.
+  - Primarily using FirebaseDB for realtime
+  
+  - All pis have a local database, so yes.
+  
+  - Local database -> save plant picture every day
+    
+    - [For Roger] Can be analyzed later for timelapse, plant growth and used as training data for plant recognition.
+    
+    - Queried by user [via middleman server], paginated api.
+    
+    - *Log of all notifications sent (transaction history)*
+  
+  - *All data is held locally if no internet connection, then commited when back on network*
   
   - Could do 2 pi systems then ... revisit.
 
@@ -144,6 +146,10 @@
   - Yes, React GUI
     
     - Authentication
+    
+    - Add notes to plants (keep track of info, diseases, ...)
+    
+    - Transaction Log (all notifications - vitals and detections)
     
     - Display charts
     
