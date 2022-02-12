@@ -1,0 +1,31 @@
+{
+  "name": "sockstream",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/server.ts",
+  "scripts": {
+    "test": "nyc mocha -r ts-node/register --exit 'test/**/*.test.ts'",
+    "dev": "nodemon ./src/server.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.2",
+    "http": "^0.0.1-security",
+    "ws": "^8.4.2"
+  },
+  "devDependencies": {
+    "@testdeck/mocha": "^0.2.0",
+    "@types/chai": "^4.3.0",
+    "@types/mocha": "^9.1.0",
+    "@types/ws": "^8.2.2",
+    "chai": "^4.3.6",
+    "mocha": "^9.2.0",
+    "nodemon": "^2.0.15",
+    "nyc": "^15.1.0",
+    "supertest": "^6.2.2",
+    "ts-mockito": "^2.6.1",
+    "ts-node": "^10.5.0",
+    "typescript": "^4.5.5"
+  }
+}

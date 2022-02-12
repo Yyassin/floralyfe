@@ -1,0 +1,6 @@
+{
+	"watch": "src/**/*.ts",
+	"execMap": {
+		"ts": "node ./node_modules/ts-node/dist/bin.js"
+	}
+}
