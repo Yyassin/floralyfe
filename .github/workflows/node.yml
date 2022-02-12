@@ -29,7 +29,9 @@ jobs:
           node-version: "14.x"
 
       - name: Install dependencies
+        working-directory: ./server
         run: npm install
 
       - name: Run test
+        working-directory: ./server
         run: npm test
