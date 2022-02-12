@@ -24,6 +24,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Run mypy type tests
+        working-directory: ./pi
+        run: mypy --strict $(git ls-files '*.py')
+
+
       - name: Run tests with pytest
         working-directory: ./pi
         run: pytest 
