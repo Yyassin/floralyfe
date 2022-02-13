@@ -14,7 +14,7 @@ ___
     - Proof read my peers proposals and gave them feedback
     - Learned how to interact with a camera through the raspberry pi
 4. ***How do you feel about your progress?*** 
-    - So far we are doing good progress. The proposal is done and we have very clear timeline as to when things will get done. 
+    - So far we are doing good progress. The proposal is done and we have very clear time line as to when things will get done. 
 5. ***What are you planning to do next week***? 
     - Finalize and purchase hardware components 
     - Start learning some major componenets required in the project:
