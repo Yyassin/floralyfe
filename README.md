@@ -6,8 +6,10 @@
 
 <h1 align="center" style="margin-top: 0px;">floralyfe</h1>
 
-## SYSC3010 Project
 > The repository for the development of floralyfe. Team: Abdalla, Yousef, Zakariyya
+
+## SYSC3010 Project
+Floralyfe is being built as a project submission for SYSC3010. The project comprises a distributed remote plant monitoring solution.
 
 ### Development
 
@@ -20,5 +22,5 @@
 #### server
 
 1. Run `npm i` to install all dependencies
-2. Run `npm run test` or `npm test` to run tests.
+2. Run `npm run test` or `npm test` to run unit tests.
 3. Run `npm run dev` to start the server in development.
