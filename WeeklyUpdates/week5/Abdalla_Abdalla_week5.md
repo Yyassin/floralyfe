@@ -20,6 +20,6 @@ ___
     - Start learning some major componenets required in the project:
       - Websockets
       - Interaction with I/O devices through the raspeberry pi
-      - Interperatting different data from      
+      - Interperatting different data from different sensors     
 6. ***Is anything blocking you that you need from others?***? 
     - Currently there is nothing blocking me or anything that I require from my group members
