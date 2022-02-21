@@ -1,12 +1,14 @@
 """
-:brief: A prototype script to send video frames from 
+:brief: A prototype script to send video frames from
 machine over websocket pertaining to user "hello".
 """
 
 __author__ = 'yousef'
 
-import cv2 as cv        # type: ignore
-import websockets       # type: ignore
+# doesn't have py.typed marker
+import cv2 as cv            # type: ignore
+import websockets   
+from websockets.client import connect
 import base64
 import asyncio
 import json
@@ -20,10 +22,10 @@ def wsSend(url: str, msg: str) -> None:
         Asynchronously connects to the WebSocket
         specified by url and sends the specified message.
         :param url: str, the WebSocket connection url.
-        :param msg: str, the message to send. 
+        :param msg: str, the message to send.
     """
-    async def send():
-        async with websockets.connect(url) as websocket:    # Connect and send the message
+    async def send() -> None:
+        async with connect(url) as websocket:    # Connect and send the message
             await websocket.send(msg)
             # print("sent")
 
@@ -42,7 +44,7 @@ userID = "hello"                # User ID (TODO: this will go into a config / en
 def main() -> None:
     """
         Opens a video feed and sends an encoded frame
-        over a WebSocket connection every second. 
+        over a WebSocket connection every second.
         The frame pertains to user with id userID (above).
     """
     cam = cv.VideoCapture(0)
