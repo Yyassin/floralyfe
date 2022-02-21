@@ -18,9 +18,14 @@ Floralyfe is being built as a project submission for SYSC3010. The project compr
 2. Inside, run `pip install -r requirements.txt` to install dependencies.
 3. Run `pytest -v` to execute unit tests.
 4. Linting is performed with flake8 and mypy.
+5. Anytime you install a module, run `pip freeze > requirements.txt` to save it. Make sure to change package `tomli` to be `tomli>=1.0` as all later versions cause an error on installation.
 
 #### server
 
 1. Run `npm i` to install all dependencies
 2. Run `npm run test` or `npm test` to run unit tests.
-3. Run `npm run dev` to start the server in development.
+3. Run `npm run dev` to start the server in development on port 4000.
+
+#### client
+1. Run `npm i` to install all dependencies
+3. Run `npm run dev` to start the client in development on port 3000.
