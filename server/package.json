@@ -5,13 +5,17 @@
   "main": "./src/server.ts",
   "scripts": {
     "test": "nyc mocha -r ts-node/register --exit 'test/**/*.test.ts'",
-    "dev": "nodemon ./src/server.ts"
+    "dev": "set DEVELOPMENT=1 && nodemon ./src/server.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.26.0",
+    "dotenv": "^16.0.0",
     "express": "^4.17.2",
     "http": "^0.0.1-security",
+    "superwstest": "^2.0.1",
+    "uuid": "^8.3.2",
     "ws": "^8.4.2"
   },
   "devDependencies": {
