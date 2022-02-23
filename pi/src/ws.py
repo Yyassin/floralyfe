@@ -12,7 +12,7 @@ import websocket    # type: ignore
 import json
 import threading
 from queue import Queue
-from typing import Any, cast
+from typing import Any, Dict, cast
 from util import Logger, Singleton
 
 
@@ -25,11 +25,11 @@ class WSReceiver(Singleton.Singleton):
         received.
     """
 
-    def __init__(self: "WSReceiver", queues: "dict[str, Queue[Any]]", url: str, subscription_id: str) -> None:
+    def __init__(self: "WSReceiver", queues: "Dict[str, Queue[Any]]", url: str, subscription_id: str) -> None:
         """
             Initializes a new WSReceiver with the specified parameters.
 
-            :param queues: dict[str, Queue[Any]], map from message topic to queue listening for that message.
+            :param queues: Dict[str, Queue[Any]], map from message topic to queue listening for that message.
             :param url: str, the socket url to listen to.
             :param subscription_id: str, the id to subscribe to.
         """
@@ -63,9 +63,9 @@ class WSReceiver(Singleton.Singleton):
         self.wss_thread = threading.Thread(target=lambda: self.ws.run_forever())
         self.wss_thread.daemon = True
 
-    def process_message(self: "WSReceiver", message: dict[str, Any]) -> None:
+    def process_message(self: "WSReceiver", message: Dict[str, Any]) -> None:
         """
-            Processes the specified message. Usually this means routing 
+            Processes the specified message. Usually this means routing
             the message to the queue that's listening for it, if any.
         """
         topic = message.get("topic", None)                                  # Extract the message topic
@@ -97,7 +97,7 @@ class WSReceiver(Singleton.Singleton):
 
     def on_message(self: "WSReceiver", ws: "websocket.WebsocketApp", message: Any) -> None:
         """
-            Websocket on_message callback - invoked on message 
+            Websocket on_message callback - invoked on message
             received. Parses the message to json and processes it.
         """
         try:
@@ -110,7 +110,7 @@ class WSReceiver(Singleton.Singleton):
             pass
 
         if (isinstance(message, dict)):
-            self.process_message(cast(dict[str, Any], message))
+            self.process_message(cast(Dict[str, Any], message))
 
     def on_close(self: "WSReceiver", ws: "websocket.WebsocketApp", close_status_code: int, close_msg: bytes) -> None:
         """

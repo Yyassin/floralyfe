@@ -47,6 +47,7 @@ Run `mypy --strict --implicit-reexport $(git ls-files '*.py')` before making any
 numpy==1.19.5
 opencv-python==4.5.3.56
 tomli>=1.0
+websockets==9.1
 ```
 
 #### Setting Up Linting (VSCode)
