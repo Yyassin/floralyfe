@@ -48,6 +48,8 @@ numpy==1.19.5
 opencv-python==4.5.3.56
 tomli>=1.0
 websockets==9.1
+Pillow==8.4.0
+scipy==1.5.4
 ```
 
 #### Setting Up Linting (VSCode)
