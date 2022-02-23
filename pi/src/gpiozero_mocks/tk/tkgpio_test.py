@@ -1,7 +1,11 @@
 # type: ignore
 
-from tkgpio import TkCircuit
+"""
+    Test simulated demo setups here.
+"""
 
+
+from tkgpio import TkCircuit
 # initialize the circuit inside the GUI
 
 configuration = {
@@ -33,9 +37,15 @@ def main():
         print("button pressed!")
         led2.toggle()
 
+        assert led2.is_lit
+
     led2 = LED(22)
     button = Button(11)
     button.when_pressed = button_pressed
 
     while True:
         sleep(0.1)
+
+
+if __name__ == "__main__":
+    main()

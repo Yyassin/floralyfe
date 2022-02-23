@@ -39,4 +39,4 @@ jobs:
 
       - name: Run tests with pytest
         working-directory: ./pi/src
-        run: pytest -v
+        run: pytest -v --ignore=gpiozero_mocks/tk  # Ignore tkinter demos
