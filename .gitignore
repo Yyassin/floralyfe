@@ -4,3 +4,4 @@ env/
 .nyc_output/
 *.env
 *.mypy_cache
+*.pytest_cache
