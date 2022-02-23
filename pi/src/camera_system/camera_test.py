@@ -7,7 +7,7 @@ __author__ = 'yousef'
 
 # doesn't have py.typed marker
 import cv2 as cv            # type: ignore
-import websockets   
+import websockets           # Note that this is using websocket*s*: we want to switch to websocket
 from websockets.client import connect
 import base64
 import asyncio
