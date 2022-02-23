@@ -1,3 +1,11 @@
+"""
+    irrigation_standalone.py
+    ========================
+    Any standalone testing with the IrrigationSystem class
+    should be performed here to satisfy the import structure and entrypoint
+    (i.e keeping src as root so imports keep working).
+"""
+
 from irrigation_system.IrrigationSystem import IrrigationSystem
 
 
