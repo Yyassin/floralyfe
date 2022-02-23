@@ -18,7 +18,7 @@ class IrrigationSystem(FloraNode):
         Monitors moisture sensors and controls water pumps to ...
     """
 
-    def __init__(self: "IrrigationSystem", task_queue: Queue[Any], name: Union[str, None] = None) -> None:
+    def __init__(self: "IrrigationSystem", task_queue: "Queue[Any]", name: Union[str, None] = None) -> None:
         """
             Initializes the Irrigation System.
 

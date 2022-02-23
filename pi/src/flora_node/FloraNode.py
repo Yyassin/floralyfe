@@ -27,7 +27,7 @@ class FloraNode(Singleton):
         A FloraNode should not be instantiated directly.
     """
 
-    def __init__(self: "FloraNode", task_queue: Queue[Any], name: Union[str, None] = None) -> None:
+    def __init__(self: "FloraNode", task_queue: "Queue[Any]", name: Union[str, None] = None) -> None:
         """
             Initializes the Floralyfe Node.
 

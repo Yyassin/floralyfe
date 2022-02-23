@@ -18,7 +18,7 @@ class CameraSystem(FloraNode):
         the RPi camera and servo to...
     """
 
-    def __init__(self: "CameraSystem", task_queue: Queue[Any], name: Union[str, None] = None) -> None:
+    def __init__(self: "CameraSystem", task_queue: "Queue[Any]", name: Union[str, None] = None) -> None:
         """
             Initializes the Camera System.
 
