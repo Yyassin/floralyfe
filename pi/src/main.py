@@ -28,7 +28,7 @@ def main() -> None:
 
         # probably not great
         assert ws_receiver.wss_thread is not None
-        while ws_receiver.wss_thread.is_alive():
+        while ws_receiver.wss_thread.is_alive():        # exits if socket connection fails
             ws_receiver.wss_thread.join(1)
     except (KeyboardInterrupt, SystemExit):
         # cleanup here

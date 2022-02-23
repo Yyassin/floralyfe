@@ -1,14 +1,16 @@
-import json
-from queue import Queue
-import threading
-from typing import Any
-# Missing py.typed marker
+# Missing py.typed marker. Documentation: https://github.com/websocket-client/websocket-client/blob/master/websocket/_app.py
 import websocket    # type: ignore
+import json
+import threading
+from queue import Queue
+from typing import Any
+from util.Logger import Logger
 
 
 class WSReceiver:
     def __init__(self, queues: "dict[str, Queue[Any]]") -> None:
         self.queues = queues
+        self.logger = Logger(type(self).__name__)
         # These callbacks should be reserved for notifying other nodes,
         # they can then implement callbacks of their own
         # self.callbacks = {
@@ -25,7 +27,7 @@ class WSReceiver:
             self.SOCKET,
             on_open=self.on_open,
             on_message=self.on_message,
-            on_close=self.on_close
+            on_close=self.on_close,
         )
 
         assert self.ws is not None
@@ -33,19 +35,21 @@ class WSReceiver:
         self.wss_thread.daemon = True
 
     def process_message(self, message: dict[str, Any]) -> None:
+        print(message)
+
         topic = message.get("topic", None)
 
         if topic is None:
-            print("Got message with no topic:", message)
+            self.logger.debug(f"Got message with no topic: {message}")
             return
 
-        print("WSReceiver: Got", topic)
+        self.logger.debug(f"WSReceiver: Got {topic}")
         queue = self.queues.get(topic)
         if queue:
             queue.put(message)
 
     def on_open(self, ws: "websocket.WebsocketApp") -> None:
-        print(f"Connected to WebSocket@{self.SOCKET}")
+        self.logger.debug(f"Connected to WebSocket@{ws.url}")
         subscription_msg = {
             "topic": "subscribe",
             "payload": {
@@ -59,15 +63,18 @@ class WSReceiver:
     def on_message(self, ws: "websocket.WebsocketApp", message: Any) -> None:
         try:
             message = eval(message)
-            if not type(message) is dict:
+            if not isinstance(message, dict):
                 message = json.loads(message)
         except ValueError:
-            print("Error loading json.")
+            self.logger.debug("Error loading json.")
+        except SyntaxError:
+            pass
 
-        self.process_message(message)
+        if (isinstance(message, dict)):
+            self.process_message(message)
 
-    def on_close(self, ws: "websocket.WebsocketApp") -> None:
-        print("Closed connection.")
+    def on_close(self, ws: "websocket.WebsocketApp", close_status_code: int, close_msg: bytes) -> None:
+        self.logger.debug(f"Closed connection. Status code: { str(close_status_code) }, Message: { str(close_msg) }")
 
     def run(self) -> None:
         assert self.wss_thread is not None
