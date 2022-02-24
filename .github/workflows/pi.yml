@@ -27,7 +27,7 @@ jobs:
 
       - name: Run mypy type tests
         working-directory: ./pi
-        run: mypy --strict --implicit-reexport $(git ls-files '*.py')
+        run: mypy --strict --implicit-reexport --ignore-missing-imports $(git ls-files '*.py')
 
       - name: Lint with flake8
         run: |
@@ -39,4 +39,4 @@ jobs:
 
       - name: Run tests with pytest
         working-directory: ./pi/src
-        run: pytest -v
+        run: pytest -v test/

@@ -6,7 +6,7 @@ Logging class to format and colour logs.
 
 import logging
 import logging.config
-from colorama import Fore, Style    # type: ignore
+from colorama import Fore, Style
 from typing import Any
 
 

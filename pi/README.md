@@ -15,3 +15,5 @@
     "payload": {"encoded": 29}
 }
 ```
+
+TODO: move the scripts to a scripts/ folder and call with source scripts/script_name.sh
