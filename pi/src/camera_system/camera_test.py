@@ -9,78 +9,87 @@
 
 # __author__ = 'yousef'
 
-# # doesn't have py.typed marker
-# import cv2 as cv            # type: ignore
-# import websockets           # Note that this is using websocket*s*: we want to switch to websocket
-# from websockets.client import connect
-# import base64
-# import asyncio
-# import json
-# import time
+# ignore: don't have py.typed marker
+import cv2 as cv                        # type: ignore
+import websocket                        # type: ignore
+from picamera import PiCamera           # type: ignore
+import numpy as np                      
+import base64
+import json
+import time
+from typing import Any, cast
 
-# url = "ws://localhost:4000"     # The local websocket url
-
-
-# def wsSend(url: str, msg: str) -> None:
-#     """
-#         Asynchronously connects to the WebSocket
-#         specified by url and sends the specified message.
-
-#         :param url: str, the WebSocket connection url.
-#         :param msg: str, the message to send.
-#     """
-#     async def send() -> None:
-#         async with connect(url) as websocket:    # Connect and send the message
-#             await websocket.send(msg)
-#             # print("sent")
-
-#             # We can wait for a response ack:
-#             # greeting = await websocket.recv()
-#             # print(f"< {greeting}")
-
-#     # Return a promise so that send() runs in the background
-#     asyncio.get_event_loop().run_until_complete(send())
+url = "ws://8710-174-112-246-246.ngrok.io"     # The local websocket url
 
 
-# CAMERA_TOPIC = "camera-topic"   # Topic for camera frame images, eventually should go into a topics file
-# userID = "hello"                # User ID (TODO: this will go into a config / env file at one point)
+def on_message(ws: Any, message: str) -> None:
+    print(message)
 
 
-# def main() -> None:
-#     """
-#         Opens a video feed and sends an encoded frame
-#         over a WebSocket connection every second.
-#         The frame pertains to user with id userID (above).
-#     """
-#     cam = cv.VideoCapture(0)
-#     try:
-#         while (True):
-#             _, frame = cam.read()                         # Obtain the frame.
-#             # cv.imshow('frame', gray)
-
-#             _, frame = cv.imencode('.jpg', frame)         # Encode from image to binary buffer
-#             data = base64.b64encode(frame)                  # Then vonvert to base64 format
-
-#             msg = {                                         # Create the socket message
-#                 "topic": CAMERA_TOPIC,
-#                 "userID": userID,
-#                 "payload": {
-#                     "encoded": data.decode("ascii")
-#                 }
-#             }
-
-#             wsSend(url, json.dumps(msg, indent=4))          # Create json from msg dictionary and send it
-#             time.sleep(1)
-
-#             if 0xFF == ord('q'):
-#                 break
-
-#     except KeyboardInterrupt:
-#         pass
-
-#     cam.release()               # Cleanup
-#     cv.destroyAllWindows()
+def on_error(ws: Any, error: str) -> None:
+    print(error)
 
 
-# if __name__ == "__main__":
-#     main()
+def on_close(ws: Any, close_status_code: int, close_msg: bytes) -> None:
+    print(f"Closed connection. Status code: { str(close_status_code) }, Message: { str(close_msg) }")
+
+
+CAMERA_TOPIC = "camera-topic"   # Topic for camera frame images, eventually should go into a topics file
+userID = "hello"                # User ID (TODO: this will go into a config / env file at one point)
+
+
+def on_open(ws: Any) -> None:
+    """
+        Opens a video feed and sends an encoded frame
+        over a WebSocket connection every second.
+        The frame pertains to user with id userID (above).
+    """
+    # cam = cv.VideoCapture(0)
+    cam = PiCamera()
+    try:
+        while (True):
+            # rawCapture = PiRGBArray(camera)                      # Obtain the frame.
+            # cv.imshow('frame', gray)
+
+            cam.resolution = (320, 240)
+            cam.framerate = 24
+            time.sleep(2)
+            frame = np.empty((240, 320, 3), dtype=np.uint8)
+            cam.capture(frame, 'bgr')
+
+            _, frame = cv.imencode('.jpg', frame)         # Encode from image to binary buffer
+
+            # This works with ndarray[Any, dtype[unsignedinteger[_8Bit]]] but mypy is expecting bytes.
+            data = base64.b64encode(cast(bytes, frame))                  # Then convert to base64 format
+
+            msg = {                                         # Create the socket message
+                "topic": CAMERA_TOPIC,
+                "userID": userID,
+                "payload": {
+                    "encoded": data.decode("ascii")
+                }
+            }
+
+            print(msg)
+
+            ws.send(json.dumps(msg, indent=4))          # Create json from msg dictionary and send it
+            time.sleep(1)
+
+            if 0xFF == ord('q'):
+                break
+
+    except KeyboardInterrupt:
+        pass
+
+    # cam.release()               # Cleanup
+    cv.destroyAllWindows()
+
+
+if __name__ == "__main__":
+    # websocket.enableTrace(True)
+    ws = websocket.WebSocketApp(url,
+                                on_message=on_message,
+                                on_error=on_error,
+                                on_close=on_close)
+    ws.on_open = on_open
+    ws.run_forever()
