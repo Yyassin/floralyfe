@@ -50,6 +50,8 @@ tomli>=1.0
 websockets==9.1
 Pillow==8.4.0
 scipy==1.5.4
+<Remove> pkg_resources==0.0.0
+<Remove> picamera==1.13
 ```
 
 #### Setting Up Linting (VSCode)
