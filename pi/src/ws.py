@@ -7,8 +7,7 @@ Websocket Receiver
 __author__ = "yousef"
 
 # Documentation: https://github.com/websocket-client/websocket-client/blob/master/websocket/_app.py
-# Missing py.typed marker.
-import websocket    # type: ignore
+import websocket
 import json
 import threading
 from queue import Queue

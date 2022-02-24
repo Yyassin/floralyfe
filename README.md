@@ -65,18 +65,29 @@ scipy==1.5.4
 6. Some modules do not have typing support. To avoid linting issues, add the following to your global `settings.json`:
 ```json
 "python.analysis.typeCheckingMode": "strict",
-"python.analysis.diagnosticSeverityOverrides": {
+    "python.analysis.diagnosticSeverityOverrides": {
         "reportUnknownMemberType": "none",
         "reportUnknownLambdaType": "none",
         "reportUnknownParameterType": "none",
-        "reportOptionalMemberAccess": "none"
-},
-"python.linting.flake8Args": [
-    "--ignore", 
-    "E501"
-],
-"python.linting.mypyEnabled": true,
-"python.linting.flake8Enabled": true
+        "reportUnknownArgumentType": "none",
+        "reportOptionalMemberAccess": "none",
+        "reportUnknownVariableType": "none",
+        "reportMissingTypeStubs": "none",
+        "reportMissingImports": "none"
+    },
+    "python.linting.mypyEnabled": true,
+    "python.linting.mypyArgs": [
+        "--ignore-missing-imports",
+        "--follow-imports=silent",
+        "--show-column-numbers",
+        "--disallow-untyped-defs",
+        "--disallow-untyped-calls"
+    ],
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--ignore", 
+        "E501"
+    ]
 ```
 Mypy will take care of most typing errors and pylint/pylance will still recognize general type issues
 and will ignore most unknown types from non-typed modules.

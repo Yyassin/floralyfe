@@ -2,8 +2,8 @@
     Test physical outputs step by step / state machines here.
 """
 
-from gpiozero import Device, OutputDevice       # type: ignore
-from gpiozero.pins.mock import MockFactory      # type: ignore
+from gpiozero import Device, OutputDevice
+from gpiozero.pins.mock import MockFactory
 
 Device.pin_factory = MockFactory()
 

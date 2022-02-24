@@ -1,19 +1,18 @@
-# """
-# camera_test.py
+"""
+camera_test.py
 
-# A prototype script to send video frames from
-# machine over websocket pertaining to user "hello".
-# """
+A prototype script to send video frames from
+machine over websocket pertaining to user "hello".
+"""
 
 # TODO: Install opencv on raspberry pi, stays commented otherwise.
 
-# __author__ = 'yousef'
+__author__ = 'yousef'
 
-# ignore: don't have py.typed marker
-import cv2 as cv                        # type: ignore
-import websocket                        # type: ignore
-from picamera import PiCamera           # type: ignore
-import numpy as np                      
+import cv2 as cv
+import websocket
+from picamera import PiCamera
+import numpy as np
 import base64
 import json
 import time
