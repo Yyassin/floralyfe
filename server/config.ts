@@ -15,6 +15,7 @@ const firebaseConfig = {
     appId: process.env.FIREBASE_APP_ID,
 }
 
+// Emulator needs project id and env isn't defined in workflow environment (could post in github secrets).
 const FIREBASE_TEST_PROJECT_ID =  process.env.FIREBASE_TEST_PROJECT_ID || "floralyfe-test"
 const firebaseTestConfig = {
     apiKey: process.env.FIREBASE_TEST_API_KEY,
@@ -28,7 +29,7 @@ const firebaseTestConfig = {
 firebase.initializeApp(testing ? firebaseTestConfig : firebaseConfig);
 // const auth = firebase.auth()
 const db = firebase.firestore();
-firebase.firestore.setLogLevel('debug');
+//firebase.firestore.setLogLevel('debug');
 if (testing) {
     console.log("connecting emulator")
     db.useEmulator("localhost", 8080);

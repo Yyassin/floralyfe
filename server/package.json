@@ -5,7 +5,7 @@
   "main": "./src/server.ts",
   "scripts": {
     "test": "set TEST=1 && nyc mocha -r ts-node/register --exit 'test/**/*.test.ts'",
-    "git-test": "TEST=1 && nyc mocha -r ts-node/register --exit 'test/**/*.test.ts' --timeout 100000",
+    "git-test": "TEST=1 && nyc mocha -r ts-node/register --exit 'test/**/*.test.ts'",
     "dev": "set DEVELOPMENT=1 && nodemon ./src/server.ts"
   },
   "author": "",
