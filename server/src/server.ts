@@ -46,7 +46,7 @@ app.post("/create", async (req, res) => {
 // Start the Express server
 server.listen(port, () => {
     console.log(`server started at http://localhost:${port}`);
-    console.log(process.env.DEVELOPMENT);
+    console.log("TEST:", process.env.TEST);
 });
 
 // Setup and start associated WebSocket on distinct server ws://

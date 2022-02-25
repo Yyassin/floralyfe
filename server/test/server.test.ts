@@ -1,12 +1,20 @@
 import "mocha";
-import { expect,  } from "chai";
+import { expect } from "chai";
 import { server, port } from "../src/server";
 import superwstest from "superwstest";
+import { before } from "mocha";
 
 const request = superwstest(server);
 const socket = superwstest(`ws://localhost:${port}`);
 
 describe("/test endpoint",() => {
+    before(async function() {
+        this.timeout(0);
+        // Warmup
+        const response = await request
+            .get("/users")
+    })
+
     it("should return a response", async () => {
         const response = await request.get("/");
         expect(response.status).to.eq(200);
