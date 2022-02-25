@@ -19,6 +19,8 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    env: FIREBASE_EMULATORS_PATH: ${{ github.workspace }}/emulator-cache
+
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -28,10 +30,19 @@ jobs:
         with: 
           node-version: "14.x"
 
+      - name: Cache firebase emulators
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.FIREBASE_EMULATORS_PATH }}
+          key:
+            ${{ runner.os }}-firebase-emulators-${{
+            hashFiles('emulator-cache/**') }}
+        continue-on-error: true
+
       - name: Install dependencies
         working-directory: ./server
         run: npm install
 
       - name: Run test
         working-directory: ./server
-        run: npm test
+        run: npx firebase emulators:exec --only firestore 'npm run test'
