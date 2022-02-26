@@ -10,14 +10,18 @@ import express from "express";
 import bodyParser from "body-parser";
 import http from "http";
 import cors from "cors";
+import { ApolloServer, ExpressContext, gql } from "apollo-server-express";
 import { setupWebSocket } from "./setupWebSocket";
-import { User } from "../config";
+import { User } from "../firebaseConfig";
+import { gqlServer } from "./graphql";
+import { GraphQLServer } from "graphql-yoga";
 
 const app = express();
 
-app.use(express.json())                                 // parse application/json
-app.use(bodyParser.urlencoded({ extended: false }))     // parse application/x-www-form-urlencoded
+app.use(express.json()); // parse application/json
+app.use(bodyParser.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
 app.use(cors());
+app.use("/graphql", gqlServer().requestListener);
 
 const port = process.env.PORT || 4001; // Default port to listen
 const server = http.createServer(app);
@@ -29,9 +33,9 @@ app.get("/", (req, res) => {
 
 app.get("/users", async (req, res) => {
     const snapshot = await User.get();
-    const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     res.status(200).send(list);
-})
+});
 
 app.post("/create", async (req, res) => {
     const data = req.body;
@@ -46,7 +50,8 @@ app.post("/create", async (req, res) => {
 // Start the Express server
 server.listen(port, () => {
     console.log(`server started at http://localhost:${port}`);
-    console.log("TEST:", process.env.TEST);
+    // console.log(`graphql ready at http:localhost:${port}${graphqlServer.options.getEndpoint}`);
+    // console.log("TEST:", process.env.TEST);
 });
 
 // Setup and start associated WebSocket on distinct server ws://

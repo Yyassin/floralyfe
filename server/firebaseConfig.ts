@@ -35,6 +35,6 @@ if (testing) {
     db.useEmulator("localhost", 8080);
 }
 
-const User = db.collection("Users");
+const User = db.collection("users");
 
 export { User }

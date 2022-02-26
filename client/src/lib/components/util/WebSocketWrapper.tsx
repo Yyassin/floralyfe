@@ -2,14 +2,31 @@ import { Flex, Link, Text } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import useWebSocket from "../hooks/useWebSocket";
 import { useStore } from "../../store/store";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { firebase }  from "../../../firebase/clientApp";
+
 
 // Temporary prototype to demonstrate websocket functionality using hook
-
+const db = firebase.firestore();
 const WebSocketWrapper = () => {
     const { cameraEncoded, setCameraEncoded } = useStore((state) => ({
         cameraEncoded: state.cameraEncoded,
         setCameraEncoded: state.setCameraEncoded,
     }));
+    
+    const [users, usersLoading, usersError] = useCollection(
+        // @ts-ignore
+        db.collection("users"), {}
+    )
+    const addUser = async (a: string) => {
+        await db.collection("users").doc("123").set({
+            a
+        })
+    }
+
+    if (!usersLoading && users) {
+        users.docs.map((user) => console.log(user.data()));
+    }
 
     const ws = useWebSocket("ws://localhost:4000", 5, 1500);
     const txtRef = useRef<any>();
@@ -67,6 +84,9 @@ const WebSocketWrapper = () => {
                     />
                 </form>
                 <button onClick={subscribeToHello}>Subscribe to "hello"</button>
+                <button onClick={() => addUser(txtRef.current.value || "")}>
+                    Add user
+                </button>
                 <p>connection: {String(ws.readyState)}</p>
                 <p>socket: {data}</p>
                 <p>store: {cameraEncoded}</p>
