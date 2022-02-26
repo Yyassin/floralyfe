@@ -9,12 +9,12 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { WebSocketLink } from "@apollo/link-ws";
 
 const httpLink = new HttpLink({
-    uri: "http://localhost:4001/graphql",
+    uri: "http://c92f-174-112-246-246.ngrok.io/graphql",
 });
 
 const wsLink = process.browser
     ? new WebSocketLink({
-        uri: "ws://localhost:4001/subscriptions",
+        uri: "ws://c92f-174-112-246-246.ngrok.io/subscriptions",
         options: {
             reconnect: true,
             reconnectionAttempts: 3

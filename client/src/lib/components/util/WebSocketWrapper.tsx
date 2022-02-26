@@ -55,7 +55,7 @@ const WebSocketWrapper = () => {
         });
 
         return () => unsubscribe();
-    }, []);
+    }, [subscribeToMore]);
 
     // const [users, usersLoading, usersError] = useCollection(
     //     // @ts-ignore
@@ -71,7 +71,7 @@ const WebSocketWrapper = () => {
     //     users.docs.map((user) => console.log(user.data()));
     // }
 
-    const ws = useWebSocket("ws://localhost:4004", 5, 1500);
+    const ws = useWebSocket("ws:///c184-174-112-246-246.ngrok.io", 5, 1500);
     const txtRef = useRef<any>();
     const [data, setData] = useState<any>("Nothing received yet...");
 

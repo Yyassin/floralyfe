@@ -14,6 +14,8 @@ const getAllUsers = async () => {
 const createUser = async (args) => {
     console.log(args);
 
+    console.log(pubsub)
+
     pubsub.publish('user', {
         user: {
             mutation: 'CREATED',

@@ -266,7 +266,7 @@ const setupWebSocket = (server: http.Server): void => {
         ctx.on("close", () => debug("closed", wss.clients.size));
 
         // Send a message that we're good to proceed
-        ctx.send(successResponse("Connection established."));
+        ctx.send("Connection established.");
     });
 };
 
