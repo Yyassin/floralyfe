@@ -10,20 +10,18 @@ import express from "express";
 import bodyParser from "body-parser";
 import http from "http";
 import cors from "cors";
-import { ApolloServer, ExpressContext, gql } from "apollo-server-express";
 import { setupWebSocket } from "./setupWebSocket";
 import { User } from "../firebaseConfig";
 import { gqlServer } from "./graphql";
-import { GraphQLServer } from "graphql-yoga";
 
 const app = express();
 
 app.use(express.json()); // parse application/json
 app.use(bodyParser.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
 app.use(cors());
-app.use("/graphql", gqlServer().requestListener);
+//app.use("/graphql", gqlServer().requestListener);
 
-const port = process.env.PORT || 4001; // Default port to listen
+const port = process.env.PORT || 4000; // Default port to listen
 const server = http.createServer(app);
 
 // Define a route handler for the default home page
@@ -52,6 +50,11 @@ server.listen(port, () => {
     console.log(`server started at http://localhost:${port}`);
     // console.log(`graphql ready at http:localhost:${port}${graphqlServer.options.getEndpoint}`);
     // console.log("TEST:", process.env.TEST);
+});
+gqlServer().start({ 
+    port: 4001,
+    endpoint: "/graphql",
+    subscriptions: "/subscriptions"
 });
 
 // Setup and start associated WebSocket on distinct server ws://

@@ -3,32 +3,75 @@ import { useEffect, useRef, useState } from "react";
 import useWebSocket from "../hooks/useWebSocket";
 import { useStore } from "../../store/store";
 import { useCollection } from "react-firebase-hooks/firestore";
-import { firebase }  from "../../../firebase/clientApp";
+import { firebase } from "../../../firebase/clientApp";
+import { gql, useQuery } from "@apollo/client";
 
+const GET_USERS = gql`
+    query {
+        users {
+            name
+        }
+    }
+`;
+
+const USER_SUBCRIPTION = gql`
+    subscription {
+        user {
+            mutation
+            data {
+                name
+            }
+        }
+    }
+`;
 
 // Temporary prototype to demonstrate websocket functionality using hook
 const db = firebase.firestore();
 const WebSocketWrapper = () => {
+    const {
+        loading,
+        error,
+        data: gqlData,
+        subscribeToMore,
+    } = useQuery(GET_USERS);
+
+    if (!loading && gqlData) {
+        console.log("GQL", gqlData);
+    }
+
     const { cameraEncoded, setCameraEncoded } = useStore((state) => ({
         cameraEncoded: state.cameraEncoded,
         setCameraEncoded: state.setCameraEncoded,
     }));
-    
-    const [users, usersLoading, usersError] = useCollection(
-        // @ts-ignore
-        db.collection("users"), {}
-    )
-    const addUser = async (a: string) => {
-        await db.collection("users").doc("123").set({
-            a
-        })
-    }
 
-    if (!usersLoading && users) {
-        users.docs.map((user) => console.log(user.data()));
-    }
+    useEffect(() => {
+        const unsubscribe = subscribeToMore({
+            document: USER_SUBCRIPTION,
+            updateQuery: (prev, { subscriptionData }) => {
+                if (!subscriptionData.data) return prev;
 
-    const ws = useWebSocket("ws://localhost:4000", 5, 1500);
+                console.log("SUB", subscriptionData);
+            },
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    // const [users, usersLoading, usersError] = useCollection(
+    //     // @ts-ignore
+    //     db.collection("users"), {}
+    // )
+    // const addUser = async (a: string) => {
+    //     await db.collection("users").doc("123").set({
+    //         a
+    //     })
+    // }
+
+    // if (!usersLoading && users) {
+    //     users.docs.map((user) => console.log(user.data()));
+    // }
+
+    const ws = useWebSocket("ws://localhost:4004", 5, 1500);
     const txtRef = useRef<any>();
     const [data, setData] = useState<any>("Nothing received yet...");
 
@@ -84,9 +127,7 @@ const WebSocketWrapper = () => {
                     />
                 </form>
                 <button onClick={subscribeToHello}>Subscribe to "hello"</button>
-                <button onClick={() => addUser(txtRef.current.value || "")}>
-                    Add user
-                </button>
+                {/* <button onClick={() => addUser(txtRef.current.value || "")}></button> */}
                 <p>connection: {String(ws.readyState)}</p>
                 <p>socket: {data}</p>
                 <p>store: {cameraEncoded}</p>
