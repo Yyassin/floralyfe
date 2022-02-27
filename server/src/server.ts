@@ -7,12 +7,22 @@
 require("dotenv").config();
 
 import express from "express";
+import bodyParser from "body-parser";
 import http from "http";
+import cors from "cors";
 import { setupWebSocket } from "./setupWebSocket";
+import { gqlServer } from "./graphql";
+import { debug } from "./util";
 
+// Create the express instance
 const app = express();
-const port = process.env.PORT || 4000; // Default port to listen
 
+app.use(express.json()); // parse application/json
+app.use(bodyParser.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
+app.use(cors()); // allow cross-origin
+
+const expressPort = process.env.EXPRESS_PORT || 5000; // Default express server port
+const graphQLPort = process.env.GRAPHQL_PORT || 5001; // Default graphql server port
 const server = http.createServer(app);
 
 // Define a route handler for the default home page
@@ -21,12 +31,22 @@ app.get("/", (req, res) => {
 });
 
 // Start the Express server
-server.listen(port, () => {
-    console.log(`server started at http://localhost:${port}`);
-    console.log(process.env.DEVELOPMENT);
+server.listen(expressPort, () => {
+    debug(`Express server started at http://localhost:${expressPort}`);
 });
 
-// Setup and start associated WebSocket on distinct server ws://
+// Start the GraphQL server
+gqlServer()
+    .start({
+        port: graphQLPort,
+        endpoint: "/graphql",
+        subscriptions: "/subscriptions",
+    })
+    .then(() => {
+        debug(`GraphQL server started at http://localhost:${graphQLPort}`);
+    });
+
+// Setup and start associated WebSocket on distinct server ws://express
 setupWebSocket(server);
 
-export { server };
+export { server, expressPort, graphQLPort };

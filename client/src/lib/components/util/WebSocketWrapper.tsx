@@ -2,16 +2,69 @@ import { Flex, Link, Text } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import useWebSocket from "../hooks/useWebSocket";
 import { useStore } from "../../store/store";
+import { gql, useQuery } from "@apollo/client";
+
+const GET_VITALS = gql`
+    query {
+        vitals {
+            id
+            soilMoisture
+            temperature
+            airHumidity
+            plantID
+            createdAt
+        }
+    }
+`;
+
+const VITALS_SUBCRIPTION = gql`
+    subscription {
+        vital(deviceID: "hello"){
+            mutation
+            data{
+                id
+                soilMoisture
+                temperature
+                airHumidity
+                plantID
+                createdAt
+            }
+        }
+    }
+`;
 
 // Temporary prototype to demonstrate websocket functionality using hook
-
 const WebSocketWrapper = () => {
+    const {
+        loading,
+        error,
+        data: gqlData,
+        subscribeToMore,
+    } = useQuery(GET_VITALS);
+
+    if (!loading && gqlData) {
+        console.log("GQL", gqlData);
+    }
+
     const { cameraEncoded, setCameraEncoded } = useStore((state) => ({
         cameraEncoded: state.cameraEncoded,
         setCameraEncoded: state.setCameraEncoded,
     }));
 
-    const ws = useWebSocket("ws://localhost:4000", 5, 1500);
+    useEffect(() => {
+        const unsubscribe = subscribeToMore({
+            document: VITALS_SUBCRIPTION,
+            updateQuery: (prev, { subscriptionData }) => {
+                if (!subscriptionData.data) return prev;
+
+                console.log("SUB", subscriptionData);
+            },
+        });
+
+        return () => unsubscribe();
+    }, [subscribeToMore]);
+
+    const ws = useWebSocket("ws://localhost:5000", 5, 1500);
     const txtRef = useRef<any>();
     const [data, setData] = useState<any>("Nothing received yet...");
 

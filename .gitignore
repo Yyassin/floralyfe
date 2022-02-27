@@ -5,3 +5,6 @@ env/
 *.env
 *.mypy_cache
 *.pytest_cache
+*.config
+*.npm
+.bash_history

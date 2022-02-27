@@ -1,5 +1,6 @@
 {
-    "python.linting.pylintEnabled": false,
+    "python.defaultInterpreterPath": "/pi/env/Scripts/python.exe",
+    "python.linting.pylintEnabled": true,
     "python.analysis.diagnosticSeverityOverrides": {
         "reportUnknownMemberType": "none",
         "reportUnknownLambdaType": "none",
