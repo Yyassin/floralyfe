@@ -8,7 +8,7 @@
     "git-test": "TEST=1 && nyc mocha -r ts-node/register --exit 'test/**/*.test.ts'",
     "dev": "set TEST=1 DEVELOPMENT=1 && nodemon ./src/server.ts",
     "emulator": "npx firebase emulators:start --only firestore",
-    "emulator-test": "npx firebase emulators:exec --only firestore 'npm run git-test'"
+    "emulator-test": "npx firebase emulators:exec --only firestore \"npm run test\""
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +20,7 @@
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
     "firebase": "^9.6.7",
+    "graphql-iso-date": "^3.6.1",
     "graphql-yoga": "^1.18.3",
     "http": "^0.0.1-security",
     "superwstest": "^2.0.1",

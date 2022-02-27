@@ -3,7 +3,7 @@ import { typeDefs } from "./schema";
 import { resolvers } from "./resolvers";
 
 const gqlServer = () => {
-    return new GraphQLServer({ typeDefs, resolvers })
+    return new GraphQLServer({ typeDefs, resolvers });
 };
 
 export { gqlServer };

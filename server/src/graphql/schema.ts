@@ -1,32 +1,48 @@
-const typeDefs = `
-    type User {
-        name: String
-        email: String
-        projects: [Project]
-    }
+const gql = String.raw;
 
-    type Project {
-        title: String!
-        active: Boolean!
-        members: [User!]!
+const typeDefs = gql`
+    scalar Date
+
+    type Vital {
+        id: ID!
+        soilMoisture: Float!
+        temperature: Float!
+        airHumidity: Float!
+        plantID: ID!
+        createdAt: Date!
     }
 
     type Query {
-        users: [User]
+        vitals: [Vital]
     }
 
     type Mutation {
-        createUser(name: String!): User!
+        createVital(
+            soilMoisture: Float!
+            temperature: Float!
+            airHumidity: Float!
+            plantID: ID!
+            deviceID: ID!
+        ): Vital!
+        updateVital(
+            id: ID!
+            soilMoisture: Float!
+            temperature: Float!
+            airHumidity: Float!
+            plantID: ID!
+            deviceID: ID!
+        ): Boolean!
+        deleteVital(id: ID!, deviceID: ID!): Boolean!
     }
 
     type Subscription {
-        user: UserSubscriptionPayload!
+        vital(deviceID: ID!): VitalSubscriptionPayload!
     }
 
-    type UserSubscriptionPayload {
+    type VitalSubscriptionPayload {
         mutation: String!
-        data: User!
+        data: Vital!
     }
 `;
 
-export { typeDefs }
+export { typeDefs };

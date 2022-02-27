@@ -1,46 +1,25 @@
-import { users } from "./mock";
-import { User } from "../../firebaseConfig";
 import { PubSub } from "graphql-yoga";
+import { ID } from "../models/common";
+import { Vital } from "../models";
+import { GraphQLDateTime } from "graphql-iso-date";
 
 const pubsub = new PubSub();
 
-const snapshotToArray = (snapshot) => 
-    snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-
-const getAllUsers = async () => {
-    return snapshotToArray(await User.get());
-}
-
-const createUser = async (args) => {
-    console.log(args);
-
-    console.log(pubsub)
-
-    pubsub.publish('user', {
-        user: {
-            mutation: 'CREATED',
-            data: { ...args }
-        }
-    }); 
-
-    return { ...args };
-}
+const customScalarResolver = {
+    Date: GraphQLDateTime,
+};
 
 const resolvers = {
+    ...customScalarResolver,
     Query: {
-        users: () => getAllUsers(),
+        ...Vital.queries(),
     },
     Mutation: {
-        createUser: (root, args) => createUser(args),
+        ...Vital.mutations(pubsub),
     },
     Subscription: {
-        user: {
-            subscribe: () => {
-                console.log("called")
-                return pubsub.asyncIterator("user")
-            },
-        }
-    }
+        ...Vital.subscriptions(pubsub),
+    },
 };
 
 export { resolvers };

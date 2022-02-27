@@ -1,9 +1,10 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
+import { debug } from "./src/util";
 // Version 9 imports: https://stackoverflow.com/questions/69139443/property-auth-does-not-exist-on-type-typeof-import-firebase-auth/69489577#69489577
 
-const testing = (process.env.TEST !== undefined);
+const testing = process.env.TEST !== undefined;
 
 // Firebase configuration
 const firebaseConfig = {
@@ -13,10 +14,11 @@ const firebaseConfig = {
     storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
     messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
     appId: process.env.FIREBASE_APP_ID,
-}
+};
 
 // Emulator needs project id and env isn't defined in workflow environment (could post in github secrets).
-const FIREBASE_TEST_PROJECT_ID =  process.env.FIREBASE_TEST_PROJECT_ID || "floralyfe-test"
+const FIREBASE_TEST_PROJECT_ID =
+    process.env.FIREBASE_TEST_PROJECT_ID || "floralyfe-test";
 const firebaseTestConfig = {
     apiKey: process.env.FIREBASE_TEST_API_KEY,
     authDomain: process.env.FIREBASE_TEST_AUTH_DOMAIN,
@@ -24,17 +26,16 @@ const firebaseTestConfig = {
     storageBucket: process.env.FIREBASE_TEST_STORAGE_BUCKET,
     messagingSenderId: process.env.FIREBASE_TEST_MESSAGING_SENDER_ID,
     appId: process.env.FIREBASE_TEST_APP_ID,
-}
+};
 
+// Initialize the app.
 firebase.initializeApp(testing ? firebaseTestConfig : firebaseConfig);
 // const auth = firebase.auth()
 const db = firebase.firestore();
-//firebase.firestore.setLogLevel('debug');
+// firebase.firestore.setLogLevel('debug');
 if (testing) {
-    console.log("connecting emulator")
+    debug("Firestore connecting to emulator...");
     db.useEmulator("localhost", 8080);
 }
 
-const User = db.collection("users");
-
-export { User }
+export { db };

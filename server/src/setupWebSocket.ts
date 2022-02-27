@@ -125,7 +125,7 @@ const removeSubscription = (
 const processMessage = (ctx: WebSocket, message: WebSocket.RawData): void => {
     let data: WSData;
 
-    // Attemp to decode binary data to json. All message must be in JSON format.
+    // Attempt to decode binary data to json. All message must be in JSON format.
     try {
         data = JSON.parse(Buffer.from(message as ArrayBuffer).toString());
         debug(data);
