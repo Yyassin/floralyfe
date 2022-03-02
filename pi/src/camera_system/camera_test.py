@@ -10,15 +10,18 @@ machine over websocket pertaining to user "hello".
 __author__ = 'yousef'
 
 import cv2 as cv
+from camera_system.camera_util import PI_capture, WIN_capture
+from util.util import IS_RPI
 import websocket
-from picamera import PiCamera
-import numpy as np
-import base64
 import json
-import time
-from typing import Any, cast
+# import time
+from typing import Any
 
-url = "ws://8710-174-112-246-246.ngrok.io"     # The local websocket url
+if IS_RPI:
+    from picamera import PiCamera
+
+
+url = "ws://localhost:5000"     # The local websocket url
 
 
 def on_message(ws: Any, message: str) -> None:
@@ -34,7 +37,7 @@ def on_close(ws: Any, close_status_code: int, close_msg: bytes) -> None:
 
 
 CAMERA_TOPIC = "camera-topic"   # Topic for camera frame images, eventually should go into a topics file
-userID = "hello"                # User ID (TODO: this will go into a config / env file at one point)
+userID = "hello1"                # User ID (TODO: this will go into a config / env file at one point)
 
 
 def on_open(ws: Any) -> None:
@@ -43,25 +46,12 @@ def on_open(ws: Any) -> None:
         over a WebSocket connection every second.
         The frame pertains to user with id userID (above).
     """
-    # cam = cv.VideoCapture(0)
-    cam = PiCamera()
+    cam = PiCamera() if IS_RPI else cv.VideoCapture(0)
     try:
         while (True):
-            # rawCapture = PiRGBArray(camera)                      # Obtain the frame.
-            # cv.imshow('frame', gray)
+            data = PI_capture(cam) if IS_RPI else WIN_capture(cam)
 
-            cam.resolution = (320, 240)
-            cam.framerate = 24
-            time.sleep(2)
-            frame = np.empty((240, 320, 3), dtype=np.uint8)
-            cam.capture(frame, 'bgr')
-
-            _, frame = cv.imencode('.jpg', frame)         # Encode from image to binary buffer
-
-            # This works with ndarray[Any, dtype[unsignedinteger[_8Bit]]] but mypy is expecting bytes.
-            data = base64.b64encode(cast(bytes, frame))                  # Then convert to base64 format
-
-            msg = {                                         # Create the socket message
+            msg = {                                                     # Create the socket message
                 "topic": CAMERA_TOPIC,
                 "userID": userID,
                 "payload": {
@@ -69,10 +59,11 @@ def on_open(ws: Any) -> None:
                 }
             }
 
-            print(msg)
+            # print(msg)
+            print("sent")
 
             ws.send(json.dumps(msg, indent=4))          # Create json from msg dictionary and send it
-            time.sleep(1)
+            # time.sleep(0.1)
 
             if 0xFF == ord('q'):
                 break
@@ -84,7 +75,7 @@ def on_open(ws: Any) -> None:
     cv.destroyAllWindows()
 
 
-if __name__ == "__main__":
+def main() -> None:
     # websocket.enableTrace(True)
     ws = websocket.WebSocketApp(url,
                                 on_message=on_message,
@@ -92,3 +83,7 @@ if __name__ == "__main__":
                                 on_close=on_close)
     ws.on_open = on_open
     ws.run_forever()
+
+
+if __name__ == "__main__":
+    main()
