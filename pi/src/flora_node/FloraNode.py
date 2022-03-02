@@ -10,7 +10,7 @@ from abc import abstractmethod
 import threading
 from time import sleep
 from typing import Any, Union
-from queue import Empty, Queue
+from queue import Queue
 from util.Logger import Logger
 from util.Singleton import Singleton
 
@@ -61,11 +61,7 @@ class FloraNode(Singleton):
             the task queue...
         """
         while True:
-            try:
-                self.logger.debug(f"Got {self.task_queue.get_nowait()}")
-            except Empty:
-                self.logger.debug("The task queue is empty.")
-            sleep(1)
+            self.logger.debug(f"Got {self.task_queue.get()}")
 
     @abstractmethod
     def main(self: "FloraNode") -> None:

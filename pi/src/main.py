@@ -16,7 +16,7 @@ from ws import WSReceiver
 
 def main() -> None:
     DEVICE_ID = "hello"                             # placeholder, subscribe to messages sent to "hello"
-    SOCKET = "ws://6d0b-174-112-246-246.ngrok.io"
+    SOCKET = "ws://localhost:5000"
     # Creates shared worker queues
     camera_task_queue = Queue()             # type: Queue[Any]
     irrigation_task_queue = Queue()         # type: Queue[Any]
@@ -39,9 +39,8 @@ def main() -> None:
         irrigation_system.run()
         ws_receiver.run()
 
-        assert ws_receiver.wss_thread is not None
-        while ws_receiver.wss_thread.is_alive():        # Exits when socket fails. Probably not great, hacky.
-            ws_receiver.wss_thread.join(1)              # We're looping so we can interrupt and exit main (join blocks)
+        print("Press Ctrl+C to terminate...")
+        input()                                 # Pause the main thread
     except (KeyboardInterrupt, SystemExit):
         # cleanup here
         sys.exit()

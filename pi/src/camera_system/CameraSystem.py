@@ -6,9 +6,8 @@ Camera Monitoring Subsystem Controller API
 
 __author__ = "yousef"
 
-from time import sleep
 from typing import Any, Union
-from queue import Empty, Queue
+from queue import Queue
 from flora_node.FloraNode import FloraNode
 
 
@@ -36,11 +35,7 @@ class CameraSystem(FloraNode):
             the task queue...
         """
         while True:
-            try:
-                self.logger.debug(f"@Override: Got {self.task_queue.get_nowait()}")
-            except Empty:
-                self.logger.debug("The task queue is empty.")
-            sleep(1)
+            self.logger.debug(f"Got {self.task_queue.get()}")
 
     def main(self: "CameraSystem") -> None:
         pass
