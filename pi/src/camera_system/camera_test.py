@@ -75,7 +75,7 @@ def on_open(ws: Any) -> None:
     cv.destroyAllWindows()
 
 
-def main():
+def main() -> None:
     # websocket.enableTrace(True)
     ws = websocket.WebSocketApp(url,
                                 on_message=on_message,

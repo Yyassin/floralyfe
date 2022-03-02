@@ -1,13 +1,13 @@
-from typing import Any
 import cv2 as cv
 import numpy as np
+from typing import cast
 
 # Note: the lumi here is pretty good but doesn't correct *as much* as you'd hope for perceived lighting
 # Fairchild's model does: https://stackoverflow.com/a/59602392
 # But it's also a lot more computationally expensive (especially abToHue conditionals)
 
 
-def cv_green_mask(filename: str) -> int:
+def cv_green_mask(filename: str) -> float:
     # source: https://stackoverflow.com/questions/47483951/how-to-define-a-threshold-value-to-detect-only-green-colour-objects-in-an-image
     img = cv.imread(filename)
 
@@ -21,16 +21,16 @@ def cv_green_mask(filename: str) -> int:
 
     cv.imwrite("../images/bright_plant_mask.jpg", green)
 
-    return green.sum() / green.size
+    return cast(float, green.sum() / green.size)
 
 
-def luminescense(image: Any) -> Any:
+def luminescense(image: "cv.Image") -> float:
     lab_image = cv.cvtColor(image, cv.COLOR_BGR2LAB)
     lstar = lab_image[:, :, 0].flatten()
-    return lstar.sum() / (255 * (lstar.size))
+    return cast(float, lstar.sum() / (255 * (lstar.size)))
 
 
-def main():
+def main() -> None:
     blank_image = np.zeros((512, 512, 3), np.uint8)
     blank_image[:] = (118, 118, 118)
     # cv.imshow('3 Channel Window', blank_image)
