@@ -20,33 +20,33 @@ Floralyfe is being built as a project submission for SYSC3010. The project compr
 At a high level, the Floralyfe system consists of three core nodes: the client, the server and the pi system. The server serves as the communication layer, routing requests between the physical plant systems and the client. It also abstracts the cloud database. The client serves as the user's interface to the system while the pi system serves as the actual plant monitor and irrigation solution. To get these nodes running, follow the instructions below.
 
 ### pi
-The Raspberry Pi node is written in Python. It is recommended that you setup a `virtual environment` to run the python instance along with its dependencies. Follow the instructions below to set up a local environment.
+The Raspberry Pi node is written in Python. It is recommended that you setup a **virtual environment** to run the python instance along with its dependencies. Follow the instructions below to set up a local environment.
 
 Proceed to the `/pi` directory and execute the following commands depending on your operating system.
 
-1. Ensure that the python `venv` module is installed on your machine by using `pip install venv`.
+1. Ensure that the python `virtualenv` module is installed on your machine by using `pip install virtualenv`.
 #### Windows
 1. Initialize a virtual environment called `env` using `python3 -m venv env`. Alternatively, `.\venv.bat` will do this for you.
 2. Once the environment has been created, you should see a `env` directory created under the `pi/` root. To enter the virtual environment, activate it using `.\env\Scripts\activate`.
-3. Within the environment, run `pip install -r requirements.txt` to install dependencies. Alternatively, `.\install.bat` will do the same thing.
+3. Within the environment, run `pip install -r requirements.txt` to install dependencies. Alternatively, `.\scripts\install.bat` will do the same thing.
 4. To exit the virtual environment, run `deactivate`.
 
 **Note**: Scripts for mounting/demouting the virtual environment could not be created without provided absolute paths to the activate and deactivate scripts.
 
 #### Linux (Raspbian)
 1. Scripts have already been provided for you to simplify the process. Feel free to open them to see the commands being executed.
-2. Initialize the virtual environment by running `source venv.sh`.
+2. Initialize the virtual environment by running `source scripts/venv.sh`.
 3. Once initialized, an `env/` directory should have been created under `pi/`.
-4. Ensure you've entered the environment (there will be a (env) prefix before your working directory). If you're not in the director, see step 5. Install all dependencies using `source install.sh`.
-5. If the virtual environment is already installed, run `source run.sh` to enter it. The command `source exit.sh` is used to exit the environment. 
+4. Ensure you've entered the environment (there will be a (env) prefix before your working directory). If you're not in the director, see step 5. Install all dependencies using `source scripts/install.sh`.
+5. If the virtual environment is already installed, run `source scripts/run.sh` to enter it. The command `source scripts/exit.sh` is used to exit the environment. 
 
-**Note:** The location of all script files is under `pi/` and they must be referenced accordingly.
+**Note:** The location of all script files is under `pi/` and they must be referenced accordingly. This means you should always call `scripts/script.*` rather than moving within the `scripts/` directory and calling a script directly.
 
 Once the environment and dependencies have been setup. Navigate to `src/` and execute the entrypoint `python main.py` to run the pi instance. Refer to the notes below for additional development details.
 
 #### Additional Notes
 - The pi node implements a unit test workflow, to help develop code that passes these tests, follow [these instructions](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/blob/main/pi/Linting.md) to setup linting for VSCode.
-- Tests can be executed using the `test.sh` or `test.bat` scripts. Alternatively, use the `pytest -v test/` command in `src`. *All unit tests should be added to the `test/` directory with a `test_` prefix.
+- Tests can be executed using the `srcipts/test.sh` or `.\scripts\test.bat` scripts. Alternatively, use the `pytest -v --mocha test/` command in `src`. *All unit tests should be added to the `test/` directory with a `test_` prefix for both the file and test functions within.
 
 - **Attention:** Standalone testing of modules ***must*** be performed from within `src/` such that
 `src/` remains the root of the application and imports keep working. See `camera_standalone.py` and `irrigation_standalone.py` for examples.
