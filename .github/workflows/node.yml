@@ -37,9 +37,16 @@ jobs:
           key: ${{ runner.os }}-firebase-emulators-${{ hashFiles('~/.cache/firebase/emulators/**') }}
         continue-on-error: true
 
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('./server/package-lock.json') }}
+          restore-keys: npm-
+
       - name: Install dependencies
         working-directory: ./server
-        run: npm install
+        run: npm ci --ignore-scripts
 
       - name: Run test
         working-directory: ./server

@@ -19,6 +19,13 @@ jobs:
         with:
           python-version: 3.6
 
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('./pi/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: Install dependencies
         working-directory: ./pi
         run: |
@@ -37,6 +44,6 @@ jobs:
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-      - name: Run tests with pytest
+      - name: Run tests with pytest-mocha
         working-directory: ./pi/src
-        run: pytest -v test/
+        run: pytest -v --mocha test/
