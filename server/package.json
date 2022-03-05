@@ -23,6 +23,7 @@
     "graphql-iso-date": "^3.6.1",
     "graphql-yoga": "^1.18.3",
     "http": "^0.0.1-security",
+    "localtunnel": "^2.0.2",
     "superwstest": "^2.0.1",
     "uuid": "^8.3.2",
     "ws": "^8.4.2"
@@ -30,6 +31,7 @@
   "devDependencies": {
     "@testdeck/mocha": "^0.2.0",
     "@types/chai": "^4.3.0",
+    "@types/localtunnel": "^2.0.1",
     "@types/mocha": "^9.1.0",
     "@types/ws": "^8.2.2",
     "chai": "^4.3.6",
