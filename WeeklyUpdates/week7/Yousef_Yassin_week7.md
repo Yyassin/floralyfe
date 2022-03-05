@@ -23,6 +23,7 @@ ___
        - I added a GraphQL server to wrap the Firestore database which currently only has a plant "Vital"(s) schema with queries, mutations and subscriptions(!). I aim to complete the GraphQL API this coming week.
        - A few things happened on the Python end too...
        - Setup the core architecture of the system to consist of a WebSocket Receiver that routes messages to various nodes in our system. Configured each node to consists of a 2 threads: a main one and a listener. This has been tested and seems to work as intended. In fact, end-to-end communication was established at this point with general JSON (so any message really).
+       - Added OpenCV support in the Raspberry Pi along with the PiCamera and image transmission over websockets.
        - Added OpenCV filters to estimate the growth of a plant through the application of a green mask and one that estimates the light in a frame through the CIELAB colour scheme.
          - These have also been tested: I don't have ideal results to compare them to but the use of different images (and using testing threshold produced by solid colours) produce results that are consistent relative to eachother which is good enough.
        - Quite a few more small maintenance tasks were also performed: updating the README, helping my teammates setup their environments, upgrading the continuous integration workflow, adding a gpio mocking library and example, etc. 
@@ -49,9 +50,10 @@ ___
      - The alternative I'm planning to apply is the following:
        - I've acquired a database of plant living conditions in California (~4K species) called WUCOLS IV. There's also another database of ~40 common plants and their basic living requirements.
        - I plant to consolidate this information into our own Firestore database through a script (while also cleaning it up to suit our needs).
-       - In terms of the application feature: if we're able to find a user's plant in our database then we'll use that information. If not, we can still provide the user with the species and they can then find the water requirements if they don't know them already. When they enter this information, our dataset will grow and, in a real-world, the dataset would eventually satisfy our needs.
+       - In terms of the application feature: if we're able to find a user's plant in our database then we'll use that information. If not, we can still provide the user with the species and they can then find the water requirements if they don't know them already. When they enter this information, our dataset will grow and, in a real-world, the dataset would eventually satisfy our needs. 
+         - Plant id's API also has the ability to detect plant disease (including some from over-watering). If we have time, we could try adding the ability to modify plant optima based on this feedback.
 
-     - The second goal for next week is partially integrating the system explained above.
+     - The second goal for next week is partially integrating the system explained above. Mainly the script for integrating the databases into our own.
      - I also hope to begin implementing the interface of our system along with doing more research and begin implementing unit tests for the UI (looking at react-testing-library and jest). 
   
 6. ***Is anything blocking you that you need from others?*** _(What do you need from whom)_
