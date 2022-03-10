@@ -143,7 +143,7 @@ const Test = () => {
         fetchPlant,
         fetchUser,
         fetchVital
-    }
+    } as any;
 
     const { cameraEncoded, setCameraEncoded } = useStore((state) => ({
         cameraEncoded: state.cameraEncoded,
