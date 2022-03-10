@@ -34,6 +34,14 @@ const schemaType = gql`
         createdAt: Date!
         updatedAt: Date!
     }
+
+    type Token {
+        token: String!
+    }
+
+    type Response {
+        response: String!
+    }
 `;
 
 const mutation = gql`
@@ -60,6 +68,11 @@ const mutation = gql`
 
 const query = gql`
     users(username: String!): [User]
+
+    signIn(username: String!, password: String!): Token!
+
+    signOut(token: String!): Response!
+
 `;
 
 class User extends FirestoreDocument<IUser, createUserArgs> {
@@ -80,6 +93,14 @@ const user = new User();
 
 const getUserByUsername = async (args: { username: string }) => {
     return await user.getByUsername(args.username);
+}
+
+const signIn = async (args: { username: string, password: string}) => {
+    return { token: `test_token: got u-${args.username} p-${args.password}` };
+}
+
+const signOut = async (args: { token: string}) => {
+    return { response: `signed out: got tok-${args.token}` };
 }
 
 const createUser = async (
@@ -116,6 +137,8 @@ const updateUser = async (
 
 const queries = () => ({
     users: (_, args) => getUserByUsername(args),
+    signIn: (_, args) => signIn(args),
+    signOut: (_, args) => signOut(args),
 });
 
 const mutations = () => ({
