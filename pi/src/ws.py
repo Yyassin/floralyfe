@@ -13,6 +13,7 @@ import threading
 from queue import Queue
 from typing import Any, Dict, cast
 from util import Logger, Singleton
+from validate_message import validate_message
 
 
 class WSReceiver(Singleton.Singleton):
@@ -24,7 +25,7 @@ class WSReceiver(Singleton.Singleton):
         received.
     """
 
-    def __init__(self: "WSReceiver", queues: "Dict[str, Queue[Any]]", url: str, subscription_id: str) -> None:
+    def __init__(self: "WSReceiver", queues: "Dict[str, Queue[Any]]", url: str, subscription_id: str, test: bool) -> None:
         """
             Initializes a new WSReceiver with the specified parameters.
 
@@ -40,6 +41,7 @@ class WSReceiver(Singleton.Singleton):
         #     key: lambda msg: queues[key].put(msg) for key in queues
         # }
 
+        self.test = test
         self.url = url
         self.subscription_id = subscription_id
         self.ws = None
@@ -78,6 +80,10 @@ class WSReceiver(Singleton.Singleton):
         if queue:
             queue.put(message)
 
+    def send(self: "WSReceiver", message: Dict[str, Any]) -> None:
+        if self.ws is not None:
+            self.ws.send(json.dumps(message))
+
     def on_open(self: "WSReceiver", ws: "websocket.WebsocketApp") -> None:
         """
             Websocket on_open callback - invoked on connection
@@ -87,7 +93,7 @@ class WSReceiver(Singleton.Singleton):
         subscription_msg = {
             "topic": "subscribe",
             "payload": {
-                "deviceID": self.subscription_id,  # only want to listen to this device
+                "userID": self.subscription_id,  # only want to listen to this device
             },
         }
 
@@ -110,6 +116,8 @@ class WSReceiver(Singleton.Singleton):
 
         if (isinstance(message, dict)):
             self.process_message(cast(Dict[str, Any], message))
+            if (self.test):
+                validate_message(message)
 
     def on_close(self: "WSReceiver", ws: "websocket.WebsocketApp", close_status_code: int, close_msg: bytes) -> None:
         """

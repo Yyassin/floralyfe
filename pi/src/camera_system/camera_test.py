@@ -14,30 +14,32 @@ from camera_system.camera_util import PI_capture, WIN_capture
 from util.util import IS_RPI
 import websocket
 import json
-# import time
+import time
 from typing import Any
+from util.Logger import Logger
 
 if IS_RPI:
     from picamera import PiCamera
 
 
 url = "ws://localhost:5000"     # The local websocket url
+logger = Logger("Camera Image Test")
 
 
 def on_message(ws: Any, message: str) -> None:
-    print(message)
+    logger.debug(message)
 
 
 def on_error(ws: Any, error: str) -> None:
-    print(error)
+    logger.debug(error)
 
 
 def on_close(ws: Any, close_status_code: int, close_msg: bytes) -> None:
-    print(f"Closed connection. Status code: { str(close_status_code) }, Message: { str(close_msg) }")
+    logger.debug(f"Closed connection. Status code: { str(close_status_code) }, Message: { str(close_msg) }")
 
 
-CAMERA_TOPIC = "camera-topic"   # Topic for camera frame images, eventually should go into a topics file
-userID = "hello1"                # User ID (TODO: this will go into a config / env file at one point)
+CAMERA_TOPIC = "camera-topic"     # Topic for camera frame images, eventually should go into a topics file
+userID = "yousef-device"                 # User ID (TODO: this will go into a config / env file at one point)
 
 
 def on_open(ws: Any) -> None:
@@ -60,10 +62,10 @@ def on_open(ws: Any) -> None:
             }
 
             # print(msg)
-            print("sent")
+            logger.debug("Sent Image Frame")
 
             ws.send(json.dumps(msg, indent=4))          # Create json from msg dictionary and send it
-            # time.sleep(0.1)
+            time.sleep(1)
 
             if 0xFF == ord('q'):
                 break

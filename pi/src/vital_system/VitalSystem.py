@@ -11,13 +11,13 @@ from queue import Queue
 from flora_node.FloraNode import FloraNode
 
 
-class CameraSystem(FloraNode):
+class VitalSystem(FloraNode):
     """
         Higher level camera monitoring subsystem API. Controls
         the RPi camera and servo to...
     """
 
-    def __init__(self: "CameraSystem", task_queue: "Queue[Any]", name: Union[str, None] = None) -> None:
+    def __init__(self: "VitalSystem", task_queue: "Queue[Any]", name: Union[str, None] = None) -> None:
         """
             Initializes the Camera System.
 
@@ -29,7 +29,7 @@ class CameraSystem(FloraNode):
         """
         super().__init__(task_queue, name)
 
-    def worker(self: "CameraSystem") -> None:
+    def worker(self: "VitalSystem") -> None:
         """
             The Camera System's worker thread. Processes incoming tasks in
             the task queue...
@@ -37,15 +37,12 @@ class CameraSystem(FloraNode):
         while True:
             msg = self.task_queue.get()
             self.logger.debug(f"Got {msg}")
-            if msg['payload']['topic'] == "turn":
-                self.logger.warn(f"Turning servo to {msg['payload']['yaw']} radians")
-            else:
-                self.logger.warn(f"Registering plant with id {msg['payload']['plantID']} at {msg['payload']['yaw']} radians")
+            self.logger.warn(f"Setting SenseHat to {msg['payload']['icon']}")
 
-    def main(self: "CameraSystem") -> None:
+    def main(self: "VitalSystem") -> None:
         pass
 
-    def test_function(self: "CameraSystem") -> str:
+    def test_function(self: "VitalSystem") -> str:
         """
             A test function to test testing.
             :returns: str, the test output "test".

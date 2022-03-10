@@ -45,6 +45,8 @@ const mutation = gql`
         plantID: ID!
         deviceID: ID!
     ): Notification!
+
+    deleteNotification(id: ID!): Boolean!
 `;
 
 const subscription = gql`
@@ -91,8 +93,6 @@ const createNotification = async (
         ...(await notification.get(id)),
     };
 
-    console.log(snapshot)
-
     pubsub.publish(`notification-${deviceID}`, {
         notification: {
             mutation: "CREATED",
@@ -103,16 +103,25 @@ const createNotification = async (
     return snapshot;
 }
 
+const deleteNotification = async (
+    { id }: any
+): Promise<Boolean> => {
+    await notification.delete(id);
+
+    return true;
+};
+
 const subscribeNotifications = async (args: subscribeNotificationArgs, pubsub: PubSub) => {
     return pubsub.asyncIterator(`notification-${args.deviceID}`);
 };
 
 const queries = () => ({
-    vitals: (_, args) => getNotificationsByPlantID(args),
+    notification: (_, args) => getNotificationsByPlantID(args),
 });
 
 const mutations = (pubsub: PubSub) => ({
     createNotification: (_, args) => createNotification(args, pubsub),
+    deleteNotification: (_, args) => deleteNotification(args),
 });
 
 const subscriptions = (pubsub: PubSub) => ({

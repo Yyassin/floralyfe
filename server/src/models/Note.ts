@@ -20,7 +20,7 @@ const schemaType = gql`
         title: String!
         text: String!
         plantID: ID!
-        updateAt: Date!
+        updatedAt: Date!
     }
 `;
 
@@ -36,6 +36,8 @@ const mutation = gql`
         title: String
         text: String
     ): Boolean!
+
+    deleteNote(id: ID!): Boolean!
 `;
 
 const query = gql`
@@ -90,6 +92,14 @@ const updateNote = async (
     return true;
 }
 
+const deleteNote = async (
+    { id }: any
+): Promise<Boolean> => {
+    await note.delete(id);
+
+    return true;
+};
+
 const queries = () => ({
     notes: (_, args) => getNotesByPlantID(args),
 });
@@ -97,6 +107,7 @@ const queries = () => ({
 const mutations = () => ({
     createNote: (_, args) => createNote(args),
     updateNote: (_, args) => updateNote(args),
+    deleteNote: (_, args) => deleteNote(args),
 });
 
 export { 

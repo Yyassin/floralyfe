@@ -61,6 +61,8 @@ const mutation = gql`
         cameraAngle: Float
         optima: OptimaInput
     ): Boolean!
+
+    deletePlant(id: ID!): Boolean!
 `;
 
 const query = gql`
@@ -111,6 +113,14 @@ const updatePlant = async (
     return true;
 }
 
+const deletePlant = async (
+    { id }: any
+): Promise<Boolean> => {
+    await plant.delete(id);
+
+    return true;
+};
+
 const queries = () => ({
     plants: (_, args) => getPlantsByOwnerID(args),
 });
@@ -118,6 +128,7 @@ const queries = () => ({
 const mutations = () => ({
     createPlant: (_, args) => createPlant(args),
     updatePlant: (_, args) => updatePlant(args),
+    deletePlant: (_, args) => deletePlant(args),
 });
 
 export { 
