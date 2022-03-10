@@ -1,6 +1,7 @@
 import { PubSub } from "graphql-yoga";
 import { Collections, ID } from "./common";
 import FirestoreDocument from "./FirestoreDocument";
+import { DocumentData } from "@firebase/firestore-types";
 
 // Structure of plant sensor measurement vital
 interface IVital {
@@ -8,6 +9,8 @@ interface IVital {
     soilMoisture: number;
     temperature: number;
     airHumidity: number;
+    light: number;
+    greenGrowth: number;
     plantID: number;
     createdAt: string;
 }
@@ -16,15 +19,73 @@ type createVitalArgs = Omit<IVital, "id" | "createdAt"> & { deviceID: ID };
 type deleteVitalArgs = { id: ID; deviceID: ID };
 type subscribeVitalArgs = { deviceID: ID };
 
+const gql = String.raw;
+const schemaType = gql`
+    type Vital {
+        id: ID!
+        soilMoisture: Float!
+        temperature: Float!
+        airHumidity: Float!
+        light: Float!
+        greenGrowth: Float!
+        plantID: ID!
+        createdAt: Date!
+    }
+    
+    type VitalSubscriptionPayload {
+        mutation: String!
+        data: Vital!
+    }   
+`;
+
+const mutation = gql`
+    createVital(
+        soilMoisture: Float!
+        temperature: Float!
+        airHumidity: Float!
+        light: Float!
+        greenGrowth: Float!
+        plantID: ID!
+        deviceID: ID!
+    ): Vital!
+
+    updateVital(
+        id: ID!
+        soilMoisture: Float!
+        temperature: Float!
+        airHumidity: Float!
+        light: Float!
+        greenGrowth: Float!
+        plantID: ID!
+        deviceID: ID!
+    ): Boolean!
+    deleteVital(id: ID!, deviceID: ID!): Boolean!`;
+
+const subscription = gql`
+    vital(deviceID: ID!): VitalSubscriptionPayload!
+    `;
+const query = gql`
+    vitals(plantID: ID!): [Vital]
+    `;
+
 class Vital extends FirestoreDocument<IVital, createVitalArgs> {
     constructor() {
         super(Collections.VITALS);
     }
+
+    public async getByPlantID(plantID: string): Promise<IVital[]> {
+        const snapshot = await this.model.where("plantID", "==", plantID).get();
+        return snapshot.docs.map((doc: DocumentData) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+    }
 }
+
 const vital = new Vital();
 
-const getAllVitals = async () => {
-    return await vital.getAll();
+const getVitalsByPlantID = async (args: { plantID: string }) => {
+    return await vital.getByPlantID(args.plantID);
 };
 
 const createVital = async (
@@ -95,12 +156,11 @@ const updateVital = async (
 };
 
 const subscribeVitals = async (args: subscribeVitalArgs, pubsub: PubSub) => {
-    console.log("called", args);
     return pubsub.asyncIterator(`vital-${args.deviceID}`);
 };
 
 const queries = () => ({
-    vitals: () => getAllVitals(),
+    vitals: (_, args) => getVitalsByPlantID(args),
 });
 
 const mutations = (pubsub: PubSub) => ({
@@ -115,4 +175,14 @@ const subscriptions = (pubsub: PubSub) => ({
     },
 });
 
-export { queries, mutations, subscriptions, IVital, vital };
+export { 
+    queries, 
+    mutations, 
+    subscriptions, 
+    IVital, 
+    vital, 
+    schemaType, 
+    subscription, 
+    mutation,
+    query 
+};
