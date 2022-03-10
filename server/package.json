@@ -21,6 +21,7 @@
     "express": "^4.17.2",
     "firebase": "^9.6.7",
     "graphql-iso-date": "^3.6.1",
+    "graphql-type-json": "^0.3.2",
     "graphql-yoga": "^1.18.3",
     "http": "^0.0.1-security",
     "localtunnel": "^2.0.2",

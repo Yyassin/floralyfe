@@ -1,3 +1,13 @@
 import * as Vital from "./Vital";
+import * as User from "./User";
+import * as Note from "./Note";
+import * as Plant from "./Plant";
+import * as Notification from "./Notification";
 
-export { Vital };
+export { 
+    Vital,
+    User,
+    Note,
+    Plant,
+    Notification
+};

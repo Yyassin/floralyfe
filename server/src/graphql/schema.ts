@@ -1,47 +1,44 @@
+import { 
+    Vital, 
+    User,
+    Note,
+    Plant,
+    Notification
+} from "../models";
 const gql = String.raw;
+
+const models = [
+    Vital, User, Note, Plant, Notification
+];
+
+const streamedModels = [
+    Vital, Notification
+];
 
 const typeDefs = gql`
     scalar Date
+    scalar JSON
 
-    type Vital {
-        id: ID!
-        soilMoisture: Float!
-        temperature: Float!
-        airHumidity: Float!
-        plantID: ID!
-        createdAt: Date!
-    }
+    ${models.map(model => 
+        model.schemaType
+    )}
 
     type Query {
-        vitals: [Vital]
+        ${models.map(model => 
+            model.query
+        )}
     }
 
     type Mutation {
-        createVital(
-            soilMoisture: Float!
-            temperature: Float!
-            airHumidity: Float!
-            plantID: ID!
-            deviceID: ID!
-        ): Vital!
-        updateVital(
-            id: ID!
-            soilMoisture: Float!
-            temperature: Float!
-            airHumidity: Float!
-            plantID: ID!
-            deviceID: ID!
-        ): Boolean!
-        deleteVital(id: ID!, deviceID: ID!): Boolean!
+        ${models.map(model => 
+            model.mutation
+        )}
     }
 
     type Subscription {
-        vital(deviceID: ID!): VitalSubscriptionPayload!
-    }
-
-    type VitalSubscriptionPayload {
-        mutation: String!
-        data: Vital!
+        ${streamedModels.map(model => 
+            model.subscription
+        )}
     }
 `;
 
