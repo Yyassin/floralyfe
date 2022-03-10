@@ -4,6 +4,7 @@
  */
 
 import React, { useEffect, useRef, useState } from "react";
+import { validate } from "./validate";
 
 type Callback = (...args: any[]) => any;            // General function
 // Topic -> callback subscription list. Callbacks are
@@ -23,6 +24,8 @@ interface ISocket {
     readyState: boolean;                            // True if socket connected, false otherwise.
     addSubscription: (topic: string, callback: Callback) => void;   // Adds a subscription
 }
+
+const DEBUG = true;
 
 /**
  * Connects to the specified WebSocket and
@@ -75,6 +78,8 @@ export default function useWebSocket(
     const onMessage = (event: MessageEvent<any>) => {
         const msg = formatMessage(event.data);  // Parse the message
         setData(msg);
+
+        if (DEBUG) validate(msg, msg.topic);
 
         if (msg.topic) {
             subscriptions[msg.topic]?.forEach((callback) => {

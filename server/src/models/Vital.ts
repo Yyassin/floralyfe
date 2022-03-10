@@ -66,7 +66,7 @@ const subscription = gql`
     `;
 const query = gql`
     vitals(plantID: ID!): [Vital]
-    `;
+`;
 
 class Vital extends FirestoreDocument<IVital, createVitalArgs> {
     constructor() {
@@ -85,6 +85,7 @@ class Vital extends FirestoreDocument<IVital, createVitalArgs> {
 const vital = new Vital();
 
 const getVitalsByPlantID = async (args: { plantID: string }) => {
+    console.log(args.plantID)
     return await vital.getByPlantID(args.plantID);
 };
 
@@ -184,5 +185,6 @@ export {
     schemaType, 
     subscription, 
     mutation,
-    query 
+    query,
+    getVitalsByPlantID 
 };

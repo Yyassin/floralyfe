@@ -35,7 +35,9 @@ class IrrigationSystem(FloraNode):
             the task queue...
         """
         while True:
-            self.logger.debug(f"@Override: Got {self.task_queue.get()}")
+            msg = self.task_queue.get()
+            self.logger.debug(f"Got {msg}")
+            self.logger.warn(f"Activating water pump for {msg['payload']['wateringTimeout']} seconds")
 
     def main(self: "IrrigationSystem") -> None:
         pass

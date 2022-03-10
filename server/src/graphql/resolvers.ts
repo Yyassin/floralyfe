@@ -1,5 +1,4 @@
 import { PubSub } from "graphql-yoga";
-import { ID } from "../models/common";
 import { 
     Vital, 
     User,

@@ -27,8 +27,8 @@ const graphQLPort = Number(process.env.GRAPHQL_PORT) || 5001; // Default graphql
 
 // Map of subdomains to ports
 const tunnelConfig = {
-    "floralyfecore": expressPort, 
-    "floralyfegql": graphQLPort
+    "floralyfec": expressPort, 
+    "floralyfeg": graphQLPort
 };
 
 const server = http.createServer(app);

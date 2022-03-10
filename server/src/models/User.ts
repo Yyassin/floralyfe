@@ -64,6 +64,8 @@ const mutation = gql`
         subscribedNotifications: Boolean
         deviceID: String
     ): Boolean!
+
+    deleteUser(id: ID!): Boolean!
 `;
 
 const query = gql`
@@ -135,6 +137,14 @@ const updateUser = async (
     return true;
 }
 
+const deleteUser = async (
+    { id }: any
+): Promise<Boolean> => {
+    await user.delete(id);
+
+    return true;
+};
+
 const queries = () => ({
     users: (_, args) => getUserByUsername(args),
     signIn: (_, args) => signIn(args),
@@ -144,6 +154,7 @@ const queries = () => ({
 const mutations = () => ({
     createUser: (_, args) => createUser(args),
     updateUser: (_, args) => updateUser(args),
+    deleteUser: (_, args) => deleteUser(args),
 });
 
 export { 

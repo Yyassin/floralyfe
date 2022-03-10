@@ -125,7 +125,6 @@ def create_vital(variables: Dict[str, Any]) -> Dict[str, Any]:
                 $greenGrowth: Float!,
                 $plantID: ID!,
                 $deviceID: ID!) {
-
         createVital(soilMoisture: $soilMoisture,
                     temperature: $temperature,
                     airHumidity: $airHumidity,
@@ -158,7 +157,6 @@ def update_vital(variables: Dict[str, Any]) -> bool:
                             $greenGrowth: Float!,
                             $plantID: ID!,
                             $deviceID: ID!) {
-
         updateVital(id: $id,
                     soilMoisture: $soilMoisture,
                     temperature: $temperature,
@@ -224,7 +222,6 @@ def update_user(variables: Dict[str, Any]) -> bool:
                             $avatar: String!,
                             $subscribedNotifications: Boolean,
                             $deviceID: String){
-
         updateUser(id: $id,
                     firstName:$firstName,
                     lastName: $lastName,
@@ -300,7 +297,6 @@ def create_plant(variables: Dict[str, Any]) -> Dict[str, Any]:
                             $cameraAngle: Float!,
                             $optima: OptimaInput!,
                             $ownerID: ID!){
-
         createPlant(name: $name,
                     species: $species,
                     cameraAngle: $cameraAngle,
@@ -330,7 +326,6 @@ def update_plant(variables: Dict[str, Any]) -> bool:
                             $species: String!,
                             $cameraAngle: Float!,
                             $optima: OptimaInput!){
-
         updatePlant(id: $id,
                     name: $name,
                     species: $species,
