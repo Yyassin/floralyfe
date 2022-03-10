@@ -35,6 +35,7 @@ def view_user(username: str) -> Dict[str, Any]:
     user_query = """
     query view_user($username: String!){
         users(username: $username){
+            id
             firstName
             lastName
             username
@@ -82,7 +83,7 @@ def view_note(plantID: str) -> Dict[str, Any]:
             title
             text
             plantID
-            updateAt
+            updatedAt
         }
     }
     """
@@ -172,7 +173,12 @@ def update_vital(variables: Dict[str, Any]) -> bool:
     return get_gql_request(user_mutation, variables)
 
 
-def delete_vital(variables: Dict[str, Any]) -> bool:
+def delete_vital(id: str, deviceID: str) -> bool:
+    variables = {
+        "id": id,
+        "deviceID": deviceID
+    }
+
     user_mutation = """
     mutation delete_vital ($id: ID!, $deviceID: ID!) {
         deleteVital(id: $id, deviceID: $deviceID)
@@ -194,6 +200,7 @@ def create_user(variables: Dict[str, Any]) -> Dict[str, Any]:
                     username: $username,
                     email: $email,
                     password: $password){
+            id
             firstName
             lastName
             username
@@ -233,10 +240,25 @@ def update_user(variables: Dict[str, Any]) -> bool:
     return get_gql_request(user_mutation, variables)
 
 
+def delete_user(id: str) -> bool:
+    variables = {
+        "id": id
+    }
+
+    user_mutation = """
+    mutation delete_user($id: ID!){
+        deleteUser(id: $id)
+    }
+    """
+
+    return get_gql_request(user_mutation, variables)
+
+
 def create_note(variables: Dict[str, Any]) -> Dict[str, Any]:
     user_mutation = """
     mutation create_note ($title: String!, $text: String!, $plantID: String!){
         createNote(title: $title, text: $text, plantID: $plantID){
+            id
             title
             text
             plantID
@@ -257,6 +279,20 @@ def update_note(variables: Dict[str, Any]) -> bool:
     return get_gql_request(user_mutation, variables)
 
 
+def delete_note(id: str) -> bool:
+    variables = {
+        "id": id
+    }
+
+    user_mutation = """
+    mutation delete_note($id: ID!){
+        deleteNote(id: $id)
+    }
+    """
+
+    return get_gql_request(user_mutation, variables)
+
+
 def create_plant(variables: Dict[str, Any]) -> Dict[str, Any]:
     user_mutation = """
     mutation create_plant ($name: String!,
@@ -270,6 +306,7 @@ def create_plant(variables: Dict[str, Any]) -> Dict[str, Any]:
                     cameraAngle: $cameraAngle,
                     optima: $optima,
                     ownerID: $ownerID){
+            id
             name
             species
             cameraAngle
@@ -299,6 +336,74 @@ def update_plant(variables: Dict[str, Any]) -> bool:
                     species: $species,
                     cameraAngle: $cameraAngle,
                     optima: $optima)
+    }
+    """
+
+    return get_gql_request(user_mutation, variables)
+
+
+def delete_plant(id: str) -> bool:
+    variables = {
+        "id": id
+    }
+
+    user_mutation = """
+    mutation delete_plant($id: ID!){
+        deletePlant(id: $id)
+    }
+    """
+
+    return get_gql_request(user_mutation, variables)
+
+
+def view_notification(plantID: str) -> Dict[str, Any]:
+    variables = {
+        "plantID": plantID
+    }
+
+    user_query = """
+    query view_notification($plantID: ID!){
+        notification(plantID: $plantID){
+            id
+            label
+            type
+            plantID
+        }
+    }
+    """
+
+    return get_gql_request(user_query, variables)
+
+
+def create_notification(variables: Dict[str, Any]) -> Dict[str, Any]:
+    user_mutation = """
+    mutation create_notification($label: String!,
+                                    $type: String!,
+                                    $plantID: ID!,
+                                    $deviceID: ID!){
+        createNotification(label: $label,
+                            type: $type,
+                            plantID: $plantID,
+                            deviceID: $deviceID){
+            id
+            label
+            type
+            plantID
+        }
+    }
+    """
+
+    return get_gql_request(user_mutation, variables)
+
+
+def delete_notification(id: str) -> bool:
+    variables = {
+        "id": id
+    }
+
+    user_mutation = """
+    mutation delete_notification($id: ID!){
+        deleteNotification(id: $id)
     }
     """
 
