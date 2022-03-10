@@ -3,6 +3,7 @@ from ws import WSReceiver
 from typing import Dict, Any
 from util.Logger import Logger
 import time
+import config
 
 test_vital = {
     "soilMoisture": 14.2,
@@ -16,7 +17,7 @@ test_vital = {
 
 test_vital_msg = {
     "topic": "vitals-topic",
-    "deviceID": "yousef-device",
+    "deviceID": config.DEVICE_ID,
     "payload": {
         "vital": test_vital
     }
@@ -25,11 +26,9 @@ test_vital_msg = {
 logger = Logger("WS Sender")
 
 if __name__ == "__main__":
-    USER_ID = "yousef"                             # placeholder, subscribe to messages sent to "hello"
-    SOCKET = "wss://floralyfecore.loca.lt"
     queues = {}                                    # type: Dict[Any, Any]
 
-    ws_receiver = WSReceiver(queues, SOCKET, USER_ID, False)
+    ws_receiver = WSReceiver(queues, config.WS_URL, config.USER_ID, False)
     ws_receiver.run()
 
     time.sleep(2)

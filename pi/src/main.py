@@ -13,12 +13,11 @@ from camera_system import CameraSystem
 from irrigation_system import IrrigationSystem
 from vital_system import VitalSystem
 from ws import WSReceiver
+import config
 
 
 def main() -> None:
     TEST = True
-    USER_ID = "yousef"                             # placeholder, subscribe to messages sent to "hello"
-    SOCKET = "wss://floralyfecore.loca.lt"
     # Creates shared worker queues
     camera_task_queue = Queue()             # type: Queue[Any]
     irrigation_task_queue = Queue()         # type: Queue[Any]
@@ -36,7 +35,7 @@ def main() -> None:
     camera_system = CameraSystem.CameraSystem(camera_task_queue)                    # Camera Monitoring Subsystem
     irrigation_system = IrrigationSystem.IrrigationSystem(irrigation_task_queue)    # Irrigation Subsystem
     vital_system = VitalSystem.VitalSystem(vitals_task_queue)                  # Irrigation Subsystem
-    ws_receiver = WSReceiver(queues, SOCKET, USER_ID, TEST)                             # WebSocket Receiver
+    ws_receiver = WSReceiver(queues, config.WS_URL, config.USER_ID, TEST)                             # WebSocket Receiver
 
     # Start the system nodes
     try:

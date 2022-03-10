@@ -1,3 +1,4 @@
+import sys
 import graphql_requests
 
 
@@ -42,6 +43,20 @@ expected_notification = {
     "type": "noti",
     "plantID": "plant",
     "deviceID": "yousef-device"
+}
+
+expected_frontend_note = {
+    "title": "frontend-title",
+    "text": "frontend-text",
+    "plantID": "frontend-id"
+}
+
+expected_frontend_user = {
+    "firstName": "frontend-fN",
+    "lastName": "frontend-lN",
+    "username": "u-frontend",
+    "email": "frontend@f.com",
+    "password": "frontend"
 }
 
 
@@ -94,6 +109,18 @@ def test_view_user() -> None:
     # graphql_requests.delete_user(actual_user["id"])
 
 
+def test_view_frontend_user() -> None:
+    actual_user = graphql_requests.view_user(expected_frontend_user["username"])
+    assert "users" in actual_user
+    actual_user = actual_user["users"][0]
+
+    for key in expected_frontend_user:
+        assert (expected_frontend_user[key] == actual_user[key]), graphql_requests.delete_user(actual_user["id"])
+
+    print("Test Passed: View Frontend User")
+    # graphql_requests.delete_user(actual_user["id"])
+
+
 def test_create_notes() -> None:
     actual_note = graphql_requests.create_note(expected_note)
     assert "createNote" in actual_note
@@ -114,6 +141,19 @@ def test_view_notes() -> None:
     for key in expected_note:
         if (key != "plantID"):
             assert (expected_note[key] == actual_note[key]), graphql_requests.delete_note(actual_note["id"])
+
+    print("Test Passed: View Notes")
+    # graphql_requests.delete_note(actual_note["id"])
+
+
+def test_view_frontend_notes() -> None:
+    actual_note = graphql_requests.view_note(expected_frontend_note["plantID"])
+    assert "notes" in actual_note
+    actual_note = actual_note["notes"][0]
+
+    for key in expected_frontend_note:
+        if (key != "plantID"):
+            assert (expected_frontend_note[key] == actual_note[key]), graphql_requests.delete_note(actual_note["id"])
 
     print("Test Passed: View Notes")
     # graphql_requests.delete_note(actual_note["id"])
@@ -185,6 +225,13 @@ def run_view_tests() -> None:
     test_view_notification()
 
 
+def run_view_frontend_tests() -> None:
+    test_view_frontend_notes()
+    test_view_frontend_user()
+
+
 if __name__ == "__main__":
-    run_create_tests()
-    run_view_tests()
+    tests = {"f": run_view_frontend_tests, "c": run_create_tests, "v": run_view_tests}
+
+    for command in sys.argv[1:]:
+        tests[command]()
