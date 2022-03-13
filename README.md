@@ -9,7 +9,7 @@
 [![pi](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/actions/workflows/pi.yml/badge.svg)](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/actions?query=workflow%3Api+tests)
 [![node](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/actions/workflows/node.yml/badge.svg)](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/actions?query=workflow%3Anode+tests)
 
-> A dsitributed remote plant monitoring and irrigation system. 
+> A distributed remote plant monitoring and irrigation system. 
 
 > Created By: Abdalla, Yousef, Zakariyya
 

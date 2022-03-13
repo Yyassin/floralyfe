@@ -2,7 +2,7 @@
 
 import config
 from typing import Dict, Any, cast
-import requests  # type: ignore
+import requests
 import pprint
 
 
