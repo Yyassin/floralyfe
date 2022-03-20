@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Dict
 from gpiozero import Device
 from gpiozero.pins.mock import MockFactory
 
@@ -80,7 +80,7 @@ class Servo:
         pass
 
 
-def get_mock_pins() -> dict[str, Any]:
+def get_mock_pins() -> Dict[str, Any]:
     global gpios
     Device.pin_factory = MockFactory()
     mock_factory = Device.pin_factory

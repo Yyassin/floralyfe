@@ -6,7 +6,7 @@ Camera Monitoring Subsystem Controller API
 
 __author__ = "yousef"
 
-from typing import Any, Callable, Union, cast
+from typing import Any, Dict, Callable, Union, cast
 from time import sleep
 from queue import Queue
 from flora_node.FloraNode import FloraNode
@@ -123,8 +123,8 @@ class VitalSystem(FloraNode):
         """
         super().__init__(task_queue, sensors, name)
         self.state = VitalStates.IDLE
-        self.vitals: dict[str, Any] = {}
-        self.optima: dict[str, bool] = {}
+        self.vitals: Dict[str, Any] = {}
+        self.optima: Dict[str, bool] = {}
         self.client_msg: Any = None
         self.optima_to_icon_enum = {
             "temperature": SenseIcon.THERMOMETER,
@@ -251,7 +251,7 @@ class VitalSystem(FloraNode):
             VitalStates.PUBLISH_VITAL: self.publish_vital,
             VitalStates.SET_SENSE_ICON: self.set_sense_icon
         }
-        stateOperation = cast(dict[VitalStates, Callable[..., Any]], stateOperation)
+        stateOperation = cast(Dict[VitalStates, Callable[..., Any]], stateOperation)
 
         def default() -> None:
             self.state = VitalStates.IDLE

@@ -1,4 +1,4 @@
-from typing import Any, Dict, Union, cast
+from typing import Any, Dict, Tuple, Union, cast
 from camera_system.camera_util import PI_capture
 from util.Singleton import Singleton
 from util.util import IS_RPI
@@ -63,5 +63,5 @@ class Sensors(Singleton):
     def turn_servo(self: "Sensors", angle: float) -> None:
         self.servo.angle = angle
 
-    def capture_image(self: "Sensors", dim: tuple[int, int, int] = (240, 320, 3)) -> Any:
+    def capture_image(self: "Sensors", dim: Tuple[int, int, int] = (240, 320, 3)) -> Any:
         return PI_capture(self.camera, dim)[0]
