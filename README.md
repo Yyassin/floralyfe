@@ -40,7 +40,8 @@ Proceed to the `/pi` directory and execute the following commands depending on y
 4. Ensure you've entered the environment (there will be a (env) prefix before your working directory). If you're not in the director, see step 5. Install all dependencies using `source scripts/install.sh`.
 5. If the virtual environment is already installed, run `source scripts/run.sh` to enter it. The command `source scripts/exit.sh` is used to exit the environment. 
 
-**Note:** The location of all script files is under `pi/` and they must be referenced accordingly. This means you should always call `scripts/script.*` rather than moving within the `scripts/` directory and calling a script directly.
+**Note1:** By default, you will not be able to interface with the SenseHat. Follow [these instructions](https://github.com/astro-pi/python-sense-hat/issues/58#issuecomment-374414765) to resolve this issue.
+**Note2:** The location of all script files is under `pi/` and they must be referenced accordingly. This means you should always call `scripts/script.*` rather than moving within the `scripts/` directory and calling a script directly.
 
 Once the environment and dependencies have been setup. Navigate to `src/` and execute the entrypoint `python main.py` to run the pi instance. Refer to the notes below for additional development details.
 
