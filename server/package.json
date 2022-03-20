@@ -16,6 +16,7 @@
     "@types/firebase": "^3.2.1",
     "axios": "^0.26.0",
     "body-parser": "^1.19.2",
+    "chalk": "^4.1.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
@@ -25,7 +26,9 @@
     "graphql-yoga": "^1.18.3",
     "http": "^0.0.1-security",
     "localtunnel": "^2.0.2",
+    "nodemailer": "^6.7.2",
     "superwstest": "^2.0.1",
+    "uninstall": "^0.0.0",
     "uuid": "^8.3.2",
     "ws": "^8.4.2"
   },
