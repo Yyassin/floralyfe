@@ -6,7 +6,7 @@ import requests
 import pprint
 
 
-def run_gql_request(query: str, variables: Dict[str, Any], path: str) -> Any:
+def run_gql_request(query: str, variables: Dict[str, Any], path: str) -> Dict[str, Any]:
 
     json = cast(Dict[str, Any], dict({'query': query}))
     if variables:
@@ -14,17 +14,17 @@ def run_gql_request(query: str, variables: Dict[str, Any], path: str) -> Any:
 
     response = requests.post(path, json=json)
     if response.status_code == 200:
-        return response.json()
+        return cast(Dict[str, Any], response.json())    # All GQL responses are json (python dictionaries)
     else:
         raise Exception("Query failed to run: {} - {}".format(response.status_code, response.json()))
 
 
-def get_gql_request(user_query: str, variables: Dict[str, Any]) -> Any:
+def get_gql_request(user_query: str, variables: Dict[str, Any]) -> Dict[str, Any]:
     user_data = run_gql_request(user_query, variables, config.GRAPHQL_URL)
 
     pprint.pprint(user_data["data"])
 
-    return user_data["data"]
+    return cast(Dict[str, Any], user_data["data"])      # A user's data is another json (python dictionary)
 
 
 def view_user(username: str) -> Dict[str, Any]:
@@ -147,7 +147,7 @@ def create_vital(variables: Dict[str, Any]) -> Dict[str, Any]:
     return get_gql_request(user_mutation, variables)
 
 
-def update_vital(variables: Dict[str, Any]) -> bool:
+def update_vital(variables: Dict[str, Any]) -> Dict[str, bool]:
     user_mutation = """
     mutation update_vital ($id: ID!,
                             $soilMoisture: Float!,
@@ -171,7 +171,7 @@ def update_vital(variables: Dict[str, Any]) -> bool:
     return get_gql_request(user_mutation, variables)
 
 
-def delete_vital(id: str, deviceID: str) -> bool:
+def delete_vital(id: str, deviceID: str) -> Dict[str, bool]:
     variables = {
         "id": id,
         "deviceID": deviceID
@@ -211,7 +211,7 @@ def create_user(variables: Dict[str, Any]) -> Dict[str, Any]:
     return get_gql_request(user_mutation, variables)
 
 
-def update_user(variables: Dict[str, Any]) -> bool:
+def update_user(variables: Dict[str, Any]) -> Dict[str, bool]:
     user_mutation = """
     mutation update_user ($id: ID!,
                             $firstName: String!,
@@ -237,7 +237,7 @@ def update_user(variables: Dict[str, Any]) -> bool:
     return get_gql_request(user_mutation, variables)
 
 
-def delete_user(id: str) -> bool:
+def delete_user(id: str) -> Dict[str, bool]:
     variables = {
         "id": id
     }
@@ -266,7 +266,7 @@ def create_note(variables: Dict[str, Any]) -> Dict[str, Any]:
     return get_gql_request(user_mutation, variables)
 
 
-def update_note(variables: Dict[str, Any]) -> bool:
+def update_note(variables: Dict[str, Any]) -> Dict[str, bool]:
     user_mutation = """
     mutation update_note ($id: ID!, $title: String, $text: String!){
         updateNote(id: $id, title: $title, text: $text)
@@ -276,7 +276,7 @@ def update_note(variables: Dict[str, Any]) -> bool:
     return get_gql_request(user_mutation, variables)
 
 
-def delete_note(id: str) -> bool:
+def delete_note(id: str) -> Dict[str, bool]:
     variables = {
         "id": id
     }
@@ -319,7 +319,7 @@ def create_plant(variables: Dict[str, Any]) -> Dict[str, Any]:
     return get_gql_request(user_mutation, variables)
 
 
-def update_plant(variables: Dict[str, Any]) -> bool:
+def update_plant(variables: Dict[str, Any]) -> Dict[str, bool]:
     user_mutation = """
     mutation update_plant ($id: ID!,
                             $name: String!,
@@ -337,7 +337,7 @@ def update_plant(variables: Dict[str, Any]) -> bool:
     return get_gql_request(user_mutation, variables)
 
 
-def delete_plant(id: str) -> bool:
+def delete_plant(id: str) -> Dict[str, bool]:
     variables = {
         "id": id
     }
@@ -391,7 +391,7 @@ def create_notification(variables: Dict[str, Any]) -> Dict[str, Any]:
     return get_gql_request(user_mutation, variables)
 
 
-def delete_notification(id: str) -> bool:
+def delete_notification(id: str) -> Dict[str, bool]:
     variables = {
         "id": id
     }
