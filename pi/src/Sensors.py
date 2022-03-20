@@ -3,8 +3,15 @@ from camera_system.camera_util import PI_capture
 from util.Singleton import Singleton
 from util.util import IS_RPI
 if IS_RPI:
-    from sense_hat import SenseHat
-    from picamera import PiCamera
+    try:
+        from sense_hat import SenseHat
+        from picamera import PiCamera
+    except ImportError:
+        pass
+else:
+    from config.get_mock_pins import SenseHat
+    from config.get_mock_pins import PiCamera
+
 from gpiozero import GPIODevice, DigitalOutputDevice, PWMOutputDevice, AngularServo
 
 # sensehat, moisture
