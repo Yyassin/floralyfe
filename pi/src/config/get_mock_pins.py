@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, List
 from gpiozero import Device
 from gpiozero.pins.mock import MockFactory
 
@@ -16,10 +16,10 @@ class SenseHat():
     def get_humidity(self: "SenseHat") -> float:
         return 22.42
 
-    def get_pixels(self: "SenseHat") -> list[list[int]]:
+    def get_pixels(self: "SenseHat") -> List[List[int]]:
         return self.matrix
 
-    def set_pixels(self: "SenseHat", pixels: list[list[int]]) -> None:
+    def set_pixels(self: "SenseHat", pixels: List[List[int]]) -> None:
         self.matrix = pixels
 
     def clear(self: "SenseHat") -> None:
@@ -41,7 +41,7 @@ class PiCamera():
         return self.is_closed
 
 
-gpios: list[Any] = []
+gpios: List[Any] = []
 
 
 class AnalogPin:

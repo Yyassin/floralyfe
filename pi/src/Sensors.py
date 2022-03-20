@@ -1,4 +1,4 @@
-from typing import Any, Dict, Tuple, Union, cast
+from typing import Any, Dict, Tuple, List, Union, cast
 from camera_system.camera_util import PI_capture
 from util.Singleton import Singleton
 from util.util import IS_RPI
@@ -43,7 +43,7 @@ class Sensors(Singleton):
     def get_humidity(self: "Sensors") -> float:
         return cast(float, self.sense.get_humidity())
 
-    def set_sense_mat(self: "Sensors", mat: list[list[int]]) -> None:
+    def set_sense_mat(self: "Sensors", mat: List[List[int]]) -> None:
         self.sense.set_pixels(mat)
 
     def get_water_level(self: "Sensors") -> float:
