@@ -1,15 +1,14 @@
 import { Box } from "@chakra-ui/react";
-import Test from "lib/components/layout/Test";
+import HomePage from "lib/components/layout/Home/Home";
 
 import CTASection from "lib/components/samples/CTASection";
 import SomeImage from "lib/components/samples/SomeImage";
 import SomeText from "lib/components/samples/SomeText";
-import WebSocketWrapper from "lib/components/util/WebSocketWrapper";
 
 const Home = () => {
   return (
     <Box>
-      <Test/>
+      <HomePage/>
       {/* <SomeImage />
 
       <Box>
