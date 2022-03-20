@@ -63,6 +63,7 @@ Once the environment and dependencies have been setup. Navigate to `src/` and ex
     scipy==1.5.4
     pkg_resources==0.0.0        # remove this
     picamera==1.13              # remove this
+    RTIMULib==7.2.1             # remove this
     ```
 
 ### server
