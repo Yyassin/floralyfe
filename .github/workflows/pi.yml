@@ -46,4 +46,4 @@ jobs:
 
       - name: Run tests with pytest-mocha
         working-directory: ./pi/src
-        run: pytest -v --mocha test/
+        run: pytest --mocha test/ --ignore=test/test_hardware

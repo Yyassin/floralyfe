@@ -3,7 +3,7 @@ from ws import WSReceiver
 from typing import Dict, Any
 from util.Logger import Logger
 import time
-import config
+import pi.src.config.config as config
 
 test_vital = {
     "soilMoisture": 14.2,

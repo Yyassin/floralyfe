@@ -16,6 +16,10 @@ from util import Logger, Singleton
 from validate_message import validate_message
 
 
+class WSClient(Singleton.Singleton):
+    pass
+
+
 class WSReceiver(Singleton.Singleton):
     """
         WebSocket Receiver API

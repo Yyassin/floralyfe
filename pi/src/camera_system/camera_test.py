@@ -22,7 +22,7 @@ if IS_RPI:
     from picamera import PiCamera
 
 
-url = "ws://localhost:5000"     # The local websocket url
+url = "wss://floralyfec.loca.lt/"   # The local websocket url
 logger = Logger("Camera Image Test")
 
 
@@ -52,19 +52,19 @@ def on_open(ws: Any) -> None:
     try:
         while (True):
             data = PI_capture(cam) if IS_RPI else WIN_capture(cam)
-
-            msg = {                                                     # Create the socket message
+            byte_data = data[1]                                              # Extract byte array
+            msg = {                                                          # Create the socket message
                 "topic": CAMERA_TOPIC,
                 "userID": userID,
                 "payload": {
-                    "encoded": data.decode("ascii")
+                    "encoded": byte_data.decode("ascii")
                 }
             }
 
             # print(msg)
             logger.debug("Sent Image Frame")
 
-            ws.send(json.dumps(msg, indent=4))          # Create json from msg dictionary and send it
+            ws.send(json.dumps(msg, indent=4))                          # Create json from msg dictionary and send it
             time.sleep(1)
 
             if 0xFF == ord('q'):
