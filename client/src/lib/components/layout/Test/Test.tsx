@@ -3,8 +3,8 @@ import { Button } from "@chakra-ui/react";
 import { config, topics } from "lib/config";
 import { useStore } from "lib/store/store";
 import { useEffect } from "react";
-import useWebSocket from "../hooks/useWebSocket";
-import { deepLog, validate } from "../hooks/validate";
+import useWebSocket from "../../hooks/useWebSocket";
+import { deepLog, validate } from "../../hooks/validate";
 import { CREATE_NOTE, CREATE_USER, GET_NOTE, GET_NOTIFICATION, GET_NOTIFICATION_STRING, GET_PLANT, GET_USER, GET_VITALS, GET_VITALS_STRING, NOTIFICATIONS_SUBCRIPTION, VITALS_SUBCRIPTION } from "./query";
 import { queryHelper } from "./queryHelper";
 
