@@ -7,12 +7,17 @@
 """
 
 from irrigation_system.IrrigationSystem import IrrigationSystem
+from irrigation_system.Irrigation_simulation import main
 
 
-def main() -> None:
+def test_IrregationSystem() -> None:
     irrigation = IrrigationSystem(None)    # type: ignore
     irrigation.test_function()
 
 
-if __name__ == "__main__":
+def test_simulation() -> None:
     main()
+
+
+if __name__ == "__main__":
+    test_simulation()

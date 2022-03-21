@@ -1,6 +1,6 @@
 from tkgpio import TkCircuit
 from time import sleep
-from Irrigation_Subsystem import IrregationSubsystem
+from irrigation_system.Irrigation_Subsystem import IrregationSubsystem
 from gpiozero import LED, LightSensor
 
 configuration = {
@@ -34,5 +34,5 @@ def main() -> None:
         sleep(0.1)
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#    main()

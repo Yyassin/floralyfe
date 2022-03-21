@@ -1,6 +1,9 @@
 from typing import Any
 from enum import Enum
 from time import sleep
+from util.Logger import Logger
+
+logger = Logger("Irregation Subsystem")
 
 
 class IrregationStates(Enum):
@@ -30,14 +33,14 @@ class IrregationSubsystem:
         self.state = IrregationStates.IDLE
 
     def idle(self) -> None:
-        print("[state] IDLE")
+        logger.debug("State: IDLE")
 
         sleep(5)
 
         self.state = IrregationStates.CHECK_MOISTURE
 
     def check_moisture(self) -> None:
-        print("[state] CHECK_MOISTURE")
+        logger.debug("State: CHECK_MOISTURE")
 
         if (self.moisture_sensor.value < self.threshold):
             self.state = IrregationStates.CHECK_WATER_LEVEL
@@ -45,7 +48,7 @@ class IrregationSubsystem:
             self.setState_IDLE()
 
     def check_water_level(self) -> None:
-        print("[state] CHECK_WATER_LEVEL")
+        logger.debug("State: CHECK_WATER_LEVEL")
 
         if (self.water_sensor.value < self.threshold):
             self.state = IrregationStates.NOTIFY_USER
@@ -53,25 +56,28 @@ class IrregationSubsystem:
             self.state = IrregationStates.WATER_PLANT
 
     def water_plant(self) -> None:
-        print("[state] WATER_PLANT")
+        logger.debug("State: WATER_PLANT")
 
         self.pump.toggle()
+        logger.debug("Pump on")
         sleep(3)
+        logger.debug("Pump off")
         self.pump.toggle()
 
         self.state = IrregationStates.WAIT
 
     def wait(self) -> None:
-        print("[state] WAIT")
+        logger.debug("State: WAIT")
 
         sleep(1)
 
         self.state = IrregationStates.CHECK_MOISTURE
 
     def notify_user(self) -> None:
-        print("[state] NOTIFY_USER")
+        logger.debug("State: NOTIFY_USER")
 
         self.notify.toggle()
+        logger.debug("Email Sent")
         sleep(1)
         self.notify.toggle()
 
