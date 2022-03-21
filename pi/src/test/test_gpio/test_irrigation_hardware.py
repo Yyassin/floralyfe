@@ -1,4 +1,3 @@
-from ast import Assert
 import busio
 import digitalio
 import board
@@ -19,7 +18,7 @@ def test_moisture_water() -> None:
     print('Raw ADC Value: ', chan0.value)
     print('ADC Voltage: ' + str(chan0.voltage) + 'V')
 
-    Assert(chan0.value < 10)
+    assert(chan0.voltage < 1)
 
 
 def test_moisture_dry() -> None:
@@ -33,7 +32,7 @@ def test_moisture_dry() -> None:
     print('Raw ADC Value: ', chan0.value)
     print('ADC Voltage: ' + str(chan0.voltage) + 'V')
 
-    Assert(chan0.value > 10)
+    assert(chan0.voltage > 1)
 
 
 def test_waterLevel_water() -> None:
@@ -47,7 +46,7 @@ def test_waterLevel_water() -> None:
     print('Raw ADC Value: ', chan0.value)
     print('ADC Voltage: ' + str(chan0.voltage) + 'V')
 
-    Assert(chan0.value > 10)
+    assert(chan0.voltage > 1)
 
 
 def test_waterLevel_dry() -> None:
@@ -61,7 +60,7 @@ def test_waterLevel_dry() -> None:
     print('Raw ADC Value: ', chan0.value)
     print('ADC Voltage: ' + str(chan0.voltage) + 'V')
 
-    Assert(chan0.value < 10)
+    assert(chan0.voltage < 1)
 
 
 def test_transistor() -> None:
@@ -74,3 +73,7 @@ def test_transistor() -> None:
     GPIO.output(17, GPIO.HIGH)
     sleep(3)
     GPIO.output(17, GPIO.LOW)
+
+
+if __name__ == "__main__":
+    test_moisture_water()
