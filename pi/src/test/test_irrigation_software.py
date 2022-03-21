@@ -1,4 +1,4 @@
-from pi.src.gpiozero_mocks.Irrigation_Subsytem import IrregationSubsystem, IrregationStates
+from irrigation_system.Irrigation_Subsystem import IrregationSubsystem, IrregationStates
 from gpiozero import LED
 from tkgpio import TkCircuit
 

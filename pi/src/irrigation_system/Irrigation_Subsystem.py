@@ -32,7 +32,7 @@ class IrregationSubsystem:
     def idle(self) -> None:
         print("[state] IDLE")
 
-        sleep(2)
+        sleep(5)
 
         self.state = IrregationStates.CHECK_MOISTURE
 
