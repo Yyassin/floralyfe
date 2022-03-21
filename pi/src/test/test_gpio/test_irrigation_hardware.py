@@ -19,6 +19,7 @@ def test_moisture_water() -> None:
     print('ADC Voltage: ' + str(chan0.voltage) + 'V')
 
     assert(chan0.voltage < 1)
+    print("Test Passed")
 
 
 def test_moisture_dry() -> None:
@@ -33,6 +34,7 @@ def test_moisture_dry() -> None:
     print('ADC Voltage: ' + str(chan0.voltage) + 'V')
 
     assert(chan0.voltage > 1)
+    print("Test Passed")
 
 
 def test_waterLevel_water() -> None:
@@ -47,6 +49,7 @@ def test_waterLevel_water() -> None:
     print('ADC Voltage: ' + str(chan0.voltage) + 'V')
 
     assert(chan0.voltage > 1)
+    print("Test Passed")
 
 
 def test_waterLevel_dry() -> None:
@@ -61,6 +64,7 @@ def test_waterLevel_dry() -> None:
     print('ADC Voltage: ' + str(chan0.voltage) + 'V')
 
     assert(chan0.voltage < 1)
+    print("Test Passed")
 
 
 def test_transistor() -> None:
