@@ -1,4 +1,4 @@
-from gpiozero import LED, LightSensor
+from typing import Any
 from enum import Enum
 from time import sleep
 
@@ -14,11 +14,11 @@ class IrregationStates(Enum):
 
 class IrregationSubsystem:
 
-    def __init__(self, moisture_pin: int, water_pin: int, pump_pin: int, notify_pin: int, threshold: float) -> None:
-        self.moisture_sensor = LightSensor(moisture_pin)
-        self.water_sensor = LightSensor(water_pin)
-        self.pump = LED(pump_pin)
-        self.notify = LED(notify_pin)
+    def __init__(self, moisture_pin: Any, water_pin: Any, pump_pin: Any, notify_pin: Any, threshold: float) -> None:
+        self.moisture_sensor = moisture_pin
+        self.water_sensor = water_pin
+        self.pump = pump_pin
+        self.notify = notify_pin
         self.threshold = threshold
 
         self.state = IrregationStates.IDLE

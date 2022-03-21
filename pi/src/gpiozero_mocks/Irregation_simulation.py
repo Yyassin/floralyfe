@@ -1,6 +1,7 @@
 from tkgpio import TkCircuit
 from time import sleep
 from Irregation_Subsytem import IrregationSubsystem
+from gpiozero import LED, LightSensor
 
 configuration = {
     "width": 500,
@@ -21,7 +22,12 @@ circuit = TkCircuit(configuration)
 
 @circuit.run  # type: ignore
 def main() -> None:
-    irregation = IrregationSubsystem(8, 9, 21, 22, 0.5)
+    moisture_sensor = LightSensor(8)
+    water_sensor = LightSensor(9)
+    pump = LED(21)
+    notify = LED(22)
+
+    irregation = IrregationSubsystem(moisture_sensor, water_sensor, pump, notify, 0.5)
 
     while True:
         irregation.execute()
