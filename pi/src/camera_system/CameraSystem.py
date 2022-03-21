@@ -9,6 +9,7 @@ __author__ = "yousef"
 from typing import Any, Union
 from queue import Queue
 from flora_node.FloraNode import FloraNode
+from Sensors import Sensors
 
 
 class CameraSystem(FloraNode):
@@ -17,7 +18,7 @@ class CameraSystem(FloraNode):
         the RPi camera and servo to...
     """
 
-    def __init__(self: "CameraSystem", task_queue: "Queue[Any]", name: Union[str, None] = None) -> None:
+    def __init__(self: "CameraSystem", task_queue: "Queue[Any]", sensors: Sensors, name: Union[str, None] = None) -> None:
         """
             Initializes the Camera System.
 
@@ -27,7 +28,7 @@ class CameraSystem(FloraNode):
             >>> camera = CameraSystem()
             >>> camera.run()
         """
-        super().__init__(task_queue, name)
+        super().__init__(task_queue, sensors, name)
 
     def worker(self: "CameraSystem") -> None:
         """

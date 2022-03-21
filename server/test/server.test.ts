@@ -8,9 +8,9 @@ const socket = superwstest(`ws://localhost:${expressPort}`);
 
 describe("/test endpoint", () => {
     it("should return a response", async () => {
-        const response = await request.get("/");
+        const response = await request.get("/test");
         expect(response.status).to.eq(200);
-        expect(response.text).eq("Hello world!");
+        expect(response.text).eq("Test passed!");
     });
 
     it("communicates via websockets", async () => {

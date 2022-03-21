@@ -9,11 +9,19 @@ __author__ = "yousef"
 import sys
 from typing import Any
 from queue import Queue
+from Sensors import Sensors
+# from util.util import IS_RPI
+# if IS_RPI:
+#     from sense_hat import SenseHat
+#     from picamera import PiCamera
+# from gpiozero import DigitalOutputDevice, GPIODevice, Servo
+
 from camera_system import CameraSystem
 from irrigation_system import IrrigationSystem
 from vital_system import VitalSystem
 from ws import WSReceiver
-import config
+import config.config as config
+import config.io_config as io
 
 
 def main() -> None:
@@ -32,10 +40,11 @@ def main() -> None:
     }
 
     # Instantiate modules
-    camera_system = CameraSystem.CameraSystem(camera_task_queue)                    # Camera Monitoring Subsystem
-    irrigation_system = IrrigationSystem.IrrigationSystem(irrigation_task_queue)    # Irrigation Subsystem
-    vital_system = VitalSystem.VitalSystem(vitals_task_queue)                  # Irrigation Subsystem
-    ws_receiver = WSReceiver(queues, config.WS_URL, config.USER_ID, TEST)                             # WebSocket Receiver
+    sensors = Sensors(io.pins)
+    camera_system = CameraSystem.CameraSystem(camera_task_queue, sensors)                    # Camera Monitoring Subsystem
+    irrigation_system = IrrigationSystem.IrrigationSystem(irrigation_task_queue, sensors)    # Irrigation Subsystem
+    vital_system = VitalSystem.VitalSystem(vitals_task_queue, sensors)                       # Irrigation Subsystem
+    ws_receiver = WSReceiver(queues, config.WS_URL, config.USER_ID, TEST)                    # WebSocket Receiver
 
     # Start the system nodes
     try:

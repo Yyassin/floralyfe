@@ -1,9 +1,10 @@
 /**
- * Creates an express HTTP server and
- * WebSocket.
+ * Creates an express HTTP server which hosts
+ * WebSocket and GraphQL servers.
  * @author yousef
  */
 
+// Load env variables.
 require("dotenv").config();
 
 import express from "express";
@@ -13,14 +14,18 @@ import cors from "cors";
 import localtunnel, { Tunnel } from "localtunnel"
 import { setupWebSocket } from "./setupWebSocket";
 import { gqlServer } from "./graphql";
-import { debug } from "./util";
+import { debug, logError } from "./util";
+import notificationRoutes from "./notification/notification.route";
 
 // Create the express instance
 const app = express();
 
-app.use(express.json()); // parse application/json
-app.use(bodyParser.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
-app.use(cors()); // allow cross-origin
+app.use(express.json());                                // parse application/json
+app.use(bodyParser.urlencoded({ extended: false }));    // parse application/x-www-form-urlencoded
+app.use(cors());                                        // allow cross-origin
+
+// Link routes
+app.use("/notification", notificationRoutes);
 
 const expressPort = Number(process.env.EXPRESS_PORT) || 5000; // Default express server port
 const graphQLPort = Number(process.env.GRAPHQL_PORT) || 5001; // Default graphql server port
@@ -34,8 +39,8 @@ const tunnelConfig = {
 const server = http.createServer(app);
 
 // Define a route handler for the default home page
-app.get("/", (req, res) => {
-    res.status(200).send("Hello world!");
+app.get("/test", (req, res) => {
+    res.status(200).send("Test passed!");
 });
 
 // Start the Express server
@@ -60,35 +65,35 @@ gqlServer()
 const tunnels = Object.keys(tunnelConfig).reduce((acc: Tunnel[], subdomain: string, _): Tunnel[] => {
     const port = tunnelConfig[subdomain];
     const tunnel = localtunnel(port, { subdomain }, (err, tunnel) => {
-        if (!err) { console.log("Started tunnel @", tunnel.url); }
-        else { console.log("Tunnel error:", err); }
+        if (!err) { debug("Started tunnel @", tunnel.url); }
+        else { logError("Tunnel error:", err); }
     });
 
-    tunnel.on("close", () => console.log("Closed tunnel @", tunnel.url));
+    tunnel.on("close", () => debug("Closed tunnel @", tunnel.url));
     acc.push(tunnel);
     return acc;
-}, [] as Tunnel[])
+}, [] as Tunnel[]);
 
 // Setup and start associated WebSocket on distinct server ws://express
 setupWebSocket(server);
 
 // Graceful shutdown
 const cleanup = async () => {
-    console.log("Received termination signal, shutting down.");
+    debug("Received termination signal, shutting down.");
 
     tunnels.forEach(tunnel => tunnel.close());
 
     await graphQLServer.close();
-    console.log("GraphQL Server closed.")
+    debug("GraphQL Server closed.")
 
 
     server.close(() => {
-        console.log("Core Server closed.\nTerminated gracefully.");
+        debug("Core Server closed.\nTerminated gracefully.");
         process.exit(0);
     });
 
     setTimeout(() => {
-        console.error("Termination process timed out, forcefully shutting down.");
+        logError("Termination process timed out, forcefully shutting down.");
         process.exit(1);
     }, 10 * 1000);
 }

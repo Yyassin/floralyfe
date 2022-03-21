@@ -7,4 +7,5 @@ env/
 *.pytest_cache
 *.config
 *.npm
-.bash_history
+.bash_history'
+RTIMU/
