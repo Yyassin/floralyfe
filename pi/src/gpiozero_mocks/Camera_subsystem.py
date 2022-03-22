@@ -15,7 +15,7 @@ class CameraStates(Enum):
 class CameraSubsystem():
 
     factory = MockFactory()
-
+    EPSILON = 1e-3
     MAX_ANGLE = 180
     MIN_ANGLE = 90
 
@@ -51,7 +51,10 @@ class CameraSubsystem():
     def view_plant(self) -> None:
         print('[state] VIEW_PLANT')
         self.servo.angle = self.angle.value * 180 - 90
+        print("Turning Servo to", self.servo.angle)
+        print("Turning Servo to", self.angle.value * 180 - 90)
         self.state = CameraStates.STREAM
+        assert abs(self.servo.angle - (self.angle.value * 180 - 90)) < self.EPSILON
         self.livestream.toggle()
 
     def stream(self) -> None:
