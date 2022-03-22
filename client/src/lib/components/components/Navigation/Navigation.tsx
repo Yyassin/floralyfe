@@ -155,8 +155,9 @@ export default function Navigation() {
 								alignItems={"center"}
 							>
 								{	auth &&
-									plantData.map(plant => (
+									plantData.map((plant, idx) => (
 										<Badge 
+											key={idx}
 											mr={4} 
 											borderRadius='full' 
 											px='2' 

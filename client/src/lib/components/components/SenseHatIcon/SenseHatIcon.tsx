@@ -1,3 +1,4 @@
+import React from "react";
 import {
     ExternalLinkIcon,
     MoonIcon,
@@ -65,6 +66,7 @@ const SenseHatIcon = () => {
             _hover={{bg: "gray.200"}}
             cursor={"pointer"}
             onClick={() => incremenetIdx()}
+            role="sense-wrapper"
         >
             <Box p="3">
                 <Flex
@@ -89,6 +91,7 @@ const SenseHatIcon = () => {
                             as="h4"
                             lineHeight="tight"
                             isTruncated
+                            role="sense-state"
                         >
                             {Object.keys(ICONS)[idx]}
                         </Box>
