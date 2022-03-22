@@ -7,15 +7,9 @@ import SomeText from "lib/components/samples/SomeText";
 
 const Home = () => {
   return (
-    <Box>
-      <HomePage/>
-      {/* <SomeImage />
-
-      <Box>
-        <SomeText />
-        <CTASection />
-      </Box> */}
-    </Box>
+    <>
+        <HomePage/>
+    </>
   );
 };
 

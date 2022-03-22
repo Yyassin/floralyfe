@@ -1,18 +1,11 @@
 import { Box, Flex, Heading } from "@chakra-ui/react";
 import Link from "next/link";
-
-import ThemeToggle from "./ThemeToggle";
+import Navigation from "../components/Navigation/Navigation";
 
 const Header = () => {
   return (
-    <Flex as="header" width="full" align="center">
-      <Heading as="h1" size="md">
-        <Link href="/">floralyfe</Link>
-      </Heading>
-
-      <Box marginLeft="auto">
-        <ThemeToggle />
-      </Box>
+    <Flex as="header" width="full" align="left">
+      <Navigation />
     </Flex>
   );
 };
