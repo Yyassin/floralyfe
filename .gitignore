@@ -9,3 +9,4 @@ env/
 *.npm
 .bash_history'
 RTIMU/
+pi/freeze
