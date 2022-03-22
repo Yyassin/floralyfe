@@ -1,4 +1,4 @@
-from servo import servoMotor
+from camera_system.servo import servoMotor
 
 servo = servoMotor()
 
@@ -9,5 +9,5 @@ def test_turnToAngle(angle: int) -> None:
     print("Test Passed: turnToAngle:", angle)
 
 
-if __name__ == '__main__':
-    test_turnToAngle(90)
+def main() -> None:
+    test_turnToAngle(180)
