@@ -5,31 +5,29 @@ import { useStore } from "lib/store/store";
 import NotificationCard from "./NotificationCard";
 import { deepLog } from "lib/components/hooks/validate";
 import { uuid } from "lib/components/util/uuid";
-const ICONS = [
-    "MOISTURE",
-    "WATER_LEVEL",
-    "TEMPERATURE",
-    "HUMIDITY"
- ] as const;
+const ICONS = ["MOISTURE", "WATER_LEVEL", "TEMPERATURE", "HUMIDITY"] as const;
 
 const Notifications = () => {
     const counter = useRef(0);
-    const { selectedPlantID, notifications, addNotifcation, loadNotifications } = useStore((state) => ({
+    const {
+        selectedPlantID,
+        notifications,
+        addNotifcation,
+        loadNotifications,
+    } = useStore((state) => ({
         selectedPlantID: state.selectedPlantID,
         notifications: state.notifications,
         addNotifcation: state.addNotification,
-        loadNotifications: state.loadNotifications
+        loadNotifications: state.loadNotifications,
     }));
 
-    deepLog(notifications)
-
     const clearNotifications = () => {
-        loadNotifications(selectedPlantID, [])
-    }
+        loadNotifications(selectedPlantID, []);
+    };
 
     const getRandomInt = (max: number) => {
         return Math.floor(Math.random() * max);
-      }
+    };
 
     const addNotificationWrapper = () => {
         const notification = {
@@ -38,23 +36,23 @@ const Notifications = () => {
             icon: ICONS[counter.current % ICONS.length],
             plantID: selectedPlantID,
             date: getDayOffset(counter.current).toString(),
-        }
+        };
 
-        addNotifcation(notification)
+        deepLog("RECEIVED NOTIFICATION");
+        deepLog(notification);
+
+        addNotifcation(notification);
         counter.current += getRandomInt(5);
-    }
+    };
 
     const loadNotificationsWrapper = () => {
         for (let i = 0; i < 100; i++) {
-            addNotificationWrapper()
+            addNotificationWrapper();
         }
-    }
+    };
 
     return (
-        <Box
-            w={[200, 200, 350, 500, 600, 900]}
-            position="relative"
-        >
+        <Box w={[200, 200, 350, 500, 600, 900]} position="relative">
             <Flex>
                 <Heading as="h2" size="md" mr={5}>
                     Notifications
@@ -69,25 +67,26 @@ const Notifications = () => {
                     Load Notifications
                 </Button>
             </Flex>
-            {
-                !notifications[selectedPlantID]?.length ? 
+            {!notifications[selectedPlantID]?.length ? (
                 <Text mt={5}>
                     This plant does not have any notifications yet...
                 </Text>
-                :
+            ) : (
                 <Box
                     height={350}
                     width={"100%"}
                     overflowY={"auto"}
                     overflowX={"hidden"}
                 >
-                    {(notifications[selectedPlantID] || []).map((notification: any, idx: number) => (
-                        <NotificationCard key={idx} {...notification}/>
-                    ))}
+                    {(notifications[selectedPlantID] || []).map(
+                        (notification: any, idx: number) => (
+                            <NotificationCard key={idx} {...notification} />
+                        )
+                    )}
                 </Box>
-            }
+            )}
         </Box>
-    )
-}
+    );
+};
 
 export default Notifications;

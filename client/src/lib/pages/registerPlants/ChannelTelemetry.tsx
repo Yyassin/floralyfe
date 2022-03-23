@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Center, Flex, Heading, Text } from "@chakra-ui/react";
+import { deepLog } from "lib/components/hooks/validate";
 
 const ChannelTelemetry = () => {
     const [data, setData] = useState({} as any);
@@ -13,7 +14,7 @@ const ChannelTelemetry = () => {
             },
             channel1: {
                 moisture: {
-                    value: 0.30,
+                    value: 0.3,
                     gpio: 15,
                 },
                 waterPump: {
@@ -30,12 +31,12 @@ const ChannelTelemetry = () => {
                 },
             },
         } as any;
-        setData(dataset)
+        setData(dataset);
     }, []);
 
     const getRandomInt = (max: number) => {
         return Math.floor(Math.random() * max);
-      }
+    };
 
     const simulate = () => {
         const dataset = {
@@ -64,65 +65,67 @@ const ChannelTelemetry = () => {
             },
         } as any;
 
-        setData(dataset)
-    }
+        deepLog("RECEIVED LIVE VITALS");
+        deepLog(dataset);
+        setData(dataset);
+    };
 
     return (
         <>
-            <Button onClick={simulate}>
-                simulate
-            </Button>
+            <Button onClick={simulate}>simulate</Button>
             <Flex justifyContent={"space-between"}>
-            {Object.keys(data).map((channel) => {
-                const channelMeta = data[channel] as any;
-                return (
-                    <Box width={300}>
-                        <Center mb={5}>
-                            <Heading>{channel}</Heading>
-                        </Center>
+                {Object.keys(data).map((channel) => {
+                    const channelMeta = data[channel] as any;
+                    return (
+                        <Box width={300}>
+                            <Center mb={5}>
+                                <Heading>{channel}</Heading>
+                            </Center>
 
-                        {Object.keys(channelMeta).map((key, idx) => {
-                            let value = channelMeta[key];
-                            
-                            switch(key) {
-                                case "moisture": {
-                                    key = `moisture (GPIO: ${value.gpio})`
-                                    value = `${(value.value * 100).toFixed(2)}%`
-                                    break;
+                            {Object.keys(channelMeta).map((key, idx) => {
+                                let value = channelMeta[key];
+
+                                switch (key) {
+                                    case "moisture": {
+                                        key = `moisture (GPIO: ${value.gpio})`;
+                                        value = `${(value.value * 100).toFixed(
+                                            2
+                                        )}%`;
+                                        break;
+                                    }
+
+                                    case "waterPump": {
+                                        key = `waterPump (GPIO: ${value.gpio})`;
+                                        value = "connected";
+                                        break;
+                                    }
+
+                                    case "temperature": {
+                                        value = `${value} C`;
+                                        break;
+                                    }
+
+                                    default: {
+                                        value = `${(value * 100).toFixed(2)}%`;
+                                        break;
+                                    }
                                 }
 
-                                case "waterPump": {
-                                    key = `waterPump (GPIO: ${value.gpio})`
-                                    value = "connected"
-                                    break;
-                                }
-
-                                case "temperature": {
-                                    value = `${(value)} C`
-                                    break;
-                                }
-
-                                default: {
-                                    value = `${(value * 100).toFixed(2)}%`
-                                    break;
-                                }
-                            }
-
-                            return (
-                                <Box key={`${key}-${idx}`} mb={3}>
-                                    <Flex>
-                                        <Text fontWeight="bold" >
-                                            {`${key}:`} &nbsp;
-                                        </Text>
-                                        {value}
-                                    </Flex>
-                                </Box>
-                            );
-                        })}
-                    </Box>
-                );
-            })}
-        </Flex> 
+                                return (
+                                    <Box key={`${key}-${idx}`} mb={3}>
+                                        <Flex>
+                                            <Text fontWeight="bold">
+                                                {`${key}:`} &nbsp;
+                                            </Text>
+                                            {value}
+                                        </Flex>
+                                    </Box>
+                                );
+                            })}
+                        </Box>
+                    );
+                })}
+            </Flex>
         </>
     );
 };

@@ -18,6 +18,7 @@ import {
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useStore } from "lib/store/store";
+import { deepLog } from "lib/components/hooks/validate";
 
 // source: https://chakra-templates.dev/forms/authentication
 
@@ -33,10 +34,15 @@ const Login = () => {
     const router = useRouter();
 
     const signIn = () => {
-        if (!registeredUsers[email] || password !== registeredUsers[email].password) {
-            console.log("invalid");
+        deepLog(`Attempted login: email=${email}, password=${password}`);
+        if (!registeredUsers[email]) {
+            deepLog(`Not registered`);
+            return;
+        } else if (password !== registeredUsers[email].password) {
+            deepLog(`Incorrect pasword`);
             return;
         }
+        deepLog(`Successful authentication`);
         setIsAuth(true);
         setUser(registeredUsers[email]);
         router.push("/");

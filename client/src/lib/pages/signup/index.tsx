@@ -24,12 +24,13 @@ import { deepLog } from "lib/components/hooks/validate";
 export default function SignupCard() {
     const { addRegisteredUser, registeredUsers } = useStore((state) => ({
         addRegisteredUser: state.addRegisteredUser,
-        registeredUsers: state.registeredUsers
+        registeredUsers: state.registeredUsers,
     }));
 
     useEffect(() => {
-        deepLog(registeredUsers)
-    }, [registeredUsers])
+        deepLog(`REGISTERED USERS`);
+        deepLog(registeredUsers);
+    }, [registeredUsers]);
     const [showPassword, setShowPassword] = useState(false);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -63,10 +64,12 @@ export default function SignupCard() {
                             <Box>
                                 <FormControl id="firstName" isRequired>
                                     <FormLabel>First Name</FormLabel>
-                                    <Input 
-                                        type="text" 
+                                    <Input
+                                        type="text"
                                         value={firstName}
-                                        onChange={(evt) => setFirstName(evt.target.value)}
+                                        onChange={(evt) =>
+                                            setFirstName(evt.target.value)
+                                        }
                                         placeholder="First Name"
                                     />
                                 </FormControl>
@@ -74,10 +77,12 @@ export default function SignupCard() {
                             <Box>
                                 <FormControl id="lastName">
                                     <FormLabel>Last Name</FormLabel>
-                                    <Input 
-                                        type="text" 
+                                    <Input
+                                        type="text"
                                         value={lastName}
-                                        onChange={(evt) => setLastName(evt.target.value)}
+                                        onChange={(evt) =>
+                                            setLastName(evt.target.value)
+                                        }
                                         placeholder="Last Name"
                                     />
                                 </FormControl>
@@ -85,8 +90,8 @@ export default function SignupCard() {
                         </HStack>
                         <FormControl id="email" isRequired>
                             <FormLabel>Email address</FormLabel>
-                            <Input 
-                                type="email" 
+                            <Input
+                                type="email"
                                 value={email}
                                 onChange={(evt) => setEmail(evt.target.value)}
                                 placeholder="Email"
@@ -98,7 +103,9 @@ export default function SignupCard() {
                                 <Input
                                     type={showPassword ? "text" : "password"}
                                     value={password}
-                                    onChange={(evt) => setPassword(evt.target.value)}
+                                    onChange={(evt) =>
+                                        setPassword(evt.target.value)
+                                    }
                                     placeholder="Password"
                                 />
                                 <InputRightElement h={"full"}>
@@ -128,15 +135,43 @@ export default function SignupCard() {
                                 _hover={{
                                     bg: "green.500",
                                 }}
-                                onClick={
-                                    () => addRegisteredUser({
-                                        firstName, 
+                                onClick={() => {
+                                    deepLog("SIGN UP");
+
+                                    const fields = [
+                                        firstName,
+                                        lastName,
+                                        email,
+                                        password,
+                                    ];
+                                    if (fields.includes("")) {
+                                        deepLog(
+                                            "At least one empty field. Retry."
+                                        );
+                                        return;
+                                    }
+
+                                    const validateEmail = (email: string) => {
+                                        return String(email)
+                                            .toLowerCase()
+                                            .match(
+                                                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                                            );
+                                    };
+
+                                    if (!validateEmail(email)) {
+                                        deepLog("Invalid email");
+                                        return;
+                                    }
+
+                                    addRegisteredUser({
+                                        firstName,
                                         lastName,
                                         email,
                                         id: email,
-                                        password
-                                    })
-                                }
+                                        password,
+                                    });
+                                }}
                             >
                                 Sign up
                             </Button>
@@ -144,7 +179,9 @@ export default function SignupCard() {
                         <Stack pt={6}>
                             <Text align={"center"}>
                                 Already a user?{" "}
-                                <Link color={"green.400"} href="/login">Login</Link>
+                                <Link color={"green.400"} href="/login">
+                                    Login
+                                </Link>
                             </Text>
                         </Stack>
                     </Stack>

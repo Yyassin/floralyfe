@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { useStore } from "lib/store/store";
 import { useEffect, useState } from "react";
+import { deepLog } from "lib/components/hooks/validate";
 
 const ICONS = {
     MOISTURE: <PhoneIcon color="white" />,
@@ -46,7 +47,7 @@ const SenseHatIcon = () => {
 
     const incremenetIdx = () => {
         setIdx((idx + 1) % Object.keys(ICONS).length);
-        console.log(`Sending change sense hat icon msg: ${Object.keys(ICONS)[idx]}`)
+        deepLog(`Sending change sense hat icon msg: ${Object.keys(ICONS)[idx]}`)
     }
 
     const { selectedPlantID, setSelectedPlantID } = useStore((state) => ({

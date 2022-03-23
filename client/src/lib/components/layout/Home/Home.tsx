@@ -15,64 +15,72 @@ import styles from "./Home.module.scss";
 import { useStore } from "lib/store/store";
 import { useRouter } from "next/router";
 import PlantCard from "lib/components/components/PlantCard/PlantCard";
+import { deepLog } from "lib/components/hooks/validate";
 
 const Home = () => {
     const router = useRouter();
     const { user, plants, selectedPlantID } = useStore((state) => ({
         user: state.user,
         plants: state.plants,
-        selectedPlantID: state.selectedPlantID
+        selectedPlantID: state.selectedPlantID,
     }));
 
     useEffect(() => {
-        if (!user) router.push("/login");
-        else if (!Object.keys(plants).length) router.push("/registerplants");
-    }, [])
+        if (!user) {
+            deepLog("Not authenticated.");
+            router.push("/login");
+        } else if (!Object.keys(plants).length) {
+            deepLog("User has no plants => register plants");
+            router.push("/registerplants");
+        }
+    }, []);
 
-    return (user && Object.keys(plants).length && 
-        <div className={styles.home_wrapper}>
-            <Box
-                margin={5}
-            >
-                <Heading as="h1" size="md" paddingTop={5}>
-                    Welcome back, {user?.firstName}
-                </Heading>
-                <Flex
-                    justifyContent={"space-between"}
-                >
-                    <Flex>
-                        { Object.keys(plants).map(plantId => <PlantCard key={plantId} {...plants[plantId]}/>) }
+    return (
+        user &&
+        Object.keys(plants).length && (
+            <div className={styles.home_wrapper}>
+                <Box margin={5}>
+                    <Heading as="h1" size="md" paddingTop={5}>
+                        Welcome back, {user?.firstName}
+                    </Heading>
+                    <Flex justifyContent={"space-between"}>
+                        <Flex>
+                            {Object.keys(plants).map((plantId) => (
+                                <PlantCard key={plantId} {...plants[plantId]} />
+                            ))}
+                        </Flex>
+                        <Flex>
+                            <ManualIrrigation />
+                            <SenseHatIcon />
+                        </Flex>
                     </Flex>
                     <Flex>
-                        <ManualIrrigation />
-                        <SenseHatIcon />
+                        <PlantUpdate />
+                        <PlantExtraInfo {...plants[selectedPlantID]} />
                     </Flex>
-                </Flex>
-                <Flex>
-                    <PlantUpdate />
-                    <PlantExtraInfo {...plants[selectedPlantID]}/>
-                </Flex>
-                <div style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between"
-                }}>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                        }}
+                    >
                         <VitalsCollection />
                         <LineChartWrapper />
-                </div>
-                <Flex>
-                    <Notes />
-                    <Notification />
-                </Flex>
+                    </div>
+                    <Flex>
+                        <Notes />
+                        <Notification />
+                    </Flex>
 
-                
-                {/* <img
+                    {/* <img
                     id="plant-img"
                     src="https://s3.amazonaws.com/finegardening.s3.tauntoncloud.com/app/uploads/vg-migration/2019/09/28011137/Shishito_containers.JPG"
                     alt=""
                 /> */}
-            </Box>
-        </div>
+                </Box>
+            </div>
+        )
     );
 };
 

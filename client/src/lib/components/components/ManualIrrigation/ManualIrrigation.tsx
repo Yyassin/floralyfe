@@ -17,10 +17,11 @@ import {
 } from "@chakra-ui/react";
 import { useStore } from "lib/store/store";
 import { useEffect, useState } from "react";
+import { deepLog } from "lib/components/hooks/validate";
 
 const ManualIrrigation = () => {
     const waterPlant = () => {
-        console.log("Sending manual irrigation msg.")
+        deepLog("Sending manual irrigation msg.")
     };
 
     const { selectedPlantID, setSelectedPlantID } = useStore((state) => ({
