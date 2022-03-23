@@ -7,7 +7,7 @@
 
 import http from "http";
 import WebSocket from "ws";
-import { debug } from "./util";
+import { debug, deepLog } from "./util";
 
 // WebSocket response status'
 const enum status {
@@ -63,7 +63,7 @@ const successResponse = (message: string): WSResponse => ({
 });
 
 // The client map. Stores socket client subscriptions to senders.
-const clients: ClientMap = {};
+export const clients: ClientMap = {};
 
 /**
  * Creates a subscription from the clientSocket
@@ -73,7 +73,7 @@ const clients: ClientMap = {};
  * @param clientSocket WebSocket, the websocket to subscribe.
  * @returns WSResponse, the WebSocket response.
  */
-const addSubscription = (
+export const addSubscription = (
     subscriptionID: string,
     clientSocket: WebSocket
 ): WSResponse => {
@@ -122,13 +122,13 @@ const removeSubscription = (
  * @param ctx WebSocket, the sender client.
  * @param message WebSocket.RawData, the message sent.
  */
-const processMessage = (ctx: WebSocket, message: WebSocket.RawData): void => {
+export const processMessage = (ctx: WebSocket, message: WebSocket.RawData): void => {
     let data: WSData;
 
     // Attempt to decode binary data to json. All message must be in JSON format.
     try {
         data = JSON.parse(Buffer.from(message as ArrayBuffer).toString());
-        debug(data);
+        //deepLog(data);
     } catch (e) {
         const response = {
             status: status.ERROR,

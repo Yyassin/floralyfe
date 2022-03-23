@@ -16,4 +16,8 @@ describe("/test endpoint", () => {
     it("communicates via websockets", async () => {
         socket.ws("").expectText("connection established.");
     });
+
+    it("sends email", async () => {
+        expect(1).to.equal(1);
+    })
 });

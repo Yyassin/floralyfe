@@ -163,5 +163,6 @@ export {
     user,
     schemaType,
     mutation, 
-    query
+    query,
+    IUser
 }
