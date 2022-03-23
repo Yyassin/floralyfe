@@ -1,3 +1,4 @@
+import React from "react";
 import { ExternalLinkIcon, MoonIcon, PhoneIcon, ViewIcon } from "@chakra-ui/icons";
 import { Box, Center, Flex, Text } from "@chakra-ui/react";
 import { useStore } from "lib/store/store";

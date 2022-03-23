@@ -1,27 +1,19 @@
+import React from "react";
 import { StarIcon } from "@chakra-ui/icons";
 import { Badge, Box, Image, Text, useColorMode } from "@chakra-ui/react";
 import { useStore } from "lib/store/store";
 import { useEffect } from "react";
+import { Plant } from "lib/store/slices/plantSlice";
 
-export interface PlantCardProps {
-    health: boolean;
-    name: string;
-    species: string;
-    notificationCount: number;
-    channel: number;
-    id: string;
-    vitals: {
-        waterFillEvents: number
-    }
-}
-
-const PlantCard = (props: PlantCardProps) => {
+const PlantCard = (props: Plant) => {
     const { colorMode, toggleColorMode } = useColorMode();
-    const { selectedPlantID, setSelectedPlantID } = useStore((state) => ({
+    const { selectedPlantID, setSelectedPlantID, vitals } = useStore((state) => ({
         selectedPlantID: state.selectedPlantID,
-        setSelectedPlantID: state.setSelectedPlantID
+        setSelectedPlantID: state.setSelectedPlantID,
+        vitals: state.vitals
     }));
     const selected = (props.id === selectedPlantID);
+    const live = vitals[selectedPlantID]?.live
 
       const gradient = (colorMode === "light") ? "linear(to-br, green.200, white)" : "linear(to-br, green.800, gray.900)"; 
     
@@ -35,13 +27,16 @@ const PlantCard = (props: PlantCardProps) => {
             borderRadius='lg' 
             overflow='hidden'
             bgGradient={selected ? gradient : ""}
-            onClick={() => setSelectedPlantID(props.id)}
+            onClick={() => {
+              console.log("Sending camera msg to turn to plant:", props.id);
+              setSelectedPlantID(props.id)
+            }}
         >
     
           <Box p='6'>
             <Box display='flex' alignItems='baseline'>
-              <Badge borderRadius='full' px='2' colorScheme={props.health ? "green" : "yellow"}>
-                {props.health ? "optimal" : "critical"}
+              <Badge borderRadius='full' px='2' colorScheme={!live.critical ? "green" : "yellow"}>
+                {!live.critical ? "optimal" : "critical"}
               </Badge>
               <Box
                 color='gray.500'
@@ -71,11 +66,11 @@ const PlantCard = (props: PlantCardProps) => {
               </Box>
             </Box>
     
-            <Box display='flex' mt='2' alignItems='center'>
+            {/* <Box display='flex' mt='2' alignItems='center'>
               <Box as='span' color='gray.600' fontSize='sm'>
                 + {props.notificationCount} Notifications
               </Box>
-            </Box>
+            </Box> */}
           </Box>
         </Box>
       );

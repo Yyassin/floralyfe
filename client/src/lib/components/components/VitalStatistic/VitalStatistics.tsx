@@ -1,3 +1,4 @@
+import React from "react";
 import { PhoneIcon, StarIcon } from "@chakra-ui/icons";
 import { Badge, Box, Center, Heading, Image, Progress, Text, useColorMode } from "@chakra-ui/react";
 import { useStore } from "lib/store/store";

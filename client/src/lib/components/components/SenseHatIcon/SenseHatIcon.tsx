@@ -45,8 +45,8 @@ const SenseHatIcon = () => {
     const [idx, setIdx] = useState(0);
 
     const incremenetIdx = () => {
-        console.log(`Sending change sense hat icon msg: ${Object.keys(ICONS)[idx]}`)
         setIdx((idx + 1) % Object.keys(ICONS).length);
+        console.log(`Sending change sense hat icon msg: ${Object.keys(ICONS)[idx]}`)
     }
 
     const { selectedPlantID, setSelectedPlantID } = useStore((state) => ({

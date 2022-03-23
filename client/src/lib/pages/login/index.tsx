@@ -1,3 +1,4 @@
+import React from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
     Flex,
@@ -14,12 +15,32 @@ import {
     InputGroup,
     InputRightElement,
 } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { useState } from "react";
+import { useStore } from "lib/store/store";
 
 // source: https://chakra-templates.dev/forms/authentication
 
 const Login = () => {
+    const { registeredUsers, setUser, setIsAuth } = useStore((state) => ({
+        registeredUsers: state.registeredUsers,
+        setIsAuth: state.setIsAuth,
+        setUser: state.setUser,
+    }));
     const [showPassword, setShowPassword] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const router = useRouter();
+
+    const signIn = () => {
+        if (!registeredUsers[email] || password !== registeredUsers[email].password) {
+            console.log("invalid");
+            return;
+        }
+        setIsAuth(true);
+        setUser(registeredUsers[email]);
+        router.push("/");
+    };
 
     return (
         <Flex
@@ -44,13 +65,23 @@ const Login = () => {
                     <Stack spacing={4}>
                         <FormControl id="email">
                             <FormLabel>Email address</FormLabel>
-                            <Input type="email" />
+                            <Input
+                                type="email"
+                                value={email}
+                                onChange={(evt) => setEmail(evt.target.value)}
+                                placeholder="Email"
+                            />
                         </FormControl>
                         <FormControl id="password" isRequired>
                             <FormLabel>Password</FormLabel>
                             <InputGroup>
                                 <Input
                                     type={showPassword ? "text" : "password"}
+                                    value={password}
+                                    onChange={(evt) =>
+                                        setPassword(evt.target.value)
+                                    }
+                                    placeholder="Password"
                                 />
                                 <InputRightElement h={"full"}>
                                     <Button
@@ -77,6 +108,7 @@ const Login = () => {
                                 _hover={{
                                     bg: "green.500",
                                 }}
+                                onClick={() => signIn()}
                             >
                                 Sign in
                             </Button>
@@ -84,7 +116,9 @@ const Login = () => {
                         <Stack pt={6}>
                             <Text align={"center"}>
                                 Don't have an account?{" "}
-                                <Link color={"green.400"} href="/signup">Sign Up</Link>
+                                <Link color={"green.400"} href="/signup">
+                                    Sign Up
+                                </Link>
                             </Text>
                         </Stack>
                     </Stack>

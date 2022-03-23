@@ -1,3 +1,4 @@
+import React from "react";
 import { Box, Flex, Heading, Link, Text } from "@chakra-ui/react";
 import { useStore } from "lib/store/store";
 import BarChart from "../BarChart/Barchart";
@@ -24,12 +25,12 @@ const VitalsCollection = () => {
                 <BarChart />
             </Box>
 
-            <Heading as="h2" size="md">
-                Automatic Irrigation
+            <Heading as="h2" size="md" mb={5}>
+                Automatic Irrigation (ml)
             </Heading>
             <Box>
               <Box as='span' color='gray.600' fontSize='sm'>
-                <Text as="b" color="green.400">(+13) irrigation events</Text> in the last week.
+                {/* <Text as="b" color="green.400">(+13) irrigation events</Text> in the last week. */}
               </Box>
             </Box>
 

@@ -1,3 +1,4 @@
+import React from "react";
 import { Box, Flex, Heading, Link, Text } from "@chakra-ui/react";
 import { useStore } from "lib/store/store";
 import BarChart from "../BarChart/Barchart";
@@ -17,7 +18,7 @@ const LineChartWrapper = () => {
             </Heading>
             <Box>
               <Box as='span' color='gray.600' fontSize='sm'>
-                <Text as="b" color="green.400">(+5) More measurements</Text> since last login.
+                {/* <Text as="b" color="green.400">(+5) More measurements</Text> since last login. */}
               </Box>
             </Box>
             <Box

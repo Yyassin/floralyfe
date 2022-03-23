@@ -1,16 +1,17 @@
+import React from "react";
 import { ArrowForwardIcon, ChevronLeftIcon, ChevronRightIcon, StarIcon } from "@chakra-ui/icons";
 import { Badge, Box, Center, Flex, Heading, Image, Text, useColorMode } from "@chakra-ui/react";
 import { useStore } from "lib/store/store";
 import Link from "next/link";
 import { useEffect } from "react";
 
-const PlantExtraInfo = () => {
-    const { colorMode, toggleColorMode } = useColorMode();
-    const { selectedPlantID, setSelectedPlantID } = useStore((state) => ({
-        selectedPlantID: state.selectedPlantID,
-        setSelectedPlantID: state.setSelectedPlantID
-    }));
-    
+interface PlantExtraInfoProps  {
+    species: string;
+    description: string;
+    wiki: string;
+}
+
+const PlantExtraInfo = (props: PlantExtraInfoProps) => {    
       return (
         <Box 
             margin={5}
@@ -39,7 +40,7 @@ const PlantExtraInfo = () => {
                         color={"white"}
                         fontSize={20}
                     >
-                        More on <Text as="i">Citrullus lanatus</Text>
+                        More on <Text as="i">{props.species}</Text>
                     </Heading>
                     <Box>
                         <Box 
@@ -50,17 +51,17 @@ const PlantExtraInfo = () => {
                             <Text
                                 mt={3}
                                 mb={3}
-                                fontSize={17}
+                                fontSize={14}
                             >
-                                Mooni is in excellent condition and has grown 3% since your last login. They've been well hydrated
-                                in that time with 13 distinct watering events totalling to 50ml of water. All other vitals
-                                have been in check with only 2 critical notifications since the last login.
+                                {props.description}
                             </Text>
-                            <a href={"https://google.com"} target="_blank">
+                            {   props.wiki !== "" &&
+                            <a href={props.wiki} target="_blank">
                                 <>
                                     Read more <ArrowForwardIcon />
                                 </>
                             </a>
+                            }
                         </Box>
                     </Box>
                 </Box>

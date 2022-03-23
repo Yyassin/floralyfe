@@ -1,3 +1,4 @@
+import React from "react";
 import { ArrowForwardIcon, ChevronLeftIcon, ChevronRightIcon, StarIcon } from "@chakra-ui/icons";
 import { Badge, Box, Center, Flex, Heading, Image, Text, useColorMode } from "@chakra-ui/react";
 import { useStore } from "lib/store/store";

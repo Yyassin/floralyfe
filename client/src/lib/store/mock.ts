@@ -1,5 +1,3 @@
-import { PlantCardProps } from "lib/components/components/PlantCard/PlantCard";
-
 export const user = {
     firstName: "Yousef",
     lastName: "Yassin",
@@ -7,14 +5,14 @@ export const user = {
 };
 
 export const plantVitals: any = {
-    aloe: {
+    "pepper": {
         temperature: 23,
         moisture: 33,
         humidity: 67,
         light: 56,
         growth: 30,
     },
-    lemon: {
+    "Wild Cherry": {
         temperature: 23,
         moisture: 53,
         humidity: 67,
@@ -23,30 +21,30 @@ export const plantVitals: any = {
     },
 };
 
-export const plantData: PlantCardProps[] = [
-    {
-        name: "Aloe",
-        species: "Aloe Vera",
-        notificationCount: 5,
-        health: true,
-        channel: 1,
-        id: "aloe",
-        vitals: {
-            waterFillEvents: 15,
-        },
-    },
-    {
-        name: "Lemon",
-        species: "Citrullus lanatus",
-        notificationCount: 19,
-        health: false,
-        channel: 2,
-        id: "lemon",
-        vitals: {
-            waterFillEvents: 9,
-        },
-    },
-];
+// export const plantData: PlantCardProps[] = [
+//     {
+//         name: "Aloe",
+//         species: "Aloe Vera",
+//         notificationCount: 5,
+//         health: true,
+//         channel: 1,
+//         id: "aloe",
+//         vitals: {
+//             waterFillEvents: 15,
+//         },
+//     },
+//     {
+//         name: "Lemon",
+//         species: "Citrullus lanatus",
+//         notificationCount: 19,
+//         health: false,
+//         channel: 2,
+//         id: "lemon",
+//         vitals: {
+//             waterFillEvents: 9,
+//         },
+//     },
+// ];
 
 export const barChartData = [
     {
@@ -78,15 +76,13 @@ export const barChartOptions = {
     },
     xaxis: {
         categories: [
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat",
+            "Sun"
         ],
         show: true,
         labels: {
@@ -102,6 +98,13 @@ export const barChartOptions = {
         axisTicks: {
             show: false,
         },
+        title: {
+            text: "Day of the Week",
+            style: {
+                color: "#fff",
+                fontSize: "12px",
+            },
+        }
     },
     yaxis: {
         show: true,
@@ -113,6 +116,9 @@ export const barChartOptions = {
                 fontSize: "14px",
             },
         },
+        title: {
+            text: "Water Quantity (ml)"
+        }
     },
     grid: {
         show: false,
@@ -178,6 +184,9 @@ export const lineChartOptions = {
         curve: "smooth",
     },
     xaxis: {
+        title: {
+            text: "Timestamp"
+        },
         categories: [
             "Jan",
             "Feb",
@@ -200,6 +209,9 @@ export const lineChartOptions = {
         },
     },
     yaxis: {
+        title: {
+            text: "Percentage (%)"
+        },
         labels: {
             style: {
                 colors: "#c8cfca",
@@ -232,50 +244,57 @@ export const lineChartOptions = {
 
 export const auth = true;
 
+const today = new Date();
+export const getDayOffset = (offset: number) => {
+    const tomorrow = new Date(today);
+    tomorrow.setHours(tomorrow.getHours() + offset)
+    return tomorrow
+}
+
 export const notifications = {
-    "aloe": [
+    "pepper": [
         {
             label: "Dry Air",
             icon: "HUMIDITY",
-            date: new Date("05 October 2011 14:48 UTC").toString(),
+            date: getDayOffset(0).toString(),
         },
         {
             label: "Watering Soil",
             icon: "MOISTURE",
-            date: new Date("05 October 2011 14:48 UTC").toString(),
+            date: getDayOffset(-1).toString(),
         },
         {
             label: "Dry Soil",
             icon: "MOISTURE",
-            date: new Date("05 October 2011 14:48 UTC").toString(),
+            date: getDayOffset(-2).toString(),
         },
         {
           label: "Water Tank Empty",
           icon: "WATER_LEVEL",
-          date: new Date("05 October 2011 14:48 UTC").toString(),
+          date: getDayOffset(-3).toString(),
       },
       {
           label: "Dry Air",
           icon: "HUMIDITY",
-          date: new Date("05 October 2011 14:48 UTC").toString(),
+          date: getDayOffset(-4).toString(),
       },
     ],
     
-    "lemon": [
+    "Wild Cherry": [
         {
             label: "Cold Temperature",
             icon: "TEMPERATURE",
-            date: new Date("05 October 2011 14:48 UTC").toString(),
+            date: getDayOffset(0).toString(),
         },
         {
             label: "Water Tank Empty",
             icon: "WATER_LEVEL",
-            date: new Date("05 October 2011 14:48 UTC").toString(),
+            date: getDayOffset(-3).toString(),
         },
         {
             label: "Dry Air",
             icon: "HUMIDITY",
-            date: new Date("05 October 2011 14:48 UTC").toString(),
+            date: getDayOffset(-5).toString(),
         },
     ],
 };
