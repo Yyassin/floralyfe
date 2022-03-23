@@ -1,0 +1,8 @@
+.home_wrapper {
+  margin-top: 70px;
+}
+
+.home_wrapper :global .text {
+  color: red;
+}
+/*# sourceMappingURL=Home.module.css.map */

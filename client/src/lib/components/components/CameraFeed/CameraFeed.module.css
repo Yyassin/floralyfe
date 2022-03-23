@@ -1,0 +1,26 @@
+.camera_feed :global .plant-update-arrows {
+  opacity: 0;
+  -webkit-transition: opacity ease-in-out 0.25s;
+  transition: opacity ease-in-out 0.25s;
+}
+
+.camera_feed :global .plant-update-arrows :global .plant-update-arrow-panel {
+  -webkit-transition: opacity ease-in-out 0.25s, -webkit-filter ease-in-out 0.25s;
+  transition: opacity ease-in-out 0.25s, -webkit-filter ease-in-out 0.25s;
+  transition: filter ease-in-out 0.25s, opacity ease-in-out 0.25s;
+  transition: filter ease-in-out 0.25s, opacity ease-in-out 0.25s, -webkit-filter ease-in-out 0.25s;
+  opacity: 0.65;
+  -webkit-filter: brightness(0.6);
+          filter: brightness(0.6);
+}
+
+.camera_feed :global .plant-update-arrows :global .plant-update-arrow-panel:hover {
+  opacity: 1;
+  -webkit-filter: brightness(1);
+          filter: brightness(1);
+}
+
+.camera_feed:hover :global .plant-update-arrows {
+  opacity: 1;
+}
+/*# sourceMappingURL=CameraFeed.module.css.map */

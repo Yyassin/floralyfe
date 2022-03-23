@@ -23,6 +23,7 @@ interface ISocket {
     data: WSData;                                   // Received data
     readyState: boolean;                            // True if socket connected, false otherwise.
     addSubscription: (topic: string, callback: Callback) => void;   // Adds a subscription
+    onMessage: (event: MessageEvent) => void
 }
 
 const DEBUG = true;
@@ -37,9 +38,9 @@ const DEBUG = true;
  * @returns ISocket, the socket interface.
  */
 export default function useWebSocket(
-    socketUrl: string,
-    retry: number,
-    retryInterval: number
+    socketUrl?: string,
+    retry?: number,
+    retryInterval?: number
 ): ISocket {
     // const isSSR = typeof window === "undefined";
     // if (isSSR) return null as unknown as ISocket;               // Make sure this only runs client side.
@@ -77,7 +78,7 @@ export default function useWebSocket(
      */
     const onMessage = (event: MessageEvent<any>) => {
         const msg = formatMessage(event.data);  // Parse the message
-        setData(msg);
+        //setData(msg);
 
         if (DEBUG) validate(msg, msg.topic);
 
@@ -93,6 +94,7 @@ export default function useWebSocket(
      * callbacks.
      */
     useEffect(() => {
+        if (!socketUrl) return
         // Only connect if we aren't already connected.
         if (!ws.current || ws.current.CLOSED) {
             ws.current = new WebSocket(socketUrl);
@@ -151,7 +153,7 @@ export default function useWebSocket(
 
         // Retry dependency here triggers the connection attempt
     }, [retryAttempts, subscriptions]);
-    return { send, data, readyState, addSubscription };
+    return { send, data, readyState, addSubscription, onMessage };
 }
 
 /**

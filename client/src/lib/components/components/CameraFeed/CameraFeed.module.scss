@@ -1,0 +1,24 @@
+.camera_feed {
+    :global .plant-update-arrows {
+        opacity: 0;
+        transition: opacity ease-in-out 0.25s;
+
+        :global .plant-update-arrow-panel {
+            transition: filter ease-in-out 0.25s,
+                opacity ease-in-out 0.25s;
+            opacity: 0.65;
+            filter: brightness(0.6);
+
+            &:hover {
+                opacity: 1;
+                filter: brightness(1);
+            }
+        }
+    }
+
+    &:hover {
+        :global .plant-update-arrows {
+            opacity: 1;
+        }    
+    }
+}

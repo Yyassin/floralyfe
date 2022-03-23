@@ -139,5 +139,5 @@ export {
     schemaType, 
     subscription, 
     mutation,
-    query 
+    query
 };

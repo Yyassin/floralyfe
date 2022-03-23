@@ -116,5 +116,6 @@ export {
     note,
     schemaType,
     mutation, 
-    query
+    query,
+    INote
 }
