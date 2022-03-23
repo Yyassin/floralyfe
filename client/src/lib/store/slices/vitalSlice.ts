@@ -53,7 +53,7 @@ export const createVitalSlice: StoreSlice<VitalSlice> = (set, get) => ({
                 ...state.vitals,
                 [vital.plantID]: {
                     ...state.vitals[vital.plantID], 
-                    persisted: addPersistedVital(state.vitals[vital.plantID].persisted, vital)
+                    persisted: addPersistedVital(state.vitals[vital.plantID]?.persisted || [], vital)
                 }
             }
         })),

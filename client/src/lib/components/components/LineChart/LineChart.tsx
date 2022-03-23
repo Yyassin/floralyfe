@@ -19,7 +19,7 @@ const LineChart = () => {
         const persisted = vitals[selectedPlantID]?.persisted;
         //deepLog(persisted);
 
-        const data = persisted.reduce(
+        const data = !persisted ? [] : persisted.reduce(
             (acc: any, dp, idx) => {
                 acc.temperature.push((dp.temperature * 100).toFixed(0));
                 acc.humidity.push((dp.humidity * 100).toFixed(0));

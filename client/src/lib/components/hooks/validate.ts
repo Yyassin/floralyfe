@@ -2,12 +2,20 @@ import assert from "assert";
 import { inspect } from "util";
 
 export const deepLog = (x: any) =>
-    console.log(
+    debug(
         inspect(x, {
             depth: Infinity,
             colors: true,
         })
     );
+
+/**
+ * Console log wrapper to only log in debug mode.
+ * @param args any[], log arguments.
+ */
+ const debug = (msg: any) => {
+    if (process.env.NEXT_PUBLIC_DEVELOPMENT) console.log(`[DEBUG] ${msg}`);
+};
 
 
 const expected_vital = {

@@ -15,14 +15,20 @@ test("renders Sense Hat Icon", () => {
     render(<SenseHatIcon />);
 });
 
-test("Handles onClick", () => {
+test("SenseHat::Handles onClick", () => {
     render(<SenseHatIcon />);
 
     const state = screen.getByRole("sense-state");
     expect(state).toHaveTextContent("MOISTURE");
 
     const buttonElement = screen.getByRole("sense-wrapper");
-    fireEvent.click(buttonElement);
 
+    fireEvent.click(buttonElement);
     expect(state).toHaveTextContent("WATER_LEVEL");
+    
+    fireEvent.click(buttonElement);
+    expect(state).toHaveTextContent("TEMPERATURE");
+
+    fireEvent.click(buttonElement);
+    expect(state).toHaveTextContent("HUMIDITY");
 });

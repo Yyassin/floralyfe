@@ -2,7 +2,7 @@
 require("dotenv").config();
 
 import nodemailer from "nodemailer";
-import { debug, delay, logError } from "../util";
+import { debug, deepLog, delay, logError } from "../util";
 
 interface EmailPayload {
     to: String;
@@ -25,13 +25,14 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-const sendEmail = (emailPayload: EmailPayload) => {
+const sendEmail = async (emailPayload: EmailPayload) => {
     const mailOptions = {
         from: "floralyfe",
         ...emailPayload,
     };
-
-    transporter.sendMail(mailOptions, (error, info) => {
+    deepLog(mailOptions)
+    await transporter.sendMail(mailOptions, (error, info) => {
+        console.log("Sent")
         if (error) {
             logError(error);
         } else {
@@ -47,7 +48,7 @@ const notificationTest = (req, res) => {
 
 const emailTest = (req, res) => {
     const emailPayload = {
-        to: "AbdallaAbdelhadi@cmail.carleton.ca, ZakariyyaAlmalki@cmail.carleton.ca, IbrahimAlmalki@cmail.carleton.ca, youyawng303@gmail.com",
+        to: "you.ayassin@gmail.com, youyawng303@gmail.com",
         subject: "Your Plant - PlantName - needs your attention!",
         text: "Hey there",
         html: "<b>Hey there</b>",
@@ -67,7 +68,8 @@ const emailTest = (req, res) => {
 };
 
 const sendEmailRouteHandler = (req, res) => {
-    const { email } = req;
+    deepLog(req.body)
+    const { email } = req.body;
     try {
         sendEmail(email);
         res.status(200).send("Sent Email!");

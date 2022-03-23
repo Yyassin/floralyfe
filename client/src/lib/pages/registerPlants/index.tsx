@@ -81,18 +81,25 @@ const RegisterPlants = () => {
         const scientific = details.scientific_name
         const wikiLink = details.url
         const description = details.wiki_description
-        // console.log(common, scientific)
+        
+        deepLog("GOT RECOGNITION DATA")
+        deepLog(common)
+        deepLog(scientific)
+        deepLog(wikiLink)
+        deepLog(description)
+
         setName(common)
         setSpecies(scientific)
         setWiki(wikiLink)
         setDescription(description.value)
-        console.log("Querying db for plant vitals matching species: ", scientific)
+        deepLog(`Querying db for plant vitals matching species: ${scientific}`)
         setPlantRecognitionAPIFlag(true);
     }
 
     const confirm = () => {
         onClose();
-        addPlant({
+
+        const plant = {
             id: name,
             name,
             species,
@@ -105,7 +112,12 @@ const RegisterPlants = () => {
                 humidity
             },
             image: imageUrl
-        })
+        }
+
+        deepLog("REGISTER PLANT")
+        deepLog(plant)
+
+        addPlant(plant)
         setPlantRecognitionAPIFlag(false);
         setName("");
         setSpecies("");

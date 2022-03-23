@@ -66,6 +66,10 @@ const VitalsTelemetry = () => {
             greenGrowth: getRandomInt(100) / 100,
             date: getDayOffset(counter.current).toString(),
         }
+
+        deepLog("RECEIVED PERIODIC VITAL");
+        deepLog(vital)
+
         addPersistedVital(vital);
         counter.current += 2 + getRandomInt(5);
     };

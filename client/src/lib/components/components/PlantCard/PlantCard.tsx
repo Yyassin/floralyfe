@@ -4,6 +4,7 @@ import { Badge, Box, Image, Text, useColorMode } from "@chakra-ui/react";
 import { useStore } from "lib/store/store";
 import { useEffect } from "react";
 import { Plant } from "lib/store/slices/plantSlice";
+import { deepLog } from "lib/components/hooks/validate";
 
 const PlantCard = (props: Plant) => {
     const { colorMode, toggleColorMode } = useColorMode();
@@ -13,7 +14,7 @@ const PlantCard = (props: Plant) => {
         vitals: state.vitals
     }));
     const selected = (props.id === selectedPlantID);
-    const live = vitals[selectedPlantID]?.live
+    const live = vitals[props.id]?.live
 
       const gradient = (colorMode === "light") ? "linear(to-br, green.200, white)" : "linear(to-br, green.800, gray.900)"; 
     
@@ -27,16 +28,17 @@ const PlantCard = (props: Plant) => {
             borderRadius='lg' 
             overflow='hidden'
             bgGradient={selected ? gradient : ""}
+            role="setId"
             onClick={() => {
-              console.log("Sending camera msg to turn to plant:", props.id);
+              deepLog(`Sending camera msg to turn to plant: ${props.id}`);
               setSelectedPlantID(props.id)
             }}
         >
     
           <Box p='6'>
             <Box display='flex' alignItems='baseline'>
-              <Badge borderRadius='full' px='2' colorScheme={!live.critical ? "green" : "yellow"}>
-                {!live.critical ? "optimal" : "critical"}
+              <Badge role="criticality" borderRadius='full' px='2' colorScheme={!live?.critical ? "green" : "yellow"}>
+                {!live?.critical ? "optimal" : "critical"}
               </Badge>
               <Box
                 color='gray.500'
@@ -45,6 +47,7 @@ const PlantCard = (props: Plant) => {
                 fontSize='xs'
                 textTransform='uppercase'
                 ml='2'
+                role="channel"
               >
                 Connected to channel {props.channel}
               </Box>
@@ -56,13 +59,14 @@ const PlantCard = (props: Plant) => {
               as='h4'
               lineHeight='tight'
               isTruncated
+              role={"name"}
             >
               {props.name}
             </Box>
 
             <Box>
               <Box as='span' color='gray.600' fontSize='sm'>
-                <Text as="i">{props.species}</Text>
+                <Text role="species" as="i">{props.species}</Text>
               </Box>
             </Box>
     
