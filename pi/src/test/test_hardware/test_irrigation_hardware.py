@@ -80,4 +80,4 @@ def test_transistor() -> None:
 
 
 if __name__ == "__main__":
-    test_moisture_water()
+    test_transistor()

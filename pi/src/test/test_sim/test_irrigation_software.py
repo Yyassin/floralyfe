@@ -22,7 +22,7 @@ def test_irregation_software() -> None:
     pump = LED(21)
     notify = LED(22)
 
-    irregation = IrregationSubsystem(moisture_sensor, water_sensor, pump, notify, 0.5)
+    irregation = IrregationSubsystem(moisture_sensor, water_sensor, pump, notify, 0.5, True)
 
     assert irregation.getState() == IrregationStates.IDLE
 
