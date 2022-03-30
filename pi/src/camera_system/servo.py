@@ -3,6 +3,7 @@ import time
 from gpiozero import AngularServo
 from database import Plant, Photos
 from gpiozero.pins.pigpio import PiGPIOFactory
+from peewee import CharField
 
 
 class servoMotor:
@@ -21,14 +22,16 @@ class servoMotor:
         self.s.angle = given_angle
 
     def turn_right(self) -> None:
-        for i in range(int(self.s.angle), 180):
-            self.s.angle = i
-            time.sleep(0.01)
+        if int(self.s.angle) < 160:
+            print(self.s.angle)
+            self.s.angle = int(self.s.angle) + 20
+            print(self.s.angle)
 
     def turn_left(self) -> None:
-        for i in range(int(self.s.angle), 0):
-            self.s.angle = i
-            time.sleep(0.01)
+        if int(self.s.angle) > 20:
+            print(self.s.angle)
+            self.s.angle = int(self.s.angle) - 20
+            print(self.s.angle)
 
     def take_day_pic(self) -> None:
         while True:
@@ -42,6 +45,11 @@ class servoMotor:
                 self.today = now
             time.sleep(1)
 
+    def turn_to_plant(self, id: CharField) -> None:
+        plant = Plant.get(Plant.plantID == id)
+        self.s.angle = plant.angle
+        print(self.s.angle)
+
 
 if __name__ == '__main__':
     s = servoMotor()
@@ -50,17 +58,3 @@ if __name__ == '__main__':
     # s.turnToAngle(100)
     # sleep(2)
     s.turn_left()
-
-# class servoMotor:
-
-#     factory = PiGPIOFactory()
-
-#     MAX_ANGLE = 180
-#     MIN_ANGLE = 90
-#     s = AngularServo(17, MIN_ANGLE, MAX_ANGLE, pin_factory=factory)
-
-#     def initServo(self) -> None:
-#         self.s.angle = 90
-
-#     def turnToAngle(self, given_angle: int) -> None:
-#         self.s.angle = given_angle
