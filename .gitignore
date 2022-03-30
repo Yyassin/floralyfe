@@ -10,3 +10,4 @@ env/
 .bash_history'
 RTIMU/
 pi/freeze
+pi/src/local_databaseFlora.db

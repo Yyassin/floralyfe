@@ -1,10 +1,3 @@
-"""
-camera_test.py
-
-A prototype script to send video frames from
-machine over websocket pertaining to user "hello".
-"""
-
 # TODO: Install opencv on raspberry pi, stays commented otherwise.
 
 __author__ = 'yousef'
@@ -21,11 +14,6 @@ logger = Logger("Camera Image Test")
 
 
 def test_camera() -> None:
-    """
-        Opens a video feed and sends an encoded frame
-        over a WebSocket connection every second.
-        The frame pertains to user with id userID (above).
-    """
     cam = PiCamera() if IS_RPI else cv.VideoCapture(0)
 
     data = PI_capture(cam) if IS_RPI else WIN_capture(cam)
@@ -39,5 +27,5 @@ def test_camera() -> None:
     cv.destroyAllWindows()
 
 
-if __name__ == "__main__":
-    test_camera()
+# if __name__ == "__main__":
+#     test_camera()

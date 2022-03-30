@@ -19,5 +19,5 @@ def test_pi_camera() -> None:
 
 if __name__ == "__main__":
     test_database()
-    test_servo()
+    # test_servo()
     test_camera()

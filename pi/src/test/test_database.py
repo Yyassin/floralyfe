@@ -31,28 +31,28 @@ logger = Logger("DataBase Test")
 
 def write_users() -> None:
     User.create(userID=userID, email=email, password=password)
-    print("[USER WRITING]:", userID, email, password)
+    # print("[USER WRITING]:", userID, email, password)
 
     logger.debug(f"Wrote user id: {userID}, email: {email}, password: {password}")
 
 
 def write_photos() -> None:
     Photos.create(photoID=photoID, picture=picture, plantID=plantID, createdAt=createdAt)
-    print("[PHOTOS WRITING]:", photoID, picture, plantID, createdAt)
+    # print("[PHOTOS WRITING]:", photoID, picture, plantID, createdAt)
 
     logger.debug(f"Wrote photo id: {photoID}, picture: {picture}, plant id: {plantID}, createdAt: {createdAt}")
 
 
 def write_plant() -> None:
-    Plant.create(registeredPlant=registeredPlant, optima=optima_string, angle=angle, registeredChannel=registeredChannel)
-    print("[PLANT WRITING]:", registeredPlant, optima, angle, registeredChannel)
+    Plant.create(plantID=registeredPlant, optima=optima_string, angle=angle, registeredChannel=registeredChannel)
+    # print("[PLANT WRITING]:", registeredPlant, optima, angle, registeredChannel)
 
     logger.debug(f"Write plant registered: {registeredPlant}, optima: {optima},angle: {angle}, registered Channel: {registeredChannel}")
 
 
 def write_device() -> None:
     Device.create(deviceID=deviceID, sensehat_icon=sensehat_icon)
-    print("[DEVICE WRITING]:", deviceID, sensehat_icon)
+    # print("[DEVICE WRITING]:", deviceID, sensehat_icon)
 
     logger.debug(f"Write device id: {deviceID}, sensehat icon: {sensehat_icon}")
 
@@ -81,13 +81,13 @@ def read_photos_from_ID(id: CharField) -> None:
 
 
 def read_plant() -> None:
-    plant = Plant.get(Plant.registeredPlant == registeredPlant)
+    plant = Plant.get(Plant.plantID == registeredPlant)
     assert plant.registeredPlant == registeredPlant
     assert plant.optima == optima
     assert plant.angle == angle
     assert plant.registeredChannel == registeredChannel
 
-    logger.debug(f"Got plant registered: {plant.registeredPlant}, optima: {plant.optima},angle: {plant.angle}, registered Channel: {plant.registeredChannel}")
+    logger.debug(f"Got plant registered: {plant.plantID}, optima: {plant.optima},angle: {plant.angle}, registered Channel: {plant.registeredChannel}")
 
 
 def read_plant_from_ID(id: CharField) -> None:

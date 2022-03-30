@@ -13,7 +13,7 @@ if IS_RPI and not SW_TEST:
 
     sense = SenseHat()
     camera = PiCamera()
-    servo = OutputDevice(13)
+    servo = OutputDevice(17)
     pin27 = OutputDevice(27)
     pin20 = OutputDevice(20)
     pin9 = OutputDevice(9)
