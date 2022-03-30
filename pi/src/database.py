@@ -3,7 +3,7 @@ from peewee import SqliteDatabase, Model, CharField, IntegerField
 db = SqliteDatabase('local_databaseFlora.db')
 
 
-class localPlantDB(Model):
+class localPlantDB(Model):                  # type: ignore
     class Meta:
         database = db
 
