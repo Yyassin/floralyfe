@@ -51,6 +51,12 @@ class IrrigationSystem(FloraNode):
         self.logger.debug(str(self.sensors.get_soil_moisture()))
         self.logger.debug(str(self.sensors.get_water_level()))
 
+        self.logger.debug("servo on")
+        self.sensors.turn_servo(180)
+        sleep(2)
+        self.logger.debug("servo off")
+        self.sensors.turn_servo(0)
+
     def test_function(self: "IrrigationSystem") -> str:
         """
             A test function to test testing.
