@@ -39,6 +39,12 @@ const tunnelConfig = {
 const server = http.createServer(app);
 
 // Define a route handler for the default home page
+app.get("/", (req, res) => {
+    res.status(200).send("Home route get");
+});
+
+
+// Define a route handler for the default home page
 app.get("/test", (req, res) => {
     res.status(200).send("Test passed!");
 });

@@ -3,6 +3,8 @@
  * exposes the interface through hooks. 
  */
 
+import { useStore } from "lib/store/store";
+import { config } from "process";
 import React, { useEffect, useRef, useState } from "react";
 import { validate } from "./validate";
 
@@ -15,7 +17,7 @@ interface Subscriptions {
 
 // Socket types
 type WSData = any;                                  // Data received
-type WSSend = (data: any) => (data: any) => void;   // Send Function
+type WSSend = (data: any, topic: string) => (data: any, topic: string) => void;   // Send Function
 
 // Socket interface 
 interface ISocket {
@@ -45,10 +47,13 @@ export default function useWebSocket(
     // const isSSR = typeof window === "undefined";
     // if (isSSR) return null as unknown as ISocket;               // Make sure this only runs client side.
 
+    const { user } = useStore((state) => ({
+        user: state.user
+    }));
     const ws = useRef<WebSocket>();                             // The WebSocket connection.
     const [data, setData] = useState<any>();                    // Stores latest received data.
     const [send, setSend] = useState<WSSend>(                   // Sends data over WebSocket
-        (data: any) => (data: any) => undefined
+        (data: any, topic: string) => (data: any, topic: string) => undefined
     );
     const [retryAttempts, setRetryAttempts] = useState(retry);  // Retry counter
     const [readyState, setReadyState] = useState(false);        // State of our connection
@@ -89,12 +94,30 @@ export default function useWebSocket(
         }
     };
 
+    const wsSend = (data: any, topic: string) => {
+        if (!user) return;
+        console.log("sending");
+        try {
+            const msg = {
+                topic,
+                userID: user?.id,
+                payload: data
+            }
+            const d = JSON.stringify(msg);
+            ws.current!.send(d);
+            return true;
+        } catch (err) {
+            return false;
+        }
+    }
+
     /**
      * Lifecycle method to setup socket and 
      * callbacks.
      */
     useEffect(() => {
         if (!socketUrl) return
+        let intervalID: any;
         // Only connect if we aren't already connected.
         if (!ws.current || ws.current.CLOSED) {
             ws.current = new WebSocket(socketUrl);
@@ -118,17 +141,15 @@ export default function useWebSocket(
             setReadyState(true);
 
             // Function to send messages
-            setSend((data: any) => {
-                return (data: any) => {
-                    try {
-                        const d = JSON.stringify(data);
-                        ws.current!.send(d);
-                        return true;
-                    } catch (err) {
-                        return false;
-                    }
-                };
+            setSend((data: any, topic: string) => {
+                return (data, topic) => wsSend(data, topic);
             });
+
+            intervalID = setInterval(() => {
+                wsSend({ msg: "ping" }, "ping")
+            }, 10 * 1000);
+
+            console.log("interval")
 
             // Receive messages callback.
             ws.current!.onmessage = onMessage;
@@ -144,11 +165,13 @@ export default function useWebSocket(
             //         setRetryAttempts((retryAttempts: any) => retryAttempts - 1);
             //     }, retryInterval);
             // }
+            // clearInterval(intervalID);
         };
 
         // Terminate connection on unmount
         return () => {
             ws.current!.close();
+            clearInterval(intervalID);
         };
 
         // Retry dependency here triggers the connection attempt

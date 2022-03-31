@@ -1,12 +1,12 @@
 from queue import Queue
-from typing import Any
+from typing import Any, cast
 from irrigation_system.IrrigationSystem import IrrigationSystem
 from config.io_config import pins
 from Sensors import Sensors
 
 queue = Queue()     # type: Queue[Any]
 sensors = Sensors(pins)
-irrigation = IrrigationSystem(queue, sensors)
+irrigation = IrrigationSystem(queue, sensors, cast(Any, None))
 
 
 def test_irrigation_test_function() -> None:
@@ -14,4 +14,4 @@ def test_irrigation_test_function() -> None:
 
 
 def test_irrigation_singleton() -> None:
-    assert irrigation == IrrigationSystem(queue, sensors)
+    assert irrigation == IrrigationSystem(queue, sensors, cast(Any, None))

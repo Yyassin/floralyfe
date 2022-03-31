@@ -10,22 +10,20 @@ import sys
 from typing import Any
 from queue import Queue
 from Sensors import Sensors
-# from util.util import IS_RPI
-# if IS_RPI:
-#     from sense_hat import SenseHat
-#     from picamera import PiCamera
-# from gpiozero import DigitalOutputDevice, GPIODevice, Servo
-
 from camera_system import CameraSystem
 from irrigation_system import IrrigationSystem
 from vital_system import VitalSystem
-from ws import WSReceiver
+from ws import WSClient
 import config.config as config
 import config.io_config as io
+import time
+from database import db, User, Photos, Plant, Device
 
 
 def main() -> None:
-    TEST = True
+    db.connect()
+    db.create_tables([User, Photos, Plant, Device])
+
     # Creates shared worker queues
     camera_task_queue = Queue()             # type: Queue[Any]
     irrigation_task_queue = Queue()         # type: Queue[Any]
@@ -41,20 +39,21 @@ def main() -> None:
 
     # Instantiate modules
     sensors = Sensors(io.pins)
-    camera_system = CameraSystem.CameraSystem(camera_task_queue, sensors)                    # Camera Monitoring Subsystem
-    irrigation_system = IrrigationSystem.IrrigationSystem(irrigation_task_queue, sensors)    # Irrigation Subsystem
-    vital_system = VitalSystem.VitalSystem(vitals_task_queue, sensors)                       # Irrigation Subsystem
-    ws_receiver = WSReceiver(queues, config.WS_URL, config.USER_ID, TEST)                    # WebSocket Receiver
+    ws = WSClient(queues, config.WS_URL, config.USER_ID)                                         # WebSocket Receiver
+    camera_system = CameraSystem.CameraSystem(camera_task_queue, sensors, ws)                    # Camera Monitoring Subsystem
+    irrigation_system = IrrigationSystem.IrrigationSystem(irrigation_task_queue, sensors, ws)    # Irrigation Subsystem
+    vital_system = VitalSystem.VitalSystem(vitals_task_queue, sensors, ws)                       # Irrigation Subsystem
 
     # Start the system nodes
     try:
+        ws.run()
+        time.sleep(5)
         camera_system.run()
-        irrigation_system.run()
-        vital_system.run()
-        ws_receiver.run()
+        # irrigation_system.run()
+        # vital_system.run()
 
         print("Press Ctrl+C to terminate...")
-        input()                                 # Pause the main thread
+        input()                                                                              # Pause the main thread
     except (KeyboardInterrupt, SystemExit):
         # cleanup here
         sys.exit()

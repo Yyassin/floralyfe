@@ -1,5 +1,5 @@
 from pprint import pprint
-from ws import WSReceiver
+from ws import WSClient
 from typing import Dict, Any
 from util.Logger import Logger
 import time
@@ -28,11 +28,11 @@ logger = Logger("WS Sender")
 if __name__ == "__main__":
     queues = {}                                    # type: Dict[Any, Any]
 
-    ws_receiver = WSReceiver(queues, config.WS_URL, config.USER_ID, False)
+    ws_receiver = WSClient(queues, config.WS_URL, config.USER_ID)
     ws_receiver.run()
 
     time.sleep(2)
     logger.debug("Sending vital:")
     pprint(test_vital_msg)
-    ws_receiver.send(test_vital_msg)
+    ws_receiver.send(test_vital_msg, "")
     input("Enter to exit.")

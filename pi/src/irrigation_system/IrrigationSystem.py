@@ -10,6 +10,7 @@ from typing import Any, Union
 from queue import Queue
 from flora_node.FloraNode import FloraNode
 from Sensors import Sensors
+from ws import WSClient
 
 
 class IrrigationSystem(FloraNode):
@@ -18,7 +19,7 @@ class IrrigationSystem(FloraNode):
         Monitors moisture sensors and controls water pumps to ...
     """
 
-    def __init__(self: "IrrigationSystem", task_queue: "Queue[Any]", sensors: Sensors, name: Union[str, None] = None) -> None:
+    def __init__(self: "IrrigationSystem", task_queue: "Queue[Any]", sensors: Sensors, ws: "WSClient", name: Union[str, None] = None) -> None:
         """
             Initializes the Irrigation System.
 
@@ -28,7 +29,7 @@ class IrrigationSystem(FloraNode):
             >>> irrigation = IrrigationSystem()
             >>> irrigation.run()
         """
-        super().__init__(task_queue, sensors, name)
+        super().__init__(task_queue, sensors, ws, name)
 
     def worker(self: "IrrigationSystem") -> None:
         """

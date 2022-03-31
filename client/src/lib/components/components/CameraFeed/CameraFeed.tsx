@@ -2,8 +2,31 @@ import React from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
 import { Box, Center, Flex } from "@chakra-ui/react"
 import styles from "./CameraFeed.module.scss"
+import useWebSocket from "lib/components/hooks/useWebSocket";
+import { useStore } from "lib/store/store";
+import { config, topics } from "lib/config";
+
+const INCREMENT = 2;
 
 const CameraFeed = (props: {url: string}) => {
+    const ws = useWebSocket(config.WS_URL, 5, 1500);
+    const { offsetAngle, angle } = useStore((state) => ({
+        offsetAngle: state.offsetAngle,
+        angle: state.angle
+    }));
+
+    const turn = (increment: number) => {
+        offsetAngle(increment);
+
+        const msg = {
+            topic: "servo-turn-angle",
+            angle: angle + increment
+        }
+
+        ws.send(msg, topics.CAMERA)
+    }
+
+
     return (
         <Box
             width={2000}
@@ -25,7 +48,7 @@ const CameraFeed = (props: {url: string}) => {
                     height={350}
                     backgroundImage={"linear-gradient(90deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.0))"}
                     className="plant-update-arrow-panel"
-                    onClick={() => console.log("turn camera left msg")}
+                    onClick={() => turn(-INCREMENT)}
                 >
                     <ChevronLeftIcon 
                         color="white"
@@ -38,7 +61,7 @@ const CameraFeed = (props: {url: string}) => {
                     height={350}
                     backgroundImage={"linear-gradient(-90deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.0))"}
                     className="plant-update-arrow-panel"
-                    onClick={() => console.log("turn camera right msg")}
+                    onClick={() => turn(INCREMENT)}
                 >
                     <ChevronRightIcon
                         color="white"

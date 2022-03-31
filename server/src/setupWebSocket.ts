@@ -138,6 +138,7 @@ export const processMessage = (ctx: WebSocket, message: WebSocket.RawData): void
         return;
     }
 
+
     // Assert topic field
     if (data.topic === undefined) {
         const response = {
@@ -149,6 +150,14 @@ export const processMessage = (ctx: WebSocket, message: WebSocket.RawData): void
     }
 
     const { topic, payload, userID, deviceID } = data;
+
+    if (data.topic === "ping") {
+        ctx.send("heartbeat");
+        deepLog("heartbeat")
+        return;
+    } else {
+        deepLog(data)
+    }
 
     // Process the remaining payload based on topic. Subscription id in payload.
     switch (topic) {

@@ -14,8 +14,6 @@ else:
 
 from gpiozero import GPIODevice, DigitalOutputDevice, PWMOutputDevice, AngularServo
 
-# sensehat, moisture
-
 
 class Sensors(Singleton):
     def __init__(self: "Sensors", pins: "Dict[str, Any]", channel: int = 1) -> None:

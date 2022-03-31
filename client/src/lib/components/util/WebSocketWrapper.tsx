@@ -72,14 +72,14 @@ const WebSocketWrapper = () => {
         if (!txtRef.current) return;
 
         const message = txtRef.current.value || "";
-        if (message) ws.send(message);
+        if (message) ws.send(message, "");
     };
 
     const sendDataJSON = () => {
         if (!txtRef.current) return;
 
         const message = txtRef.current.value || "";
-        if (message) ws.send(JSON.parse(message));
+        if (message) ws.send(JSON.parse(message), "");
     };
 
     const subscribeToHello = () => {
@@ -89,7 +89,7 @@ const WebSocketWrapper = () => {
                 userID: "hello1",
             },
         };
-        ws.send(msg);
+        ws.send(msg, "");
     };
 
     useEffect(() => {

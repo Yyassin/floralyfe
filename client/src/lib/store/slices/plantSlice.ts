@@ -19,8 +19,10 @@ export interface Plant {
 
 export type PlantSlice = {
     plants: Record<string, Plant>,
+    angle: number,
     addPlant: (plant: Plant) => void
-    resetPlants: () => void;
+    resetPlants: () => void,
+    offsetAngle: (offset: number) => void;
 }
 
 const addPlant = (plants: Record<string, Plant>, plant: Plant) => {
@@ -33,6 +35,7 @@ const addPlant = (plants: Record<string, Plant>, plant: Plant) => {
 
 export const createPlantSlice: StoreSlice<PlantSlice> = (set, get) => ({
     plants: {},
+    angle: 0,
     addPlant: (plant: Plant) => 
     set((state: StoreState) => ({
         ...state,
@@ -42,5 +45,9 @@ export const createPlantSlice: StoreSlice<PlantSlice> = (set, get) => ({
     resetPlants: () => set((state: StoreState) => ({
         ...state,
         plants: {}
+    })),
+    offsetAngle: (offset: number) => set((state: StoreState) => ({
+        ...state,
+        angle: state.angle + offset
     }))
 })

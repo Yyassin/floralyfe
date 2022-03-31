@@ -32,8 +32,11 @@ import { identifyPlant, toBase64 } from "lib/api/plantId";
 import { useStore } from "lib/store/store";
 import { deepLog } from "lib/components/hooks/validate";
 import { useRouter } from "next/router";
+import { config, topics } from "../../config"
+import useWebSocket from "lib/components/hooks/useWebSocket";
 
 const RegisterPlants = () => {
+    const ws = useWebSocket(config.WS_URL, 5, 1500);
     const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { addPlant, resetPlants, user, plants } = useStore((state) => ({
@@ -95,6 +98,27 @@ const RegisterPlants = () => {
         deepLog(`Querying db for plant vitals matching species: ${scientific}`)
         setPlantRecognitionAPIFlag(true);
     }
+    
+    const sendMsg = () => {
+    const msg = { 
+            id: "plant-id2",
+            topic: "register-plant",
+            optima: {
+               temperature: 39,
+               humidity: 21,
+               moisture: 12,
+            },
+            angle: 15,
+            registeredChannel: 2
+        }
+
+        // const msg = {
+        //     topic: "servo-turn-plant",
+        //     plantID: "plant-id"
+        // }
+        
+        ws.send(msg, topics.CAMERA)
+    }
 
     const confirm = () => {
         onClose();
@@ -126,7 +150,7 @@ const RegisterPlants = () => {
         setHumidity(0)
         setTemperature(0)
     }
-
+    
     return (user &&
         <Center display={"flex"} flexDirection={"column"}>
             <Box
@@ -181,7 +205,7 @@ const RegisterPlants = () => {
                         bg: "green.500",
                     }}
                     width={300}
-                    onClick={resetPlants}
+                    onClick={sendMsg} // resetPlants
                 >
                     Clear Plants
                 </Button>

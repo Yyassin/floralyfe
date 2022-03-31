@@ -1,5 +1,5 @@
 from queue import Queue
-from typing import Any
+from typing import Any, cast
 from config.config import SW_TEST
 from vital_system.VitalSystem import SenseIcon, VitalStates, VitalSystem
 from util.Logger import Logger
@@ -11,7 +11,7 @@ from deepdiff import DeepDiff
 
 queue = Queue()     # type: Queue[Any]
 sensors = Sensors(pins)
-vitals = VitalSystem(queue, sensors)
+vitals = VitalSystem(queue, sensors, cast(Any, None))
 logger = Logger("test_vitals")
 
 assert SW_TEST
@@ -26,7 +26,7 @@ def test_vitals_test_function() -> None:
 
 def test_vitals_singleton() -> None:
     """Vitals :: Vitals is Singleton"""
-    is_singleton = vitals == VitalSystem(queue, sensors)
+    is_singleton = vitals == VitalSystem(queue, sensors, cast(Any, None))
     logger.debug(f"Testing vitals is singleton, got: {is_singleton}")
     assert is_singleton
 

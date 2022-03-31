@@ -14,6 +14,7 @@ from datetime import datetime
 from Sensors import Sensors
 from enum import Enum
 import numpy as np
+from ws import WSClient
 
 from camera_system.opencv_filters import cv_green_mask, luminescense
 
@@ -110,7 +111,7 @@ class VitalSystem(FloraNode):
     """
 
     def __init__(self: "VitalSystem", task_queue: "Queue[Any]",
-                 sensors: Sensors, name: Union[str, None] = None) -> None:
+                 sensors: Sensors, ws: "WSClient", name: Union[str, None] = None) -> None:
         """
             Initializes the Camera System.
 
@@ -121,7 +122,7 @@ class VitalSystem(FloraNode):
             >>> camera = CameraSystem()
             >>> camera.run()
         """
-        super().__init__(task_queue, sensors, name)
+        super().__init__(task_queue, sensors, ws, name)
         self.state = VitalStates.IDLE
         self.vitals: Dict[str, Any] = {}
         self.optima: Dict[str, bool] = {}
@@ -155,7 +156,7 @@ class VitalSystem(FloraNode):
 
         self.client_msg = msg["payload"]
         self.state = VitalStates.SET_SENSE_ICON
-        
+
     def idle(self: "VitalSystem") -> None:
         self.logger.debug("IDLE")
 
@@ -260,7 +261,9 @@ class VitalSystem(FloraNode):
 
     def main(self: "VitalSystem") -> None:
         while True:
+            self.send({"hi": "hello"}, "test-topic")
             self.execute()
+            sleep(5)
 
     def test_function(self: "VitalSystem") -> str:
         assert(self.sensors is not None)

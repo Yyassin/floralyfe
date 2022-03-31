@@ -1,6 +1,6 @@
 const config = {
     GRAPHQL_URL: "https://floralyfeg.loca.lt",
-    WS_URL: "wss://floralyfec.loca.lt",
+    WS_URL: "ws://localhost:5000/",
     USER_ID: "yousef",
     DEVICE_ID: "yousef-device"
 }
