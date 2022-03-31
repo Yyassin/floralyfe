@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.get("/test", controller.notificationTest);
 router.get("/emailTest", controller.emailTest);
-router.get("/sendEmail", controller.sendEmailRouteHandler);
+router.post("/sendEmail", controller.sendEmailRouteHandler);
 
 export default router;

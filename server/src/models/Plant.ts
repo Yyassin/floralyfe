@@ -137,5 +137,6 @@ export {
     plant,
     schemaType,
     mutation, 
-    query
+    query,
+    IPlant
 }

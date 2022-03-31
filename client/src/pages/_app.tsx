@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import React from "react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { DefaultSeo } from "next-seo";
 import type { AppProps } from "next/app";

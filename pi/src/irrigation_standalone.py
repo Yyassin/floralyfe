@@ -7,12 +7,20 @@
 """
 
 from irrigation_system.IrrigationSystem import IrrigationSystem
+from Sensors import Sensors
+import config.io_config as io
+# from irrigation_system.Irrigation_simulation import main
 
 
-def main() -> None:
-    irrigation = IrrigationSystem(None)    # type: ignore
-    irrigation.test_function()
+def test_IrregationSystem() -> None:
+    sensors = Sensors(io.pins)
+    irrigation = IrrigationSystem(None, sensors)    # type: ignore
+    irrigation.main()
+
+
+# def test_simulation() -> None:
+#    main()
 
 
 if __name__ == "__main__":
-    main()
+    test_IrregationSystem()

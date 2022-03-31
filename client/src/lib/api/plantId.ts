@@ -112,14 +112,14 @@ const identifyPlant = async (encodedImage: string): Promise<PlantIDResponse> => 
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Success:', data);
+        // console.log('Success:', data);
         return data;
     })
     .catch((error) => {
         console.error('Error:', error);
     });
 
-    return response.data;
+    return response;
 }
 
 export {

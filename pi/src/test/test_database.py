@@ -77,7 +77,7 @@ def read_photos() -> None:
 
 
 def read_photos_from_ID(id: CharField) -> None:
-    photoIns.getByPlantID(id)  # type: ignore
+    photoIns.getByPlantID(id)
 
 
 def read_plant() -> None:
@@ -91,7 +91,7 @@ def read_plant() -> None:
 
 
 def read_plant_from_ID(id: CharField) -> None:
-    plantIns.getByID(id)  # type: ignore
+    plantIns.getByID(id)
 
 
 def read_device() -> None:
@@ -113,5 +113,5 @@ def main() -> None:
     read_plant()
     write_device()
     read_device()
-    read_plant_from_ID('mxb')  # type: ignore
-    read_photos_from_ID('photoId')  # type: ignore
+    read_plant_from_ID('mxb')
+    read_photos_from_ID('photoId')

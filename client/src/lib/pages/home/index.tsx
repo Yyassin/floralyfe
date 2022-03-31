@@ -1,3 +1,4 @@
+import React from "react";
 import { Box } from "@chakra-ui/react";
 import HomePage from "lib/components/layout/Home/Home";
 
@@ -7,15 +8,9 @@ import SomeText from "lib/components/samples/SomeText";
 
 const Home = () => {
   return (
-    <Box>
-      <HomePage/>
-      {/* <SomeImage />
-
-      <Box>
-        <SomeText />
-        <CTASection />
-      </Box> */}
-    </Box>
+    <>
+        <HomePage/>
+    </>
   );
 };
 
