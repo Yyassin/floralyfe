@@ -10,6 +10,7 @@ from typing import Any, Union
 from queue import Queue
 from flora_node.FloraNode import FloraNode
 from Sensors import Sensors
+from time import sleep
 
 
 class IrrigationSystem(FloraNode):
@@ -41,7 +42,20 @@ class IrrigationSystem(FloraNode):
             self.logger.warn(f"Activating water pump for {msg['payload']['wateringTimeout']} seconds")
 
     def main(self: "IrrigationSystem") -> None:
-        pass
+        self.logger.debug("Pump on")
+        self.sensors.turn_on_pump()
+        sleep(2)
+        self.logger.debug("Pump off")
+        self.sensors.turn_off_pump()
+
+        self.logger.debug(str(self.sensors.get_soil_moisture()))
+        self.logger.debug(str(self.sensors.get_water_level()))
+
+        self.logger.debug("servo on")
+        self.sensors.turn_servo(180)
+        sleep(2)
+        self.logger.debug("servo off")
+        self.sensors.turn_servo(0)
 
     def test_function(self: "IrrigationSystem") -> str:
         """
