@@ -1,6 +1,7 @@
 import config.get_mock_pins as mock
 from util.util import IS_RPI
-from gpiozero import OutputDevice, LED
+from gpiozero import LED, AngularServo
+from gpiozero.pins.pigpio import PiGPIOFactory
 from config.config import SW_TEST
 from util.Logger import Logger
 
@@ -23,7 +24,7 @@ if IS_RPI and not SW_TEST:
 
     sense = SenseHat()
     camera = PiCamera()
-    servo = OutputDevice(13)
+    servo = AngularServo(17, min_angle=0, max_angle=180, min_pulse_width=0.5 / 1000, max_pulse_width=2.5 / 1000, pin_factory=PiGPIOFactory())
 
     chan0 = AnalogIn(mcp, MCP.P0)
     chan1 = AnalogIn(mcp, MCP.P1)
