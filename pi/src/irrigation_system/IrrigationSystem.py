@@ -30,6 +30,13 @@ class IrrigationSystem(FloraNode):
             >>> irrigation.run()
         """
         super().__init__(task_queue, sensors, name)
+        """
+        plants = {plantid : obj}
+
+        find all plants{
+            add them
+        }
+        """
 
     def worker(self: "IrrigationSystem") -> None:
         """
@@ -40,6 +47,17 @@ class IrrigationSystem(FloraNode):
             msg = self.task_queue.get()
             self.logger.debug(f"Got {msg}")
             self.logger.warn(f"Activating water pump for {msg['payload']['wateringTimeout']} seconds")
+
+            """
+            if (request == add plant){
+                plant[plantid] = obj;
+                thread(obj.main, dameon)
+                thread.start
+            }
+            elif (override){
+                plants[plantid].override()
+            }
+            """
 
     def main(self: "IrrigationSystem") -> None:
         self.logger.debug("Pump on")
@@ -56,6 +74,9 @@ class IrrigationSystem(FloraNode):
         sleep(2)
         self.logger.debug("servo off")
         self.sensors.turn_servo(0)
+
+    def run(self: "IrrigationSystem") -> None:
+        pass
 
     def test_function(self: "IrrigationSystem") -> str:
         """
