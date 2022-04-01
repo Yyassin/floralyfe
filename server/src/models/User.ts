@@ -69,7 +69,7 @@ const mutation = gql`
 `;
 
 const query = gql`
-    users(username: String!): [User]
+    users(email: String!, password: String!): User
 
     signIn(username: String!, password: String!): Token!
 
@@ -82,8 +82,8 @@ class User extends FirestoreDocument<IUser, createUserArgs> {
         super(Collections.USERS);
     }
 
-    public async getByUsername(username: string): Promise<IUser[]> {
-        const snapshot = await this.model.where("username", "==", username).get();
+    public async getByEmail(email: string): Promise<IUser[]> {
+        const snapshot = await this.model.where("email", "==", email).get();
         return snapshot.docs.map((doc: DocumentData) => ({
             id: doc.id,
             ...doc.data(),
@@ -93,8 +93,14 @@ class User extends FirestoreDocument<IUser, createUserArgs> {
 
 const user = new User();
 
-const getUserByUsername = async (args: { username: string }) => {
-    return await user.getByUsername(args.username);
+const getUserByLogin = async (args: { email: string, password: string }) => {
+    const fetchedUser = await user.getByEmail(args.email);
+
+    if (args.password !== fetchedUser[0].password) {
+        return null
+    }
+
+    return fetchedUser[0]
 }
 
 const signIn = async (args: { username: string, password: string}) => {
@@ -146,7 +152,7 @@ const deleteUser = async (
 };
 
 const queries = () => ({
-    users: (_, args) => getUserByUsername(args),
+    users: (_, args) => getUserByLogin(args),
     signIn: (_, args) => signIn(args),
     signOut: (_, args) => signOut(args),
 });

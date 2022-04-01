@@ -6,7 +6,7 @@ import useWebSocket from "lib/components/hooks/useWebSocket";
 import { useStore } from "lib/store/store";
 import { config, topics } from "lib/config";
 
-const INCREMENT = 2;
+const INCREMENT = 5;
 
 const CameraFeed = (props: {url: string}) => {
     const ws = useWebSocket(config.WS_URL, 5, 1500);

@@ -3,7 +3,7 @@
  */
 
 import create from "zustand";
-import { persist } from "zustand/middleware"
+import { devtools, persist } from "zustand/middleware"
 import { createUserSlice, UserSlice } from "./slices/authSlice";
 
 import { NoteSlice, createNoteSlice, Note } from "./slices/notesSlice";
@@ -30,7 +30,7 @@ type Store = {
 
 // Creates the store and associated actions.
 // Exposes the store through a hook.
-const useStore = create<StoreState>(persist((set, get) => ({
+const useStore = create<StoreState>(devtools(persist((set, get) => ({
     ...createNoteSlice(set, get),
     ...createUserSlice(set, get),
     ...createPlantSlice(set, get),
@@ -54,6 +54,6 @@ const useStore = create<StoreState>(persist((set, get) => ({
     name: "app-storage",               // unique name
     // getStorage: () => sessionStorage, // (optional) by default, 'localStorage' is used
 }
-));
+)));
 
 export { useStore };

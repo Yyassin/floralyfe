@@ -8,6 +8,7 @@ export interface User {
     lastName: string;
     email: string;
     password: string;
+    deviceID: string | null;
 };
 
 export type UserSlice = {

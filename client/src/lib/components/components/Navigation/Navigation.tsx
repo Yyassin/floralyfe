@@ -146,7 +146,10 @@ export default function Navigation() {
                                     src={logo}
                                     width={55}
                                     height={40}
-                                    onClick={() => localStorage.clear()}
+                                    onClick={() => {
+                                        console.log("clear ls")
+                                        localStorage.clear();
+                                    }}
                                 />
                                 <Link ml={3} href="/">
                                     floralyfe
