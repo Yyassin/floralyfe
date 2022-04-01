@@ -9,4 +9,6 @@ env/
 *.npm
 .bash_history'
 RTIMU/
+pigpio-master/
+master.zip
 pi/freeze

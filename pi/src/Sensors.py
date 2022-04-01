@@ -45,7 +45,7 @@ class Sensors(Singleton):
         self.sense.set_pixels(mat)
 
     def get_water_level(self: "Sensors") -> float:
-        return cast(float, self.water_level.value)
+        return cast(float, self.water_level.voltage)
 
     def set_channel(self: "Sensors", channel: int) -> None:
         self.channel = channel
@@ -55,7 +55,7 @@ class Sensors(Singleton):
 
     def get_soil_moisture(self: "Sensors", channel: Union[int, None] = None) -> float:
         sensor = cast(PWMOutputDevice, self.channels[self._get_channel(channel)]["moisture"])
-        return cast(float, sensor.value)
+        return cast(float, sensor.voltage)
 
     def turn_on_pump(self: "Sensors", channel: Union[int, None] = None) -> None:
         pump = cast(DigitalOutputDevice, self.channels[self._get_channel(channel)]["pump"])
