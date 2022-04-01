@@ -8,9 +8,9 @@ from util.Logger import Logger
 logger = Logger("io_config")
 
 if IS_RPI and not SW_TEST:
-    # from sense_hat import SenseHat
-    from config.get_mock_pins import SenseHat, PiCamera
-    # from picamera import PiCamera
+    from sense_hat import SenseHat
+    # from config.get_mock_pins import SenseHat, PiCamera
+    from picamera import PiCamera
     import busio
     import digitalio
     import board
@@ -29,7 +29,7 @@ if IS_RPI and not SW_TEST:
     chan0 = AnalogIn(mcp, MCP.P0)
     chan1 = AnalogIn(mcp, MCP.P1)
     chan2 = AnalogIn(mcp, MCP.P2)
-    pin17 = LED(17)
+    pin17 = LED(22)
     pin27 = LED(27)
 
     gpios = [pin27, pin17, servo, camera]

@@ -11,7 +11,7 @@ class SenseHat():
         self.matrix = [BLACK] * self.PIXELS
 
     def get_temperature(self: "SenseHat") -> float:
-        return 35.15
+        return 35.17
 
     def get_humidity(self: "SenseHat") -> float:
         return 22.42
