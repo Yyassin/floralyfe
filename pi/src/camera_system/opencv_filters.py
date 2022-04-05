@@ -11,17 +11,21 @@ def cv_green_mask(filename: str) -> float:
     # source: https://stackoverflow.com/questions/47483951/how-to-define-a-threshold-value-to-detect-only-green-colour-objects-in-an-image
     img = cast("cv.Image", cv.imread(filename))
 
-    hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
+    return green_mask(img)
+
+
+def green_mask(image: "cv.Image") -> float:
+    hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
 
     mask = cv.inRange(hsv, (36, 25, 25), (70, 255, 255))
 
     imask = mask > 0
-    green = cast(Any, np.zeros_like(img, np.uint8))
-    green[imask] = img[imask]
+    green = cast(Any, np.zeros_like(image, np.uint8))
+    green[imask] = image[imask]
 
     cv.imwrite("../images/bright_plant_mask.jpg", green)
 
-    return cast(float, green.sum() / green.size)
+    return cast(float, green.sum() / (green.size * 255))
 
 
 def luminescense(image: "cv.Image") -> float:

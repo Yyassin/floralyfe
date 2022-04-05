@@ -39,7 +39,7 @@ class WSClient(Singleton.Singleton):
     """
 
     def __init__(self: "WSClient", queues: "Dict[str, Queue[Any]]",
-                 url: str, subscription_id: str) -> None:
+                 url: str, subscription_id: str, device_id: str) -> None:
         """
             Initializes a new WSReceiver with the specified parameters.
 
@@ -55,6 +55,7 @@ class WSClient(Singleton.Singleton):
         self.queues = queues
         self.url = url
         self.subscription_id = subscription_id
+        self.device_id = device_id
         self.logger = Logger.Logger(type(self).__name__)
         self.ping_thread = None
         self.ws = None                       # Empty websocket connection
@@ -99,6 +100,7 @@ class WSClient(Singleton.Singleton):
         queue = self.queues.get(topic)           # Otherwise, send it to the
         if queue:                                # associated listener queue.
             queue.put(message)
+            self.logger.debug(f"Put in queue {topic}")
 
     def send(self: "WSClient", message: Dict[str, Any], topic: str) -> None:
         """
@@ -106,7 +108,7 @@ class WSClient(Singleton.Singleton):
 
             :param message: The message (json) to push.
         """
-        message["deviceID"] = config.DEVICE_ID  # From db
+        message["deviceID"] = self.device_id  # From db
         message["topic"] = topic
         if self.ws is not None:
             self.ws.send(dumps(message))

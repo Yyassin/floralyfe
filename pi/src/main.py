@@ -6,7 +6,6 @@ Application main entrypoint. Initializes and starts nodes.
 
 __author__ = "yousef"
 
-from pprint import pprint
 import sys
 from typing import Any
 from queue import Queue
@@ -18,12 +17,13 @@ from query.user_query import login, update_user
 from vital_system import VitalSystem
 from ws import WSClient
 import config.config as config
-import config.io_config as io
 import time
 from database import db, User, Photos, Plant, Device
 
+MODELS = (User, Photos, Plant, Device)
 
-def login_prompt() -> tuple[str, str]:
+
+def login_prompt() -> tuple[str, str, str]:
     users = list(User.select())
     print(users)
 
@@ -34,13 +34,12 @@ def login_prompt() -> tuple[str, str]:
         command = input(f"Found logged in user {user.email}. Would you like to reset? (Y/N)")
 
         if command == "N":
-            return user.userID, user.deviceID
-
-    email = input("Please enter your account email: ")
-    password = input("Please enter your account password: ")
+            return user.userID, user.deviceID, user.email
 
     user = None
     while user is None:
+        email = input("Please enter your account email: ")
+        password = input("Please enter your account password: ")
         query_response = login(email, password)
 
         user = query_response["users"]
@@ -55,18 +54,19 @@ def login_prompt() -> tuple[str, str]:
 
     print(deviceID)
     update_user({"id": user["id"], "deviceID": deviceID})
-    User.delete().execute()
+    db.drop_tables(MODELS)
+    db.create_tables([User, Photos, Plant, Device])
 
     User.create(userID=user["id"], email=user["email"], password=user["password"], deviceID=deviceID)
 
     print("Successfully registered device. Refresh the client.")
-    return user["id"], deviceID
+    return user["id"], deviceID, user["email"]
 
 
 def main() -> None:
     db.connect()
     db.create_tables([User, Photos, Plant, Device])
-    subscription_id, device_id = login_prompt()
+    subscription_id, device_id, email = login_prompt()
 
     # Creates shared worker queues
     camera_task_queue = Queue()             # type: Queue[Any]
@@ -82,25 +82,26 @@ def main() -> None:
     }
 
     # Instantiate modules
-    sensors = Sensors(io.pins)
+    sensors = Sensors()
     ws = WSClient(queues, config.WS_URL, subscription_id, device_id)                                         # WebSocket Receiver
     camera_system = CameraSystem.CameraSystem(camera_task_queue, sensors, ws)                    # Camera Monitoring Subsystem
-    irrigation_system = IrrigationSystem.IrrigationSystem(irrigation_task_queue, sensors, ws)    # Irrigation Subsystem
-    vital_system = VitalSystem.VitalSystem(vitals_task_queue, sensors, ws)                       # Irrigation Subsystem
+    irrigation_system = IrrigationSystem.IrrigationSystem(irrigation_task_queue, sensors, ws, device_id)    # Irrigation Subsystem
+    vital_system = VitalSystem.VitalSystem(vitals_task_queue, sensors, ws, device_id, email)                       # Irrigation Subsystem
 
     # Start the system nodes
     try:
         ws.run()
         time.sleep(5)
         camera_system.run()
-        # irrigation_system.run()
-        # vital_system.run()
+        irrigation_system.run()
+        vital_system.run()
 
         print("Press Ctrl+C to terminate...")
         input()                                                                              # Pause the main thread
     except (KeyboardInterrupt, SystemExit):
+        print("Cleanup. Exiting..")
         # cleanup here
-        io.close_all()
+        sensors.cleanup()
         sys.exit()
 
 

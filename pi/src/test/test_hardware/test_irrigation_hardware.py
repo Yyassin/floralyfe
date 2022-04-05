@@ -45,7 +45,7 @@ def test_waterLevel_water() -> None:
     spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
     cs = digitalio.DigitalInOut(board.D22)
     mcp = MCP.MCP3008(spi, cs)
-    
+
     chan0 = AnalogIn(mcp, MCP.P1)
 
     print('Raw ADC Value: ', chan0.value)
@@ -83,7 +83,7 @@ def test_transistor() -> None:
 
 
 def test_servo() -> None:
-    gpio = 18
+    gpio = 17
     # factory = PiGPIOFactory()
     servo = AngularServo(gpio, min_angle=0, max_angle=180, min_pulse_width=0.5 / 1000, max_pulse_width=2.5 / 1000)
 
@@ -103,4 +103,4 @@ def test_servo() -> None:
 
 
 if __name__ == "__main__":
-    test_transistor()
+    test_moisture_dry()

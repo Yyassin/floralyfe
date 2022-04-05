@@ -8,14 +8,14 @@
 
 from irrigation_system.IrrigationSystem import IrrigationSystem
 from Sensors import Sensors
-import config.io_config as io
 # from irrigation_system.Irrigation_simulation import main
 
 
 def test_IrregationSystem() -> None:
-    sensors = Sensors(io.pins)
-    irrigation = IrrigationSystem(None, sensors)    # type: ignore
+    sensors = Sensors()
+    irrigation = IrrigationSystem(None, sensors, None)    # type: ignore
     irrigation.main()
+    sensors.cleanup()
 
 
 # def test_simulation() -> None:

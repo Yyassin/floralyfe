@@ -8,14 +8,14 @@
 
 from Sensors import Sensors
 from vital_system import VitalSystem
-import config.io_config as io
 
 
 def main() -> None:
     # Instantiate modules
-    sensors = Sensors(io.pins)
+    sensors = Sensors()
     vitals = VitalSystem.VitalSystem(None, sensors)    # type: ignore
     vitals.test_function()
+    sensors.cleanup()
 
 
 if __name__ == "__main__":

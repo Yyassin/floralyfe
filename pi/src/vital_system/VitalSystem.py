@@ -6,6 +6,7 @@ Camera Monitoring Subsystem Controller API
 
 __author__ = "yousef"
 
+from config import config
 from typing import Any, Dict, Callable, Union, cast
 from time import sleep
 from queue import Queue
@@ -13,10 +14,16 @@ from flora_node.FloraNode import FloraNode
 from datetime import datetime
 from Sensors import Sensors
 from enum import Enum
-import numpy as np
+from camera_system.camera_util import image_buffer
+from query.create_notification import create_notification
+from query.vitals_query import create_vital
+from query.send_email import send_email
 from ws import WSClient
+from database import Plant
+import threading
+import schedule
 
-from camera_system.opencv_filters import cv_green_mask, luminescense
+from camera_system.opencv_filters import green_mask, luminescense
 
 
 class VitalStates(Enum):
@@ -30,9 +37,9 @@ class VitalStates(Enum):
 
 class SenseIcon(Enum):
     CLEAR = "CLEAR"
-    SUN = "SUN"
+    SUN = "HUMIDITY"
     MOISTURE = "MOISTURE"
-    THERMOMETER = "THERMOMETER"
+    THERMOMETER = "TEMPERATURE"
     WATER_LEVEL = "WATER_LEVEL"
     HAPPY = "HAPPY"
 
@@ -99,11 +106,6 @@ THERMOMETER_ICON = [
 ]
 
 
-# For testing
-blank_image = np.zeros((512, 512, 3), np.uint8)
-blank_image[:] = (118, 118, 118)
-
-
 class VitalSystem(FloraNode):
     """
         Higher level camera monitoring subsystem API. Controls
@@ -111,7 +113,7 @@ class VitalSystem(FloraNode):
     """
 
     def __init__(self: "VitalSystem", task_queue: "Queue[Any]",
-                 sensors: Sensors, ws: "WSClient", name: Union[str, None] = None) -> None:
+                 sensors: Sensors, ws: "WSClient", deviceID: str, email: str, name: Union[str, None] = None) -> None:
         """
             Initializes the Camera System.
 
@@ -124,9 +126,12 @@ class VitalSystem(FloraNode):
         """
         super().__init__(task_queue, sensors, ws, name)
         self.state = VitalStates.IDLE
+        self.registering = True
+        self.deviceID = deviceID
+        self.email = email
         self.vitals: Dict[str, Any] = {}
+        self.plant_optima = {}
         self.optima: Dict[str, bool] = {}
-        self.client_msg: Any = None
         self.optima_to_icon_enum = {
             "temperature": SenseIcon.THERMOMETER,
             "waterLevel": SenseIcon.WATER_LEVEL,
@@ -134,10 +139,10 @@ class VitalSystem(FloraNode):
             "humidity": SenseIcon.SUN
         }
         self.enum_to_icon = {
-            SenseIcon.THERMOMETER: HAPPY_ICON,
-            SenseIcon.WATER_LEVEL: HAPPY_ICON,
-            SenseIcon.MOISTURE: HAPPY_ICON,
-            SenseIcon.SUN: HAPPY_ICON,
+            SenseIcon.THERMOMETER: THERMOMETER_ICON,
+            SenseIcon.WATER_LEVEL: WATER_LEVEL_ICON,
+            SenseIcon.MOISTURE: MOISTURE_ICON,
+            SenseIcon.SUN: SUN_ICON,
             SenseIcon.HAPPY: HAPPY_ICON
         }
 
@@ -151,34 +156,123 @@ class VitalSystem(FloraNode):
 
     def process_queue(self: "VitalSystem") -> None:
         msg = self.task_queue.get()
-        self.logger.debug(f"Got {msg}")
-        self.logger.warn(f"Setting SenseHat to {msg['payload']['icon']}")
+        # self.logger.debug(f"Got {msg}")
 
-        self.client_msg = msg["payload"]
-        self.state = VitalStates.SET_SENSE_ICON
+        client_msg = msg["payload"]
+        topic = client_msg["topic"]
+
+        if topic == "dashboard-topic":
+            self.registering = False
+        elif topic == "sensehat-icon-topic":
+            self.set_sense_icon(client_msg)
+        elif topic == "select-plant-topic":
+            selected_plant_id = client_msg["plantID"]
+            plant = Plant.get(Plant.plantID == selected_plant_id)
+            self.sensors.set_selected_plant(selected_plant_id, plant.registeredChannel)
+        elif topic == "toggle-water":
+            self.sensors.set_water_mean(0.1 if self.sensors.water_mean > 0.5 else 0.95)
+        elif topic == "toggle-channel-1":
+            self.sensors.set_moisture_mean(0.15 if self.sensors.channel[1]["mean"] > 0.5 else 0.9, 1)   # type: ignore
+        elif topic == "toggle-channel-2":
+            self.sensors.set_moisture_mean(0.0 if self.sensors.channel[2]["mean"] > 0.5 else 0.82, 2)    # type: ignore
+        elif topic == "increase-channel":
+            self.sensors.set_moisture_mean(self.sensors.channel[2]["mean"] + 0.05, 2)    # type: ignore
 
     def idle(self: "VitalSystem") -> None:
         self.logger.debug("IDLE")
 
-        sleep(0)
+    def get_vitals(self: "VitalSystem") -> Any:
+        if (image_buffer[0] is None):
+            self.state = VitalStates.IDLE
+            return None
 
-        self.state = VitalStates.MEASURE_VITALS
+        try:
+            plant = Plant.get(Plant.plantID == self.sensors.get_selected_plant_id())
+        except Exception as e:
+            self.logger.debug(f"No plants registered: {e}")
+            self.state = VitalStates.IDLE
+            return None
+
+        channel = plant.registeredChannel
+
+        my_date = datetime.now()
+        frame = image_buffer[0]
+        self.vitals = {
+            "soilMoisture": self.sensors.get_soil_moisture(channel),
+            "temperature": self.sensors.get_temperature(),
+            "airHumidity": self.sensors.get_humidity(),
+            "waterLevel": self.sensors.get_water_level(),
+            "light": luminescense(frame),
+            "greenGrowth": green_mask(frame) * 100,
+            "gpios": self.sensors.get_gpios(),
+            "plantID": self.sensors.get_selected_plant_id(),
+            "createdAt": my_date.isoformat(),
+        }
+
+        optima = eval(plant.optima)
+        self.logger.debug(f"Comparing against optima: {optima}")
+
+        below_threshold = False
+        for optimal in optima:
+            if float(self.vitals[optimal]) < float(optima[optimal]):
+                below_threshold = True
+                self.logger.debug(f"{optimal} is below the optimal value!")
+
+        self.vitals["critical"] = below_threshold
+
+        return self.vitals
+
+    def start_vital_stream(self: "VitalSystem") -> None:
+        while (True):
+            vital = self.get_register_vitals() if self.registering else self.get_vitals()
+            self.logger.debug(f"registering ? {self.registering}")
+
+            msg = {
+                "payload": {
+                    "vital": vital
+                }
+            }
+            topic = "register-vital-topic" if self.registering else "vitals-topic"
+            self.send(msg, topic)
+            sleep(1)
+
+    def get_register_vitals(self: "VitalSystem") -> Any:
+        gpios = self.sensors.get_gpios()
+
+        vitals = {
+            "common": {
+                "temperature": self.sensors.get_temperature(),
+                "airHumidity": self.sensors.get_humidity(),
+                "waterLevel": self.sensors.get_water_level(),
+            },
+            "channel1": {
+                "moisture": {
+                    "value": self.sensors.get_soil_moisture(1),
+                    "gpio": gpios[0]
+                },
+                "waterPump": {
+                    "gpio": gpios[2]
+                }
+            },
+            "channel2": {
+                "moisture": {
+                    "value": self.sensors.get_soil_moisture(2),
+                    "gpio": gpios[1]
+                },
+                "waterPump": {
+                    "gpio": gpios[3]
+                }
+            }
+        }
+
+        return vitals
 
     def measure_vitals(self: "VitalSystem") -> None:
         self.logger.debug("MEASURE_VITALS")
 
-        my_date = datetime.now()
-
-        self.vitals = {
-            "soilMoisture": self.sensors.get_soil_moisture(),
-            "temperature": self.sensors.get_temperature(),
-            "airHumidity": self.sensors.get_humidity(),
-            "waterLevel": self.sensors.get_water_level(),
-            "light": luminescense(blank_image),
-            "greenGrowth": cv_green_mask("./images/bright_plant.jpg"),
-            "plantID": "yousef-plant",
-            "createdAt": my_date.isoformat()
-        }
+        if self.get_vitals() is None:
+            self.state = VitalStates.IDLE
+            return
 
         self.logger.debug(f"Got vitals: {self.vitals}")
         self.state = VitalStates.COMPARE_OPTIMA
@@ -186,13 +280,15 @@ class VitalSystem(FloraNode):
     def compare_optima(self: "VitalSystem") -> None:
         self.logger.debug("COMPARE_OPTIMA")
 
-        # Get this from db eventually
-        optima = {
-            "soilMoisture": 0.3,
-            "temperature": 20,
-            "airHumidity": 20,
-            "waterLevel": 0.2
-        }
+        try:
+            plant = Plant.get(Plant.plantID == self.sensors.get_selected_plant_id())
+            optima = eval(plant.optima)
+            self.plant_optima = optima
+            self.logger.debug(f"Comparing against optima: {optima}")
+        except Exception as e:
+            self.logger.debug(f"No plants registered: {e}")
+            self.state = VitalStates.IDLE
+            return None
 
         below_threshold = False
         for optimal in optima:
@@ -203,28 +299,64 @@ class VitalSystem(FloraNode):
 
         self.state = VitalStates.SEND_NOTIFICATION if below_threshold else VitalStates.PUBLISH_VITAL
 
+    def get_opt_sentence(self: "VitalSystem", optimal: Any) -> str:
+        return f"<b> {optimal} </b>: (current: {self.vitals[optimal]}, optimal: {self.plant_optima[optimal]})"
+
     def send_notification(self: "VitalSystem") -> None:
         self.logger.debug("SEND_NOTIFICATION")
 
-        sleep(0)
+        below_optimal_types = [optimal for optimal in self.optima if self.optima[optimal]]
+        below_optimal = [self.get_opt_sentence(optimal) for optimal in self.optima if self.optima[optimal]]
+        new_line = "\n"
+        email_msg = f"""
+            The following vitals for plant-{self.sensors.selected_plant_id} are below their set thresholds and need
+            your attention
+            {new_line}{new_line.join(below_optimal)}
+        """
+
+        send_email(
+            self.email,
+            f"Floralyfe: Vitals Critical (Plant-{self.sensors.selected_plant_id})",
+            email_msg,
+            f"{email_msg}",
+            f"{config.API_SERVER}/notification/sendEmail"
+        )
+
+        type = str(self.optima_to_icon_enum[below_optimal_types[0]].value)
+        create_notification({
+            "label": type,
+            "type": type,
+            "plantID": self.sensors.get_selected_plant_id(),
+            "deviceID": self.deviceID
+        })
 
         self.state = VitalStates.PUBLISH_VITAL
 
     def publish_vital(self: "VitalSystem") -> None:
         self.logger.debug("PUBLISH_VITAL")
 
-        sleep(0)
+        vital = self.vitals
+        vital_msg = {
+            "soilMoisture": vital["soilMoisture"],
+            "airHumidity": vital["airHumidity"],
+            "light": vital["light"],
+            "temperature": vital["temperature"],
+            "greenGrowth": vital["greenGrowth"],
+            "plantID": self.sensors.get_selected_plant_id(),
+            "deviceID": self.deviceID
+        }
+
+        create_vital(vital_msg)
 
         self.state = VitalStates.SET_SENSE_ICON
 
-    def set_sense_icon(self: "VitalSystem") -> None:
+    def set_sense_icon(self: "VitalSystem", msg: Any = None) -> None:
         self.logger.debug("SET_SENSE_ICON")
 
-        if self.client_msg:
-            icon_enum = self.client_msg["icon"]
+        if msg:
+            icon_enum = msg["icon"]
             self.logger.debug(f"Got client msg, setting sense icon: {icon_enum}")
             self.sensors.set_sense_mat(self.enum_to_icon[SenseIcon(icon_enum)])      # type: ignore
-            self.client_msg = None
             self.state = VitalStates.IDLE
             return
 
@@ -234,6 +366,15 @@ class VitalSystem(FloraNode):
                 icon_enum = self.optima_to_icon_enum[optimal]
                 self.logger.debug(f"Setting sense icon: {icon_enum}")
 
+                msg = {
+                    "payload": {
+                        "icon": icon_enum.value
+                    }
+                }
+                topic = "set-sense-topic"
+                self.send(msg, topic)
+                self.logger.warn(f"sent {msg}")
+
                 self.sensors.set_sense_mat(self.enum_to_icon[icon_enum])  # type: ignore
 
                 self.state = VitalStates.IDLE
@@ -241,6 +382,16 @@ class VitalSystem(FloraNode):
 
         self.sensors.set_sense_mat(self.enum_to_icon[SenseIcon.HAPPY])  # type: ignore
         self.logger.debug(f"Setting sense icon: {SenseIcon.HAPPY}")
+
+        msg = {
+            "payload": {
+                "icon": SenseIcon.HAPPY.value
+            }
+        }
+        topic = "set-sense-topic"
+        self.send(msg, topic)
+        self.logger.warn(f"sent {msg}")
+
         self.state = VitalStates.IDLE
 
     def execute(self: "VitalSystem") -> None:
@@ -259,11 +410,22 @@ class VitalSystem(FloraNode):
 
         stateOperation.get(self.state, default)()
 
+    def start_state_machine(self: "VitalSystem") -> None:
+        self.state = VitalStates.MEASURE_VITALS
+        self.logger.debug("Measuring vitals")
+
     def main(self: "VitalSystem") -> None:
         while True:
-            self.send({"hi": "hello"}, "test-topic")
             self.execute()
-            sleep(5)
+            schedule.run_pending()
+            sleep(1)
+
+    def run(self: "VitalSystem") -> None:
+        super().run()
+        self.vital_stream_thread = threading.Thread(target=self.start_vital_stream, daemon=True)
+        self.vital_stream_thread.start()
+
+        schedule.every().minute.at(":00").do(self.start_state_machine)
 
     def test_function(self: "VitalSystem") -> str:
         assert(self.sensors is not None)

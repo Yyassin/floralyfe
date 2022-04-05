@@ -1,6 +1,6 @@
 # need to pip install requests
 
-import pi.src.config.config as config
+import config.config as config
 from typing import Dict, Any, cast
 import requests
 import pprint
