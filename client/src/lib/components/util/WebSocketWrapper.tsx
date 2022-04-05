@@ -43,7 +43,7 @@ const WebSocketWrapper = () => {
     } = useQuery(GET_VITALS);
 
     if (!loading && gqlData) {
-        console.log("GQL", gqlData);
+        //console.log("GQL", gqlData);
     }
 
     const { cameraEncoded, setCameraEncoded } = useStore((state) => ({
@@ -57,7 +57,7 @@ const WebSocketWrapper = () => {
             updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return prev;
 
-                console.log("SUB", subscriptionData);
+                //console.log("SUB", subscriptionData);
             },
         });
 

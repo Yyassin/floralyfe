@@ -1,4 +1,4 @@
-import { uuid } from "lib/components/util/uuid";
+import { uuid } from "lib/components/util/util";
 import { notifications } from "../mock";
 import { StoreState } from "../store";
 import { StoreSlice } from "../storeSlice";

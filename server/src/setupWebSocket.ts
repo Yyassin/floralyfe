@@ -128,7 +128,7 @@ export const processMessage = (ctx: WebSocket, message: WebSocket.RawData): void
     // Attempt to decode binary data to json. All message must be in JSON format.
     try {
         data = JSON.parse(Buffer.from(message as ArrayBuffer).toString());
-        //deepLog(data);
+        deepLog(data);
     } catch (e) {
         const response = {
             status: status.ERROR,
@@ -138,6 +138,7 @@ export const processMessage = (ctx: WebSocket, message: WebSocket.RawData): void
         return;
     }
 
+    // deepLog(data)
 
     // Assert topic field
     if (data.topic === undefined) {
@@ -153,12 +154,10 @@ export const processMessage = (ctx: WebSocket, message: WebSocket.RawData): void
 
     if (data.topic === "ping") {
         ctx.send("heartbeat");
-        deepLog("heartbeat")
+        // deepLog("heartbeat")
         return;
-    } else {
-        deepLog(data)
     }
-
+    
     // Process the remaining payload based on topic. Subscription id in payload.
     switch (topic) {
         // Create a subscription between id and socket ctx.
@@ -247,6 +246,7 @@ const setupWebSocket = (server: http.Server): void => {
 
     // Handle upgrade of the request (from http server -> ws)
     server.on("upgrade", function upgrade(request, socket, head) {
+        debug("Got connection request")
         try {
             // Authentication and some other steps will come here
             // we can choose whether to upgrade or not

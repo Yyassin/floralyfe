@@ -1,7 +1,11 @@
 import React from "react";
 import { ExternalLinkIcon, MoonIcon, PhoneIcon, ViewIcon } from "@chakra-ui/icons";
 import { Box, Center, Flex, Text } from "@chakra-ui/react";
-import { useStore } from "lib/store/store";
+import { BsDropletFill, BsWater } from "react-icons/bs";
+import { RiEmotionHappyLine } from "react-icons/ri";
+import { FaTemperatureLow } from "react-icons/fa";
+import { GiPlantWatering } from "react-icons/gi"
+import { WiHumidity } from "react-icons/wi";
 
 type Icon = "MOISTURE" | "WATER_LEVEL" | "TEMPERATURE" | "HUMIDITY";
 interface NotificationProps {
@@ -9,6 +13,7 @@ interface NotificationProps {
     label: string;
     icon: Icon;
     date: string; 
+    createdAt: string;
 }
 
 const NotificationMeta = (props: NotificationProps) => {
@@ -36,7 +41,7 @@ const NotificationMeta = (props: NotificationProps) => {
                 fontSize='xs'
                 textTransform='uppercase'
                 >
-                {props.date}
+                {props.createdAt}
                 </Box>
             </Box>
         </ Box>
@@ -44,10 +49,11 @@ const NotificationMeta = (props: NotificationProps) => {
 }
 
 const ICONS = {
-    MOISTURE: <PhoneIcon color="white"/>,
-    WATER_LEVEL: <ViewIcon color="white"/>,
-    TEMPERATURE: <MoonIcon color="white"/>,
-    HUMIDITY: <ExternalLinkIcon color="white"/>
+    WATER_EVENT: <GiPlantWatering color="white" fontSize={30}/>,
+    MOISTURE: <BsDropletFill color="white" fontSize={30}/>,
+    WATER_LEVEL: <BsWater color="white" fontSize={30}/>,
+    TEMPERATURE: <FaTemperatureLow color="white" fontSize={30}/>,
+    HUMIDITY: <WiHumidity color="white" fontSize={40}/>,
 } as const;
 const NotificationIcon = (props: { icon: Icon }) => {
     const IconComponent = () => ICONS[props.icon] as unknown as JSX.IntrinsicElements;
@@ -85,7 +91,8 @@ const NotificationCard = (props: NotificationProps) => {
                 display={"flex"}
                 alignItems="center"
             >
-                <NotificationIcon icon={props.icon}/>
+                {//@ts-ignore
+                <NotificationIcon icon={props.type}/>}
                 <NotificationMeta {...props}/>
             </Box>
           </Box>
