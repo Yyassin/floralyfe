@@ -27,7 +27,7 @@ def read_sensor(mean: float) -> float:
 
 
 class Sensors(Singleton):
-    def __init__(self: "Sensors") -> None:
+    def __init__(self: "Sensors", hw: bool) -> None:
         PiCamera().close()
         self.sense = SenseHat()
         self.camera = PiCamera()
@@ -39,14 +39,15 @@ class Sensors(Singleton):
         self.servo.mid()
         self.pump1 = LED(27)
         self.pump2 = LED(5)
+        self.hw = hw
 
         # MCP
         self.spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
         self.cs = digitalio.DigitalInOut(board.D22)
         self.mcp = MCP.MCP3008(self.spi, self.cs)
 
-        self.moisture1 = AnalogIn(self.mcp, MCP.P0)
-        self.moisture2 = AnalogIn(self.mcp, MCP.P2)
+        self.moisture1 = AnalogIn(self.mcp, MCP.P7)
+        self.moisture2 = AnalogIn(self.mcp, MCP.P6)
         self.water_level = AnalogIn(self.mcp, MCP.P1)
         self.water_mean = 0.95
 
@@ -94,11 +95,13 @@ class Sensors(Singleton):
         self.sense.set_pixels(mat)
 
     def get_soil_moisture(self: "Sensors", channel: int) -> float:
-        # return 1 - self.channel[channel]["moisture"].value / MAX_16B
+        if self.hw:
+            return 1 - self.channel[channel]["moisture"].value / MAX_16B
         return read_sensor(self.channel[channel]["mean"])
 
     def get_water_level(self: "Sensors") -> float:
-        # return self.water_level.voltage
+        if self.hw:
+            return self.water_level.value / MAX_16B
         return read_sensor(self.water_mean)
 
     def set_water_mean(self: "Sensors", mean: float) -> None:
@@ -134,7 +137,7 @@ class Sensors(Singleton):
 
 
 if __name__ == "__main__":
-    sensors = Sensors()
+    sensors = Sensors(True)
     sensors.get_soil_moisture(1)
     print("Temp:", sensors.get_temperature())
     print("Humid:", sensors.get_humidity())
@@ -147,14 +150,14 @@ if __name__ == "__main__":
     # sensors.turn_servo(179)
     # sleep(1)
 
-    sensors.turn_on_pump(1)
-    sleep(0.5)
-    sensors.turn_off_pump(1)
-    sleep(0.5)
+    # sensors.turn_on_pump(1)
+    # sleep(0.5)
+    # sensors.turn_off_pump(1)
+    # sleep(0.5)
 
-    sensors.turn_on_pump(2)
-    sleep(0.5)
-    sensors.turn_off_pump(2)
-    sleep(0.5)
+    # sensors.turn_on_pump(2)
+    # sleep(0.5)
+    # sensors.turn_off_pump(2)
+    # sleep(0.5)
 
     sensors.cleanup()

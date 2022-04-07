@@ -82,7 +82,7 @@ def main() -> None:
     }
 
     # Instantiate modules
-    sensors = Sensors()
+    sensors = Sensors(True)
     ws = WSClient(queues, config.WS_URL, subscription_id, device_id)                                         # WebSocket Receiver
     camera_system = CameraSystem.CameraSystem(camera_task_queue, sensors, ws)                    # Camera Monitoring Subsystem
     irrigation_system = IrrigationSystem.IrrigationSystem(irrigation_task_queue, sensors, ws, device_id)    # Irrigation Subsystem

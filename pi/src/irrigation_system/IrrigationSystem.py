@@ -72,7 +72,7 @@ class IrrigationSystem(FloraNode):
             return None
 
         self.sensors.turn_on_pump(plant.registeredChannel)
-        sleep(2)
+        sleep(0.5)
         self.sensors.turn_off_pump(plant.registeredChannel)
 
         type = "WATER_EVENT"

@@ -234,7 +234,7 @@ class VitalSystem(FloraNode):
             }
             topic = "register-vital-topic" if self.registering else "vitals-topic"
             self.send(msg, topic)
-            sleep(1)
+            sleep(5)
 
     def get_register_vitals(self: "VitalSystem") -> Any:
         gpios = self.sensors.get_gpios()

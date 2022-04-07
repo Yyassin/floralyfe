@@ -35,8 +35,8 @@ class IrrigationSubsystem:
         if (test):
             self.waitTimes = {
                 "IDLE": 5,
-                "pumpON": 3,
-                "wait": 2
+                "pumpON": 0.5,
+                "wait": 5
             }
         else:
             self.waitTimes = {
@@ -174,7 +174,7 @@ class IrrigationSubsystem:
         self.state = IrrigationStates.CHECK_MOISTURE
 
     def main(self: "IrrigationSubsystem") -> None:
-        schedule.every().minute.at(":30").do(self.start_state_machine)
+        schedule.every(30).seconds.do(self.start_state_machine)
         while(True):
             self.execute()
             schedule.run_pending()
