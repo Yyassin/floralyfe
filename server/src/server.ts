@@ -68,17 +68,17 @@ gqlServer()
     });
 
 // Setup a tunnel to both server ports so they're remotely accessible
-const tunnels = Object.keys(tunnelConfig).reduce((acc: Tunnel[], subdomain: string, _): Tunnel[] => {
-    const port = tunnelConfig[subdomain];
-    const tunnel = localtunnel(port, { subdomain }, (err, tunnel) => {
-        if (!err) { debug("Started tunnel @", tunnel.url); }
-        else { logError("Tunnel error:", err); }
-    });
+// const tunnels = Object.keys(tunnelConfig).reduce((acc: Tunnel[], subdomain: string, _): Tunnel[] => {
+//     const port = tunnelConfig[subdomain];
+//     const tunnel = localtunnel(port, { subdomain }, (err, tunnel) => {
+//         if (!err) { debug("Started tunnel @", tunnel.url); }
+//         else { logError("Tunnel error:", err); }
+//     });
 
-    tunnel.on("close", () => debug("Closed tunnel @", tunnel.url));
-    acc.push(tunnel);
-    return acc;
-}, [] as Tunnel[]);
+//     tunnel.on("close", () => debug("Closed tunnel @", tunnel.url));
+//     acc.push(tunnel);
+//     return acc;
+// }, [] as Tunnel[]);
 
 // Setup and start associated WebSocket on distinct server ws://express
 setupWebSocket(server);
@@ -87,7 +87,7 @@ setupWebSocket(server);
 const cleanup = async () => {
     debug("Received termination signal, shutting down.");
 
-    tunnels.forEach(tunnel => tunnel.close());
+    // tunnels.forEach(tunnel => tunnel.close());
 
     await graphQLServer.close();
     debug("GraphQL Server closed.")

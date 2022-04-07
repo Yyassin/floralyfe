@@ -147,7 +147,7 @@ export default function Navigation() {
                                     width={55}
                                     height={40}
                                     onClick={() => {
-                                        console.log("clear ls")
+                                        //console.log("clear ls")
                                         localStorage.clear();
                                     }}
                                 />

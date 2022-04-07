@@ -3,6 +3,10 @@ import { PhoneIcon, StarIcon } from "@chakra-ui/icons";
 import { Badge, Box, Center, Heading, Image, Progress, Text, useColorMode } from "@chakra-ui/react";
 import { useStore } from "lib/store/store";
 import { useEffect } from "react";
+import { RiEmotionHappyLine, RiPlantFill } from "react-icons/ri";
+import { BsFillSunFill, BsMoisture, BsWater } from "react-icons/bs";
+import { FaTemperatureHigh } from "react-icons/fa";
+import { WiHumidity } from "react-icons/wi";
 
 
 export interface VitalProps {
@@ -11,12 +15,23 @@ export interface VitalProps {
     percentage: number
 }
 
+const icons: any = {
+  SOILMOISTURE: <BsMoisture color="white" fontSize={25}/>,
+  TEMPERATURE: <FaTemperatureHigh color="white" fontSize={25}/>,
+  AIRHUMIDITY: <WiHumidity color="white" fontSize={30}/>,
+  WATERLEVEL: <BsWater color="white" fontSize={25}/>,
+  LIGHT: <BsFillSunFill color="white" fontSize={25}/>,
+  GREENGROWTH: <RiPlantFill color="white" fontSize={25}/>,
+}
+
 const VitalStatistic = (props: VitalProps) => {
     const { colorMode, toggleColorMode } = useColorMode();
     const { selectedPlantID, setSelectedPlantID } = useStore((state) => ({
         selectedPlantID: state.selectedPlantID,
         setSelectedPlantID: state.setSelectedPlantID
     }));
+
+    console.log(props.name)
     
       return (
         <Box 
@@ -40,13 +55,13 @@ const VitalStatistic = (props: VitalProps) => {
                 height={35}
                 width={35}
               >
-                  <PhoneIcon color="white" />
+                  {icons[props.name.toUpperCase()]}
               </Center>
               <Box
                 color='gray.500'
                 fontWeight='semibold'
                 letterSpacing='wide'
-                fontSize='xs'
+                fontSize={10}
                 textTransform='uppercase'
                 ml='2'
               >

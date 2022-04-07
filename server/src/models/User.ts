@@ -96,6 +96,10 @@ const user = new User();
 const getUserByLogin = async (args: { email: string, password: string }) => {
     const fetchedUser = await user.getByEmail(args.email);
 
+    if (fetchedUser.length === 0) {
+        return null;
+    }
+
     if (args.password !== fetchedUser[0].password) {
         return null
     }

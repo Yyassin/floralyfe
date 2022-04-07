@@ -68,7 +68,7 @@ export default function SignupCard() {
                 password
             });
 
-        console.log(response);
+        //console.log(response);
         return response;
     }
 

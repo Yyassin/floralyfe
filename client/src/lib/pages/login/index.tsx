@@ -21,6 +21,8 @@ import { useStore } from "lib/store/store";
 import { deepLog } from "lib/components/hooks/validate";
 import { createQuery } from "lib/api/createQuery";
 import { GET_USER } from "lib/api/queries";
+import useWebSocket from "lib/components/hooks/useWebSocket";
+import { config, topics } from "lib/config";
 
 // source: https://chakra-templates.dev/forms/authentication
 
@@ -45,7 +47,7 @@ const Login = () => {
             });
         const { users: user } = data;
 
-        console.log(user)
+        //console.log(user)
 
         if (!user) {
             deepLog("Incorrect email or password.");

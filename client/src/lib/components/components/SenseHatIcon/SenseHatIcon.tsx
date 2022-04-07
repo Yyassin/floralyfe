@@ -18,12 +18,19 @@ import {
 import { useStore } from "lib/store/store";
 import { useEffect, useState } from "react";
 import { deepLog } from "lib/components/hooks/validate";
+import useWebSocket from "lib/components/hooks/useWebSocket";
+import { config } from "lib/config";
+import { BsDropletFill, BsWater } from "react-icons/bs"
+import { FaTemperatureLow } from "react-icons/fa"
+import { WiHumidity } from "react-icons/wi"
+import { RiEmotionHappyLine } from "react-icons/ri";
 
 const ICONS = {
-    MOISTURE: <PhoneIcon color="white" />,
-    WATER_LEVEL: <ViewIcon color="white" />,
-    TEMPERATURE: <MoonIcon color="white" />,
-    HUMIDITY: <ExternalLinkIcon color="white" />,
+    HAPPY: <RiEmotionHappyLine color="white" fontSize={30}/>,
+    MOISTURE: <BsDropletFill color="white" fontSize={30}/>,
+    WATER_LEVEL: <BsWater color="white" fontSize={30}/>,
+    TEMPERATURE: <FaTemperatureLow color="white" fontSize={30}/>,
+    HUMIDITY: <WiHumidity color="white" fontSize={40}/>,
 } as const;
 
 const IconImage = (icon: string) => {
@@ -43,17 +50,33 @@ const IconImage = (icon: string) => {
 };
 
 const SenseHatIcon = () => {
+    const ws = useWebSocket(config.WS_URL, 5, 1500);
+    const { user, senseIcon, setSenseIcon } = useStore((state) => ({
+        user: state.user,
+        senseIcon: state.senseIcon,
+        setSenseIcon: state.setSenseIcon
+    }));
+
     const [idx, setIdx] = useState(0);
 
-    const incremenetIdx = () => {
-        setIdx((idx + 1) % Object.keys(ICONS).length);
-        deepLog(`Sending change sense hat icon msg: ${Object.keys(ICONS)[idx]}`)
-    }
+    const incrementIdx = () => {
+        const newIdx = (idx + 1) % Object.keys(ICONS).length;
+        setIdx(newIdx);
 
-    const { selectedPlantID, setSelectedPlantID } = useStore((state) => ({
-        selectedPlantID: state.selectedPlantID,
-        setSelectedPlantID: state.setSelectedPlantID,
-    }));
+        const icon = Object.keys(ICONS)[newIdx];
+
+        const msg = {
+            topic: "vitals-topic",
+            userID: user?.id,
+            payload: {
+                topic: "sensehat-icon-topic",
+                icon: Object.keys(ICONS)[newIdx]
+            }
+        }
+
+        ws.send(msg)
+        setSenseIcon(icon)
+    }
 
     return (
         <Box
@@ -66,7 +89,7 @@ const SenseHatIcon = () => {
             overflow="hidden"
             _hover={{bg: "gray.200"}}
             cursor={"pointer"}
-            onClick={() => incremenetIdx()}
+            onClick={() => incrementIdx()}
             role="sense-wrapper"
         >
             <Box p="3">
@@ -94,11 +117,11 @@ const SenseHatIcon = () => {
                             isTruncated
                             role="sense-state"
                         >
-                            {Object.keys(ICONS)[idx]}
+                            {senseIcon}
                         </Box>
                     </Box>
                     { 
-                        IconImage(Object.keys(ICONS)[idx]) 
+                        IconImage(senseIcon) 
                     }
                 </Flex>
             </Box>

@@ -24,8 +24,10 @@ export type StoreState = (
 type Store = {
     cameraEncoded: string;                                      // Base64 encoded camera feed frame
     selectedPlantID: string;
+    senseIcon: string;
     setCameraEncoded: (encoded: string) => void;                // Setter
     setSelectedPlantID: (id: string) => void;
+    setSenseIcon: (icon: string) => void;
 };
 
 // Creates the store and associated actions.
@@ -37,6 +39,7 @@ const useStore = create<StoreState>(devtools(persist((set, get) => ({
     ...createNotificationSlice(set, get),
     ...createVitalSlice(set, get),
     cameraEncoded: "",
+    senseIcon: "HAPPY",
     selectedPlantID: "",
     setCameraEncoded(text: string) {
         set((state) => ({
@@ -50,6 +53,12 @@ const useStore = create<StoreState>(devtools(persist((set, get) => ({
             selectedPlantID: id,
         }));
     },
+    setSenseIcon(icon: string) {
+        set((state) => ({
+            ...state,
+            senseIcon: icon,
+        }));
+    }
 }), {
     name: "app-storage",               // unique name
     // getStorage: () => sessionStorage, // (optional) by default, 'localStorage' is used

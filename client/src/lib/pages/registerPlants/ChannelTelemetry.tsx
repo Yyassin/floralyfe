@@ -1,38 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Center, Flex, Heading, Text } from "@chakra-ui/react";
 import { deepLog } from "lib/components/hooks/validate";
+import { useStore } from "lib/store/store";
 
 const ChannelTelemetry = () => {
-    const [data, setData] = useState({} as any);
-
-    useEffect(() => {
-        const dataset = {
-            common: {
-                temperature: 34,
-                humidity: 0.55,
-                waterLevel: 0.99,
-            },
-            channel1: {
-                moisture: {
-                    value: 0.3,
-                    gpio: 15,
-                },
-                waterPump: {
-                    gpio: 16,
-                },
-            },
-            channel2: {
-                moisture: {
-                    value: 0.55,
-                    gpio: 23,
-                },
-                waterPump: {
-                    gpio: 24,
-                },
-            },
-        } as any;
-        setData(dataset);
-    }, []);
+    const { data } = useStore((state) => ({
+        data: state.channelTelemetry
+    }));
 
     const getRandomInt = (max: number) => {
         return Math.floor(Math.random() * max);
@@ -67,12 +41,12 @@ const ChannelTelemetry = () => {
 
         deepLog("RECEIVED LIVE VITALS");
         deepLog(dataset);
-        setData(dataset);
+        // setData(dataset);
     };
 
     return (
         <>
-            <Button onClick={simulate}>simulate</Button>
+            {/* <Button onClick={simulate}>simulate</Button> */}
             <Flex justifyContent={"space-between"}>
                 {Object.keys(data).map((channel) => {
                     const channelMeta = data[channel] as any;
@@ -101,7 +75,12 @@ const ChannelTelemetry = () => {
                                     }
 
                                     case "temperature": {
-                                        value = `${value} C`;
+                                        value = `${value.toFixed(2)} C`;
+                                        break;
+                                    }
+
+                                    case "airHumidity": {
+                                        value = `${value.toFixed(2)} %`;
                                         break;
                                     }
 

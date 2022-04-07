@@ -16,17 +16,18 @@ const LineChart = () => {
     const [categories, setCategories] = useState<any>([]);
 
     useEffect(() => {
-        const persisted = vitals[selectedPlantID]?.persisted;
+        const persisted = vitals[selectedPlantID]?.persisted;    // Use selected id
         //deepLog(persisted);
 
         const data = !persisted ? [] : persisted.reduce(
             (acc: any, dp, idx) => {
-                acc.temperature.push((dp.temperature * 100).toFixed(0));
-                acc.humidity.push((dp.humidity * 100).toFixed(0));
-                acc.moisture.push((dp.moisture * 100).toFixed(0));
-                acc.growth.push((dp.greenGrowth * 100).toFixed(0));
+                acc.temperature.push((dp.temperature).toFixed(3));
+                acc.humidity.push((dp.airHumidity).toFixed(3));
+                acc.moisture.push((dp.soilMoisture * 100).toFixed(3));
+                acc.growth.push((dp.greenGrowth * 100).toFixed(3));
 
-                const date = new Date(dp.date);
+                // @ts-ignore
+                const date = new Date(dp.createdAt);    
 
                 acc.dates.push(
                   `${date.getMonth() + 1}/${date.getDay()}/${date.getFullYear()}:${date.getHours() + 1}`

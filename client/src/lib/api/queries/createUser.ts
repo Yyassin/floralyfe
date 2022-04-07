@@ -15,7 +15,6 @@ export const CREATE_USER = gql`
             username: $username,
             email: $email,
             password: $password,
-            deviceID: ""
         ) {
             id
             firstName

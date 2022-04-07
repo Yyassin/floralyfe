@@ -6,6 +6,10 @@ import React, { useEffect, useRef, useState } from "react";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 import { barChartOptions, barChartData } from "../../../store/mock";
 
+const dates = [
+  "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"
+]
+
 const BarChart = () => {
     const {
         selectedPlantID,
@@ -23,11 +27,13 @@ const BarChart = () => {
 
       const today = new Date();
       const waterEvents = (notifications[selectedPlantID] || []).filter(
-        notification => notification.icon === "WATER_LEVEL"
+        // @ts-ignore
+        notification => notification.type === "WATER_EVENT"
       )
 
       const data = waterEvents.reduce((acc: any, event, idx) => {
-        const day = event.date.split(" ")[0];
+        // @ts-ignore
+        const day = dates[new Date(event.createdAt).getDay() - 1];
         acc[day] = acc[day] ? acc[day] + 5 : 5;
         return acc;
       }, {})

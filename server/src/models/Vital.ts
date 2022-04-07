@@ -2,6 +2,7 @@ import { PubSub } from "graphql-yoga";
 import { Collections, ID } from "./common";
 import FirestoreDocument from "./FirestoreDocument";
 import { DocumentData } from "@firebase/firestore-types";
+import { deepLog } from "../util";
 
 // Structure of plant sensor measurement vital
 interface IVital {
@@ -157,6 +158,8 @@ const updateVital = async (
 };
 
 const subscribeVitals = async (args: subscribeVitalArgs, pubsub: PubSub) => {
+    console.log("Got subscription")
+    deepLog(args)
     return pubsub.asyncIterator(`vital-${args.deviceID}`);
 };
 
