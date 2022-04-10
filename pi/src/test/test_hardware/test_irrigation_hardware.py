@@ -15,7 +15,7 @@ def test_moisture_water() -> None:
     cs = digitalio.DigitalInOut(board.D22)
     mcp = MCP.MCP3008(spi, cs)
 
-    chan0 = AnalogIn(mcp, MCP.P0)
+    chan0 = AnalogIn(mcp, MCP.P6)
     while True:
         print('Raw ADC Value: ', chan0.value)
         print('ADC Voltage: ' + str(chan0.voltage) + 'V')
@@ -31,7 +31,7 @@ def test_moisture_dry() -> None:
     cs = digitalio.DigitalInOut(board.D22)
     mcp = MCP.MCP3008(spi, cs)
 
-    chan0 = AnalogIn(mcp, MCP.P2)
+    chan0 = AnalogIn(mcp, MCP.P6)
 
     print('Raw ADC Value: ', chan0.value)
     print('ADC Voltage: ' + str(chan0.voltage) + 'V')

@@ -69,6 +69,8 @@ class CameraSystem(FloraNode):
             elif (topic == "servo-turn-plant"):
                 if self.camera_on:
                     self.turn_to_plant(payload["plantID"])
+            elif (topic == "take-pictures"):
+                self.capture_each_plant()
 
             self.logger.debug(f"{self.camera_on}")
             self.logger.debug(f"Got {msg}")
@@ -96,7 +98,7 @@ class CameraSystem(FloraNode):
         for plant in Plant.select():
             angle = plant.angle
             self.sensors.turn_servo(angle)
-            time.sleep(3)
+            time.sleep(5)
 
             self.logger.debug(f"Photo of {plant.plantID} @ {angle}")
             data = image_buffer[0]
@@ -127,9 +129,9 @@ class CameraSystem(FloraNode):
         The frame pertains to user with id userID (above).
         """
         while (True):
-            if not self.camera_on:
-                time.sleep(1)
-                continue
+            # if not self.camera_on:
+            #     time.sleep(1)
+            #     continue
 
             data = PI_capture(self.cam) if IS_RPI else WIN_capture(self.cam)
             byte_data = data[1]                                              # Extract byte array
@@ -165,7 +167,7 @@ class CameraSystem(FloraNode):
         self.camera_stream_thread = threading.Thread(target=self.start_camera_stream, daemon=True)
         self.camera_stream_thread.start()
 
-        schedule.every(3).minutes.do(self.capture_each_plant)
+        # schedule.every(3).minutes.do(self.capture_each_plant)
         self.get_feed_timelapse("plant-id")
 
     def test_function(self: "CameraSystem") -> str:
