@@ -19,12 +19,14 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useStore } from "lib/store/store";
 import { deepLog } from "lib/components/hooks/validate";
+import { createQuery } from "lib/api/createQuery";
+import { GET_USER } from "lib/api/queries";
+import { toastSuccess, toastError, dismissAll } from "../../components/util/toast";
 
 // source: https://chakra-templates.dev/forms/authentication
 
 const Login = () => {
-    const { registeredUsers, setUser, setIsAuth } = useStore((state) => ({
-        registeredUsers: state.registeredUsers,
+    const { setUser, setIsAuth } = useStore((state) => ({
         setIsAuth: state.setIsAuth,
         setUser: state.setUser,
     }));
@@ -32,19 +34,39 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const router = useRouter();
+    
 
-    const signIn = () => {
+    const signIn = async () => {
+        dismissAll();
         deepLog(`Attempted login: email=${email}, password=${password}`);
-        if (!registeredUsers[email]) {
-            deepLog(`Not registered`);
-            return;
-        } else if (password !== registeredUsers[email].password) {
-            deepLog(`Incorrect pasword`);
+        
+        const response =  await createQuery(GET_USER,
+            {
+                email,
+                password
+            });
+
+        if (!response) {
+            deepLog("Incorrect email or password.");
+            toastError("Incorrect email or password.");
             return;
         }
+
+        const data = response.data;
+        const { users: user } = data;
+
+        //console.log(user)
+
+        if (!user) {
+            deepLog("Incorrect email or password.");
+            toastError("Incorrect email or password.");
+            return;
+        }
+
         deepLog(`Successful authentication`);
+        toastSuccess("Successfully logged in!.");
         setIsAuth(true);
-        setUser(registeredUsers[email]);
+        setUser(user);
         router.push("/");
     };
 

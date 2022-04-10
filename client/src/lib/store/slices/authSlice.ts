@@ -1,4 +1,4 @@
-import { uuid } from "lib/components/util/uuid";
+import { uuid } from "lib/components/util/util";
 import { StoreState } from "../store";
 import { StoreSlice } from "../storeSlice";
 
@@ -8,6 +8,7 @@ export interface User {
     lastName: string;
     email: string;
     password: string;
+    deviceID: string | null;
 };
 
 export type UserSlice = {

@@ -1,6 +1,6 @@
-from typing import Any, Dict, List
-from gpiozero import Device
-from gpiozero.pins.mock import MockFactory
+from typing import Any, List
+# from gpiozero import Device
+# from gpiozero.pins.mock import MockFactory
 
 BLACK = [0, 0, 0]
 
@@ -41,77 +41,29 @@ class PiCamera():
         return self.is_closed
 
 
-gpios: List[Any] = []
-
-
-class AnalogPin:
-    def __init__(self: "AnalogPin", pin: int) -> None:
-        self.value = 0.0
-        self.pin = pin
-
-    def close(self: "AnalogPin") -> None:
-        pass
-
-
-class DigitalPin:
-    def __init__(self: "DigitalPin", pin: int) -> None:
-        self.state = False
-        self.pin = pin
-
-    def on(self: "DigitalPin") -> None:
-        self.state = True
-
-    def off(self: "DigitalPin") -> None:
-        self.state = False
-
-    def close(self: "DigitalPin") -> None:
-        pass
-
-
-class Servo:
-    def __init__(self: "Servo", pin: int) -> None:
+class AngularServo:
+    def __init__(self: "AngularServo", pin: int, min_angle: float, max_angle: float,
+                 min_pulse_width: float, max_pulse_width: float, pin_factory: Any) -> None:
         self.angle = 0.0
         self.pin = pin
 
-    def set_angle(self: "Servo", angle: float) -> None:
+    def set_angle(self: "AngularServo", angle: float) -> None:
         self.angle = angle
 
-    def close(self: "Servo") -> None:
+    def close(self: "AngularServo") -> None:
         pass
 
 
-def get_mock_pins() -> Dict[str, Any]:
-    global gpios
-    Device.pin_factory = MockFactory()
-    mock_factory = Device.pin_factory
+class LED:
+    def __init__(self: "LED", pin: int) -> None:
+        self.state = False
+        self.pin = pin
 
-    mock_pins = [13, 27, 20, 9, 11, 12]
-    mock_gpios = []
-    for pin in mock_pins:
-        mock_gpios.append(mock_factory.pin(pin))
+    def on(self: "LED") -> None:
+        self.state = True
 
-    sense = SenseHat()
-    camera = PiCamera()
-    servo = Servo(13)
-    pin27 = AnalogPin(27)
-    pin20 = AnalogPin(20)
-    pin9 = DigitalPin(9)
-    pin11 = AnalogPin(11)
-    pin12 = DigitalPin(12)
-    gpios = [pin27, pin20, pin9, pin11, pin12, servo, camera]
+    def off(self: "LED") -> None:
+        self.state = False
 
-    pins = {
-        "sense_hat": sense,
-        "servo": servo,
-        "camera": camera,
-        "water_level": pin27,
-        "channel_1": {
-            "moisture": pin20,
-            "pump": pin9
-        },
-        "channel_2": {
-            "moisture": pin11,
-            "pump": pin12
-        }
-    }
-    return pins
+    def close(self: "LED") -> None:
+        pass

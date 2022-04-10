@@ -1,12 +1,11 @@
-from Sensors import Sensors
-import config.io_config as io
+from Sensors import Sensors     # type: ignore
 from vital_system.VitalSystem import HAPPY_ICON, SUN_ICON, MOISTURE_ICON, WATER_LEVEL_ICON, THERMOMETER_ICON
 from util.Logger import Logger
 from config.config import SW_TEST
 
 
 logger = Logger("test_sense")
-sensors = Sensors(io.pins)
+sensors = Sensors(True)
 icons = [HAPPY_ICON, SUN_ICON, MOISTURE_ICON, WATER_LEVEL_ICON, THERMOMETER_ICON]
 
 
@@ -17,7 +16,7 @@ def test_sense_hat_temperature() -> None:
 
     assert isinstance(temperature, float)
     assert temperature >= 0
-    io.close_all()
+    sensors.cleanup()
 
 
 def test_sense_hat_humidity() -> None:
@@ -27,7 +26,7 @@ def test_sense_hat_humidity() -> None:
 
     assert isinstance(humidity, float)
     assert humidity >= 0
-    io.close_all()
+    sensors.cleanup()
 
 
 def test_sense_hat_matrix() -> None:
@@ -35,7 +34,7 @@ def test_sense_hat_matrix() -> None:
     BLACK = [0, 0, 0]
 
     for icon in icons:
-        sensors.set_sense_mat(icon)   # type: ignore
+        sensors.set_sense_mat(icon)
         logger.debug("Set sense hat pixels successfully.")
         input()
         # We can't assert these directly since the values
@@ -48,4 +47,4 @@ def test_sense_hat_matrix() -> None:
     sensors.sense.clear()
     logger.debug("Cleared sense hat pixels successfully.")
     assert sensors.sense.get_pixels() == [BLACK] * 64
-    io.close_all()
+    sensors.cleanup()

@@ -4,7 +4,10 @@ import { getDayOffset, notifications } from "lib/store/mock";
 import { useStore } from "lib/store/store";
 import NotificationCard from "./NotificationCard";
 import { deepLog } from "lib/components/hooks/validate";
-import { uuid } from "lib/components/util/uuid";
+import { uuid } from "lib/components/util/util";
+import { BsDropletFill, BsWater } from "react-icons/bs";
+import { FaTemperatureLow } from "react-icons/fa";
+import { WiHumidity } from "react-icons/wi";
 const ICONS = ["MOISTURE", "WATER_LEVEL", "TEMPERATURE", "HUMIDITY"] as const;
 
 const Notifications = () => {
@@ -20,6 +23,9 @@ const Notifications = () => {
         addNotifcation: state.addNotification,
         loadNotifications: state.loadNotifications,
     }));
+
+    //console.log("notifications")
+    //deepLog(notifications)
 
     const clearNotifications = () => {
         loadNotifications(selectedPlantID, []);
@@ -53,7 +59,7 @@ const Notifications = () => {
 
     return (
         <Box w={[200, 200, 350, 500, 600, 900]} position="relative">
-            <Flex>
+            {/* <Flex>
                 <Heading as="h2" size="md" mr={5}>
                     Notifications
                 </Heading>
@@ -66,7 +72,7 @@ const Notifications = () => {
                 <Button mr={5} onClick={loadNotificationsWrapper}>
                     Load Notifications
                 </Button>
-            </Flex>
+            </Flex> */}
             {!notifications[selectedPlantID]?.length ? (
                 <Text mt={5}>
                     This plant does not have any notifications yet...

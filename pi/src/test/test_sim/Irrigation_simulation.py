@@ -24,7 +24,7 @@ configuration = {
 circuit = TkCircuit(configuration)
 
 
-@circuit.run
+@circuit.run        # type: ignore
 def main() -> None:
     moisture_sensor = LightSensor(8)
     water_sensor = LightSensor(9)

@@ -1,4 +1,4 @@
-from Sensors import Sensors
+from Sensors import Sensors     # type: ignore
 import config.io_config as io
 from util.Logger import Logger
 from config.config import SW_TEST

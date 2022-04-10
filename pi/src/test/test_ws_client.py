@@ -1,4 +1,4 @@
-from ws import WSReceiver
+from ws import WSClient
 from typing import Any
 from queue import Queue
 from deepdiff import DeepDiff
@@ -19,7 +19,7 @@ def test_ws_receiver() -> None:
         "vitals-topic": vitals_task_queue
     }
 
-    ws = WSReceiver(queues, "", "", True)
+    ws = WSClient(queues, "", "", "")
 
     message = {
         "topic": "random-topic",

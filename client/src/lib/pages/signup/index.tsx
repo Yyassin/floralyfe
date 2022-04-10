@@ -17,25 +17,65 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { useStore } from "lib/store/store";
-import { useEffect } from "react";
+import { CREATE_USER } from "lib/api/queries";
 import { deepLog } from "lib/components/hooks/validate";
+import { createQuery } from "lib/api/createQuery";
+import { toastSuccess, toastError, dismissAll } from "../../components/util/toast";
 
 export default function SignupCard() {
-    const { addRegisteredUser, registeredUsers } = useStore((state) => ({
-        addRegisteredUser: state.addRegisteredUser,
-        registeredUsers: state.registeredUsers,
-    }));
-
-    useEffect(() => {
-        deepLog(`REGISTERED USERS`);
-        deepLog(registeredUsers);
-    }, [registeredUsers]);
     const [showPassword, setShowPassword] = useState(false);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+
+    const signUp = async () => {
+        dismissAll();
+        deepLog("SIGN UP");
+
+        const fields = [
+            firstName,
+            lastName,
+            email,
+            username,
+            password
+        ];
+        if (fields.includes("")) {
+            deepLog(
+                "At least one empty field. Retry."
+            );
+            toastError("At least one empty field. Retry.");
+            return;
+        }
+
+        const validateEmail = (email: string) => {
+            return String(email)
+                .toLowerCase()
+                .match(
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                );
+        };
+
+        if (!validateEmail(email)) {
+            deepLog("Invalid email");
+            toastError("Invalid email");
+            return;
+        }
+        
+        const response =  await createQuery(CREATE_USER,
+            {
+                firstName,
+                lastName,
+                username,
+                email,
+                password
+            });
+
+        toastSuccess("Signed up successfully.");
+        //console.log(response);
+        return response;
+    }
 
     return (
         <Flex
@@ -88,6 +128,15 @@ export default function SignupCard() {
                                 </FormControl>
                             </Box>
                         </HStack>
+                        <FormControl id="username" isRequired>
+                            <FormLabel>Username</FormLabel>
+                            <Input
+                                type="text"
+                                value={username}
+                                onChange={(evt) => setUsername(evt.target.value)}
+                                placeholder="Username"
+                            />
+                        </FormControl>
                         <FormControl id="email" isRequired>
                             <FormLabel>Email address</FormLabel>
                             <Input
@@ -135,43 +184,7 @@ export default function SignupCard() {
                                 _hover={{
                                     bg: "green.500",
                                 }}
-                                onClick={() => {
-                                    deepLog("SIGN UP");
-
-                                    const fields = [
-                                        firstName,
-                                        lastName,
-                                        email,
-                                        password,
-                                    ];
-                                    if (fields.includes("")) {
-                                        deepLog(
-                                            "At least one empty field. Retry."
-                                        );
-                                        return;
-                                    }
-
-                                    const validateEmail = (email: string) => {
-                                        return String(email)
-                                            .toLowerCase()
-                                            .match(
-                                                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                                            );
-                                    };
-
-                                    if (!validateEmail(email)) {
-                                        deepLog("Invalid email");
-                                        return;
-                                    }
-
-                                    addRegisteredUser({
-                                        firstName,
-                                        lastName,
-                                        email,
-                                        id: email,
-                                        password,
-                                    });
-                                }}
+                                onClick={() => signUp()}
                             >
                                 Sign up
                             </Button>

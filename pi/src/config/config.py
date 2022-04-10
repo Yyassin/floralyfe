@@ -1,5 +1,7 @@
-GRAPHQL_URL = "https://floralyfeg.loca.lt/graphql"
-WS_URL = "wss://floralyfec.loca.lt/"
-USER_ID = "yousef"
+# Defaults
+GRAPHQL_URL = "http://5999-174-112-246-246.ngrok.io/graphql"
+API_SERVER = "http://65e9-174-112-246-246.ngrok.io"
+WS_URL = "ws://65e9-174-112-246-246.ngrok.io"
+USER_ID = "yousef@gmail.com"
 DEVICE_ID = "yousef-device"
 SW_TEST = False

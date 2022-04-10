@@ -1,6 +1,6 @@
 const config = {
-    GRAPHQL_URL: "https://floralyfeg.loca.lt",
-    WS_URL: "wss://floralyfec.loca.lt",
+    GRAPHQL_URL: "http://5999-174-112-246-246.ngrok.io",
+    WS_URL: "ws://65e9-174-112-246-246.ngrok.io",
     USER_ID: "yousef",
     DEVICE_ID: "yousef-device"
 }

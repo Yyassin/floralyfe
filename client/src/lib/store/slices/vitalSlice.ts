@@ -1,4 +1,4 @@
-import { uuid } from "lib/components/util/uuid";
+import { uuid } from "lib/components/util/util";
 import { StoreState } from "../store";
 import { StoreSlice } from "../storeSlice";
 
@@ -7,8 +7,8 @@ export interface Vital {
     plantID: string;
     critical: boolean;
     temperature: number;
-    humidity: number;
-    moisture: number;
+    airHumidity: number;
+    soilMoisture: number;
     light: number;
     greenGrowth: number;
     date: string;
@@ -21,8 +21,10 @@ export type VitalSlice = {
             persisted: Vital[]
         }
     },
+    channelTelemetry: any,
     setLiveVital: (vital: Vital) => void;
     addPersistedVital: (vital: Vital) => void;
+    setChannelTelemetry: (vital: any) => void;
     loadVitals: (plantID: string, vitals: Vital[]) => void;
 }
 
@@ -35,7 +37,10 @@ const addPersistedVital = (vitals: Vital[], vital: Vital) => {
 
 export const createVitalSlice: StoreSlice<VitalSlice> = (set, get) => ({
     vitals: {},
-    setLiveVital: (vital: Vital) => 
+    channelTelemetry: {},
+    setLiveVital: (vital: Vital) => {
+        if (!vital) return;
+        
         set((state: StoreState) => ({
             ...state,
             vitals: {
@@ -45,6 +50,12 @@ export const createVitalSlice: StoreSlice<VitalSlice> = (set, get) => ({
                     live: vital
                 }
             }
+        }))
+    },
+    setChannelTelemetry: (vital: any) =>
+        set((state: StoreState) => ({
+            ...state,
+            channelTelemetry: vital
         })),
     addPersistedVital: (vital: Vital) => 
         set((state: StoreState) => ({
