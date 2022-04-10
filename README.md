@@ -43,10 +43,21 @@ Floralyfe was developed during Winter 2022 by
 [Zakariyya Almalki](https://github.com/zackzouk)\
 
 ## Demo
-[Insert GIF here]
+<span title="floralyfe demo">
+ <p align="left">
+  <img width="800vw" src="./assets/demo.gif" alt="floralyfe-demo">
+ </p>
+</span>
 - View a full demo [here] and a shorter one [here]
-- [Here's] a hardware-only view.
-- You can also view our presentation [here]
+- [Here's](https://drive.google.com/file/d/16LK72KBRby-MXZfuCtyEkjOYMr77SC9X/view?usp=sharing) a hardware-only view.
+- You can also view our presentation [here](https://drive.google.com/file/d/1YjEJIe_mGfSpM7uEQIxXEZUANpvdMjts/view)
+
+## Physical System
+<span title="floralyfe hw-system">
+ <p align="left">
+  <img width="800vw" src="./assets/hw_system.png" alt="floralyfe-hw-system">
+ </p>
+</span>
 
 ## Features
 The *floralyfe* system ensures stress-free and healthy plant growth, allowing individuals to spend more time enjoying their plants rather than worrying about their health. To facilitate the care of houseplants, *floralyfe* provides the functionality below.
@@ -106,13 +117,13 @@ The floralyfe system consists of three primary nodes: a NextJS-Chakra Client, an
 First, start the Firestore database emulator.
 
 ```bash
-	$ npm run emulator
+$ npm run emulator
 ```
 
 And then, start the server itself.
 
 ```bash
-	$ npm run dev
+$ npm run dev
 ```
 
 By default, the WebSocket and Express REST server run on port 5000. The GraphQL server runs on port 5001.
@@ -123,7 +134,6 @@ By default, the WebSocket and Express REST server run on port 5000. The GraphQL 
 	- Authenticate with ngrok and obtain your auth-token, then set the config file to the following:
 	
 ```yaml
-
 authtoken: 25WHb2ZqTR24fNtm2XCelZC9mKy_6iinQfUBftMg9KcfFstGD
 tunnels:
   first:
@@ -150,12 +160,88 @@ And now you can tunnel all of the ports using the command `ngrok start --all`.
 
 ### Software Architecture & Directory Structure
 #### `pi`
+The Raspberry Pi system is written in Python. The system is architected as a multi-threaded applications where each major subsystems defines two dedicated threads: a main and worker thread. Each subsystem node derives a parent Floranode that defines its basic interface.
+
+`scripts/`: Holds various helper scripts for installing dependencies and configuring the python virtual environmnent. The remainder of the soruce code can be found under the `src/` directory.
+
+`config/`: Holds all system variables, namely API and server endpoints.
+
+`flora_node/`: Defines the FloraNode Parent class that must be inherited by all floralyfe system nodes. Defines the basic interface for all system nodes.
+
+`camera_system/`: The camera monitoring subsystem node and its associated utility functions, including luminescense and green growth estimation in `opencv_filters.py`.
+
+`irrigation_system/`: The automatic irrigation subsystem node and its associated helpers for maintaining soil moisture.
+
+`vital_system/`: The vital subsystem for measuring and transmitting plant vitals / notifications.
+
+`query/`: GraphQL helpers for mutating the cloud Firestore database. Also contains certain REST endpoint helpers, such as for creating emails.
+
+`test/`: Contains all unit tests.
+
+`timelapse/`: Contains periodically captured plant images to create a timelapse. The ones here are from the last demo.
+
+`main.py`: The main entrypoint to the Floralyfe RPi System.
+
+`database.py`: Creates the SQLite database and offers accessor helpers for each table.
+
+`ws.py`: The WebSocket client that binds the Websocket server. Offers functionality to send and receive messages - routes messages to appropriate node message queues.
+
+`Sensors.py`: Hardware helper to interface with GPIO and all system sensors and actuators.
+
+`util/Logger.py`: Logger helper to log debug statements.
+
+`util/Singleton.py`: Singleton helper to define Singleton classes.
+
+`gpiozero_mocks/`: Stores all hardware simulations to support development without the RPi, such as on Windows.
+
+`camera_standalone.py`: This file is unused but presents an example of how subsystems should be tested. To maintain the `src` root, all files should define a wrapper file to call them from the root.
 
 #### `server`
+The server is written in TypeScript and uses the Node JS framework to manage communication across application nodes. The server connects to a Firestore database, or an internal emulator. The node uses the Express framework to define two servers: one for a WebSocket and one exposing a GraphQL API with support for data subscriptions using the publisher-subscriber pattern.
+
+`test/`: Contains all unit tests. All remaining source code is found in the `src/` directory.
+
+`graphql/`: Contains GraphQL definitions for resolvers and the schema. These are largely imported from `models/`.
+
+`models/`: Contains model-specific defintions for GraphQL resolvers and schemas.
+
+`notifications/`: Containts REST notification route logic for sending emails with nodemailer.
+
+`server.ts`: Main entrypoint for the server - initializes and starts the server.
+
+`setupWebSocket.ts`: Helper to create, initialize and bind the websocket to the main express server. All websocket logic goes here.
+
+`util.ts`: Utility helpers, mainly for logging.
+
 
 #### `client`
+The client is also written in TypeScript and uses the NextJS framework along with Chakra UI to display a web interface that a user can use to interact with the Floralyfe system. This node is largely configuration - the majority of relevant files can be found under `client/src/lib`.
+
+`api/queries/`: Defines GraphQL query, subscription and mutation queries.
+
+`api/createQuery.ts`: Helper for requesting a GraphQL query.
+
+`api/plantId.ts`: Helper for requesting the plant Id API for plant identification.
+
+`api/pages/`: Contains all client pages (routes): login, signup, register-plants and home-dashboard.
+
+`api/components/components`: Contains all interface components, these are not listed for brevity.
+
+`api/components/hooks/useWebSocket.ts`: WebSocket client helper to connect to the websocket server, receive and send messages. Also binds callbacks to specific message topics.
+
+`api/components/layout`: Primary interface entrypoint. Defines layout in which components are presented.
+
+`api/components/util`: Contains utility helpers for GraphQL requests with apollo-client, creating toast notifications, and other logging helpers.
+
+`api/store/`: Zustand store and store slices for state-management and data persistence.
 
 ### Next Steps
+- Migrate the video feed from using WebSockets to using WebRTC. The latter is optimized for media transfer and will support more seamless video streaming from the RPi to the client.
+- Weather proofing and packaging the model such that it can be safely used outdoors.
+- The addition of a computer vision model to detect animals (either outdoors - squirrels, birds, rabits, etc. or indoor pets).
+- Adding a buzzer to add a audio component to notifications and to scare off animals.
+- Integrating the Plant id API further to detect plant diseases.
+- Querying registered plants in our database to suggest plant optima to users.
 
 ## Documentation
 For more information regarding the project, please reference the `documentation/` directory. There, you'll find the [project proposal](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/blob/main/documentation/Floralyfe_Proposal.pdf) and [detailed design](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/blob/main/documentation/Floralyfe_Detailed_Design.pdf) .
