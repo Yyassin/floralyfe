@@ -2,7 +2,7 @@ import { config } from "lib/config";
 
 const createQuery = async (query: string, variables = {} as any) => {
 	const options = {
-		endpoint: URL,
+		endpoint: config.GRAPHQL_URL + "/graphql",
 		method: "POST",
 		headers: {
 			Accept: "application/json",

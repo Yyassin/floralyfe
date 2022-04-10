@@ -18,16 +18,26 @@ import {
 import { useStore } from "lib/store/store";
 import { useEffect, useState } from "react";
 import { deepLog } from "lib/components/hooks/validate";
+import useWebSocket from "lib/components/hooks/useWebSocket";
+import { config } from "lib/config";
+import { BsWater } from "react-icons/bs";
 
 const ManualIrrigation = () => {
-    const waterPlant = () => {
-        deepLog("Sending manual irrigation msg.")
-    };
-
-    const { selectedPlantID, setSelectedPlantID } = useStore((state) => ({
-        selectedPlantID: state.selectedPlantID,
-        setSelectedPlantID: state.setSelectedPlantID,
+    const ws = useWebSocket(config.WS_URL, 5, 1500);
+    const { user } = useStore((state) => ({
+        user: state.user,
     }));
+    const waterPlant = () => {
+        const msg = {
+            topic: "irrigation-topic",
+            userID: user?.id,
+            payload: {
+                topic: "pump-override-topic"
+            }
+        }
+
+        ws.send(msg)
+    };
 
     return (
         <Box
@@ -64,7 +74,7 @@ const ManualIrrigation = () => {
                             lineHeight="tight"
                             isTruncated
                         >
-                            HYDRATED
+                            HYDRATE
                         </Box>
                     </Box>
                     <Center
@@ -73,7 +83,7 @@ const ManualIrrigation = () => {
                         height={50}
                         width={50}
                     >
-                        <PhoneIcon color="white" />
+                        <BsWater color="white" fontSize={30}/>
                     </Center>
                 </Flex>
             </Box>

@@ -5,15 +5,12 @@ from gpiozero.pins.pigpio import PiGPIOFactory
 
 class servoMotor:
 
-    factory = PiGPIOFactory()
+    def __init__(self: "servoMotor") -> None:
+        self.s = AngularServo(22, min_angle=0, max_angle=180, min_pulse_width=0.5 / 1000, max_pulse_width=2.5 / 1000, pin_factory=PiGPIOFactory())
 
-    MAX_ANGLE = 180
-    MIN_ANGLE = 90
-    s = AngularServo(17, MIN_ANGLE, MAX_ANGLE, pin_factory=factory)
-
-    def initServo(self) -> None:
+    def initServo(self: "servoMotor") -> None:
         self.s.angle = 90
 
-    def turnToAngle(self, given_angle: int) -> None:
-        self.s.angle = self.s.max()
+    def turnToAngle(self: "servoMotor", given_angle: int) -> None:
+        # self.s.angle = self.s.max()
         self.s.angle = given_angle

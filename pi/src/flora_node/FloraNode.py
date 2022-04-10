@@ -9,9 +9,10 @@ __author__ = "yousef"
 from abc import abstractmethod
 import threading
 from time import sleep
-from typing import Any, Union
+from typing import Any, Union, Dict
 from queue import Queue
-from Sensors import Sensors
+from Sensors import Sensors     # type: ignore
+from ws import WSClient
 from util.Logger import Logger
 from util.Singleton import Singleton
 
@@ -28,7 +29,7 @@ class FloraNode(Singleton):
         A FloraNode should not be instantiated directly.
     """
 
-    def __init__(self: "FloraNode", task_queue: "Queue[Any]", sensors: Sensors, name: Union[str, None] = None) -> None:
+    def __init__(self: "FloraNode", task_queue: "Queue[Any]", sensors: Sensors, ws: "WSClient", name: Union[str, None] = None) -> None:
         """
             Initializes the Floralyfe Node.
 
@@ -40,6 +41,7 @@ class FloraNode(Singleton):
         """
         self.task_queue = task_queue
         self.sensors = sensors
+        self.ws = ws
         #  If no name is provided, use the derived class' name
         self.name = name if name is not None else type(self).__name__
         self.logger = Logger(self.name)
@@ -74,6 +76,9 @@ class FloraNode(Singleton):
         while True:
             self.logger.debug("Running main.")
             sleep(1)
+
+    def send(self: "FloraNode", msg: Dict[Any, Any], topic: str) -> None:
+        self.ws.send(msg, topic)
 
     def run(self: "FloraNode") -> None:
         """

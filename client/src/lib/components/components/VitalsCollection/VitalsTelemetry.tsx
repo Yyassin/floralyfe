@@ -24,7 +24,7 @@ const VitalsTelemetry = () => {
             loadVitals: state.loadVitals
         }));
 
-    const plantVitals = vitals[selectedPlantID];
+    const plantVitals = vitals[selectedPlantID]; // Make this selected plant id eventually
     const live: any = plantVitals?.live
 
     const getRandomInt = (max: number) => {
@@ -42,8 +42,8 @@ const VitalsTelemetry = () => {
             plantID: selectedPlantID,
             critical: getRandomInt(2) > 0,
             temperature: getRandomInt(100) / 100,
-            humidity: getRandomInt(100) / 100,
-            moisture: getRandomInt(100) / 100,
+            airHumidity: getRandomInt(100) / 100,
+            soilMoisture: getRandomInt(100) / 100,
             light: getRandomInt(100) / 100,
             greenGrowth: getRandomInt(100) / 100,
             date: getDayOffset(counter.current).toString(),
@@ -60,8 +60,8 @@ const VitalsTelemetry = () => {
             plantID: selectedPlantID,
             critical: getRandomInt(1) > 0,
             temperature: getRandomInt(100) / 100,
-            humidity: getRandomInt(100) / 100,
-            moisture: getRandomInt(100) / 100,
+            airHumidity: getRandomInt(100) / 100,
+            soilMoisture: getRandomInt(100) / 100,
             light: getRandomInt(100) / 100,
             greenGrowth: getRandomInt(100) / 100,
             date: getDayOffset(counter.current).toString(),
@@ -80,12 +80,27 @@ const VitalsTelemetry = () => {
         }
     }
 
+    const formatVital = (name: string, value: any) => {
+        switch(name) {
+            case "temperature": {
+                return `${value.toFixed(2)} C`
+            }
+
+            case "airHumidity": {
+                return `${value.toFixed(2)}%`
+            }
+
+            default:
+                return `${(value * 100).toFixed(2)}%`
+        }
+    }
+
     return (
         <Flex 
             flexDir={"column"}
         >
             <Flex>
-                <Button mr={5} onClick={clearVitals}>
+                {/* <Button mr={5} onClick={clearVitals}>
                     Clear Vitals
                 </Button>
                 <Button mr={5} onClick={updateLiveVital}>
@@ -96,7 +111,7 @@ const VitalsTelemetry = () => {
                 </Button>
                 <Button mr={5} onClick={loadVitalsWrapper}>
                     Add Many Vitals
-                </Button>
+                </Button> */}
             </Flex>
             <Flex>
             {!live ? (
@@ -108,7 +123,7 @@ const VitalsTelemetry = () => {
                             <VitalStatistic
                                 key={`selectedPlantID-${idx}`}
                                 name={vital}
-                                value={`${(live[vital] * 100).toFixed(2)}%`}
+                                value={formatVital(vital, live[vital])}
                                 percentage={live[vital]}
                             />
                         )
