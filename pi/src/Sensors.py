@@ -1,19 +1,24 @@
 # type: ignore
 from typing import List
-from gpiozero import AngularServo, LED
 from util.Singleton import Singleton
-from sense_hat import SenseHat
-from picamera import PiCamera
-import busio
-import digitalio
-import board
-import adafruit_mcp3xxx.mcp3008 as MCP
-from gpiozero.pins.pigpio import PiGPIOFactory
-from adafruit_mcp3xxx.analog_in import AnalogIn
 import statistics as s
 from random import randint
-
 from time import sleep
+from util.util import IS_RPI
+
+if IS_RPI:
+    from sense_hat import SenseHat
+    from picamera import PiCamera
+    from gpiozero import AngularServo, LED
+    import busio
+    import digitalio
+    import board
+    import adafruit_mcp3xxx.mcp3008 as MCP
+    from gpiozero.pins.pigpio import PiGPIOFactory
+    from adafruit_mcp3xxx.analog_in import AnalogIn
+else:
+    from config.get_mock_pins import SenseHat, PiCamera, AngularServo, LED
+
 
 MAX_16B = 65535  # 2^16 - 1
 VARIANCE = 21617e-9

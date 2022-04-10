@@ -10,7 +10,7 @@ class localPlantDB(Model):                  # type: ignore
 
 class User (localPlantDB):
     userID = CharField()
-    deviceID=CharField()
+    deviceID = CharField()
     email = CharField()
     password = CharField()
 
