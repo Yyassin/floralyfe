@@ -24,6 +24,8 @@ import {
     NOTIFICATIONS_SUBCRIPTION,
     VITALS_SUBCRIPTION,
 } from "lib/api/queries";
+import { toastSuccess, toastError, dismissAll } from "../../../components/util/toast";
+
 
 const useEventListener = (eventName: any, handler: any) => {
     if (typeof window === "undefined") return;
@@ -108,6 +110,17 @@ const Home = () => {
                 };
                 break;
             }
+
+            case "F9": {
+                msg = {
+                    topic: "camera-topic",
+                    userID: user?.id,
+                    payload: {
+                        topic: "take-pictures"
+                    },
+                };
+                break;
+            }
         }
 
         ws.send(msg);
@@ -146,9 +159,11 @@ const Home = () => {
             variables: { deviceID: user?.deviceID },
             updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return prev;
+                dismissAll();
 
                 console.warn("Got notification subscription");
                 const notification = subscriptionData.data.notification.data;
+                toastSuccess(`Got notification: ${notification.type}`)
 
                 // deepLog(subscriptionData);
                 addNotification(notification);

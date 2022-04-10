@@ -1,24 +1,24 @@
 /** @type {import('next-seo').DefaultSeoProps} */
 const defaultSEOConfig = {
-  title: "nextarter-chakra",
-  titleTemplate: "%s | nextarter-chakra",
-  defaultTitle: "nextarter-chakra",
-  description: "Next.js + chakra-ui + TypeScript template",
-  canonical: "https://nextarter-chakra.sznm.dev",
+  title: "floralyfe",
+  titleTemplate: "%s | Plant Monitor",
+  defaultTitle: "floralyfe",
+  description: "Remote plant monitoring system.",
+  canonical: "https://floralyfe.sznm.dev",
   openGraph: {
-    url: "https://nextarter-chakra.sznm.dev",
+    url: "https://floralyfe.sznm.dev",
     title: "nextarter-chakra",
     description: "Next.js + chakra-ui + TypeScript template",
     images: [
       {
-        url: "https://og-image.sznm.dev/**nextarter-chakra**.sznm.dev.png?theme=dark&md=1&fontSize=125px&images=https%3A%2F%2Fsznm.dev%2Favataaars.svg&widths=250",
-        alt: "nextarter-chakra.sznm.dev og-image",
+        url: "https://raw.githubusercontent.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/main/assets/logo.png?token=GHSAT0AAAAAABS52LN4O6F6YJE35EZDLSYEYSOE2PA",
+        alt: "floralyfe.sznm.dev og-image",
       },
     ],
-    site_name: "nextarter-chakra",
+    site_name: "floralyfe",
   },
   twitter: {
-    handle: "@sozonome",
+    handle: "@floralyfe",
     cardType: "summary_large_image",
   },
 };

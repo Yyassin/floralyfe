@@ -20,6 +20,7 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { CREATE_USER } from "lib/api/queries";
 import { deepLog } from "lib/components/hooks/validate";
 import { createQuery } from "lib/api/createQuery";
+import { toastSuccess, toastError, dismissAll } from "../../components/util/toast";
 
 export default function SignupCard() {
     const [showPassword, setShowPassword] = useState(false);
@@ -30,6 +31,7 @@ export default function SignupCard() {
     const [password, setPassword] = useState("");
 
     const signUp = async () => {
+        dismissAll();
         deepLog("SIGN UP");
 
         const fields = [
@@ -43,6 +45,7 @@ export default function SignupCard() {
             deepLog(
                 "At least one empty field. Retry."
             );
+            toastError("At least one empty field. Retry.");
             return;
         }
 
@@ -56,6 +59,7 @@ export default function SignupCard() {
 
         if (!validateEmail(email)) {
             deepLog("Invalid email");
+            toastError("Invalid email");
             return;
         }
         
@@ -68,6 +72,7 @@ export default function SignupCard() {
                 password
             });
 
+        toastSuccess("Signed up successfully.");
         //console.log(response);
         return response;
     }

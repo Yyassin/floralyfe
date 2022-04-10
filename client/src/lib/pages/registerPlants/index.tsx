@@ -37,6 +37,7 @@ import useWebSocket from "lib/components/hooks/useWebSocket";
 import { GET_USER } from "lib/api/queries";
 import { createQuery } from "lib/api/createQuery";
 import { CREATE_PLANT } from "lib/api/queries/createPlant";
+import { toastSuccess, dismissAll } from "../../components/util/toast";
 
 const RegisterPlants = () => {
     const ws = useWebSocket(config.WS_URL, 5, 1500);
@@ -155,6 +156,7 @@ const RegisterPlants = () => {
     };
 
     const confirm = async () => {
+        dismissAll();
         onClose();
         deepLog("REGISTER PLANT");
 
@@ -184,6 +186,8 @@ const RegisterPlants = () => {
                 ...msg,
             },
         });
+
+        toastSuccess("Registered Plant.");
 
         addPlant({ ...msg, wiki: firstPlant.current ? wiki : null, description: firstPlant.current ? description : null });
         firstPlant.current = false;
