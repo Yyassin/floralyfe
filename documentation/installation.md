@@ -1,18 +1,5 @@
-<span title="floralyfe logo">
- <p align="center">
-  <img width="100px" src="./assets/logo.png" alt="illumi-img">
- </p>
-</span>
-
-<h1 align="center" style="margin-top: 0px;">floralyfe</h1>
-
-[![pi](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/actions/workflows/pi.yml/badge.svg)](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/actions?query=workflow%3Api+tests)
-[![node](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/actions/workflows/node.yml/badge.svg)](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/actions?query=workflow%3Anode+tests)
-
-> A distributed remote plant monitoring and irrigation system. 
-
-## SYSC3010 Project Installation Instructions
-Floralyfe is being built as a project submission for SYSC3010. The project comprises a distributed remote plant monitoring solution that is composed of three core components: a frontend React client, a backend Node server and distributed Raspberry Pi systems.
+# SYSC3010 Project Installation Instructions
+The Floralyfe project comprises a distributed remote plant monitoring solution that is composed of three core components: a frontend React client, a backend Node server and distributed Raspberry Pi systems.
 
 ## Development
 At a high level, the Floralyfe system consists of three core nodes: the client, the server and the pi system. The server serves as the communication layer, routing requests between the physical plant systems and the client. It also abstracts the cloud database. The client serves as the user's interface to the system while the pi system serves as the actual plant monitor and irrigation solution. To get these nodes running, follow the instructions below.
