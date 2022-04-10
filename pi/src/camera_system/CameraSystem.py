@@ -4,13 +4,13 @@ CameraSystem.py
 Camera Monitoring Subsystem Controller API
 """
 
-__author__ = "yousef"
+__author__ = "yousef & zak"
 
 from database import Plant, Photos
 from typing import Any, Union, Dict
 from queue import Queue
 from flora_node.FloraNode import FloraNode
-from Sensors import Sensors
+from Sensors import Sensors     # type: ignore
 from ws import WSClient
 import cv2 as cv
 from camera_system.camera_util import image_buffer
@@ -19,7 +19,6 @@ from util.util import IS_RPI
 import time
 import threading
 import schedule
-import datetime
 import os
 
 CAMERA_TOPIC = "camera-topic"
@@ -180,4 +179,4 @@ class CameraSystem(FloraNode):
 
     def cleanup(self: "CameraSystem") -> None:
         cv.destroyAllWindows()
-        self.cam.close() if IS_RPI else self.cam.release()               # type: ignore
+        self.cam.close() if IS_RPI else self.cam.release()

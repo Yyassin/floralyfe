@@ -28,7 +28,7 @@ logger = Logger("WS Sender")
 if __name__ == "__main__":
     queues = {}                                    # type: Dict[Any, Any]
 
-    ws_receiver = WSClient(queues, config.WS_URL, config.USER_ID)
+    ws_receiver = WSClient(queues, config.WS_URL, config.USER_ID, config.DEVICE_ID)
     ws_receiver.run()
 
     time.sleep(2)

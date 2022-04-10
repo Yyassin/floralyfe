@@ -19,7 +19,7 @@ def test_ws_receiver() -> None:
         "vitals-topic": vitals_task_queue
     }
 
-    ws = WSClient(queues, "", "")
+    ws = WSClient(queues, "", "", "")
 
     message = {
         "topic": "random-topic",

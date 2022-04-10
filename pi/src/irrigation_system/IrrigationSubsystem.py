@@ -3,7 +3,7 @@ from query.create_notification import create_notification
 from enum import Enum
 from time import sleep
 from config import config
-from Sensors import Sensors
+from Sensors import Sensors     # type: ignore
 from util.Logger import Logger
 from database import Plant
 import schedule

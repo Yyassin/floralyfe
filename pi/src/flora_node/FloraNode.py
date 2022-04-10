@@ -11,7 +11,7 @@ import threading
 from time import sleep
 from typing import Any, Union, Dict
 from queue import Queue
-from Sensors import Sensors
+from Sensors import Sensors     # type: ignore
 from ws import WSClient
 from util.Logger import Logger
 from util.Singleton import Singleton

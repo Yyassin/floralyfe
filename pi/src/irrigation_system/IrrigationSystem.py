@@ -11,7 +11,7 @@ from database import User, Plant
 from typing import Any, Union
 from queue import Queue
 from flora_node.FloraNode import FloraNode
-from Sensors import Sensors
+from Sensors import Sensors     # type: ignore
 from ws import WSClient
 import threading
 from time import sleep
@@ -35,7 +35,6 @@ class IrrigationSystem(FloraNode):
         """
         super().__init__(task_queue, sensors, ws, name)
 
-        self.activeThreads = []
         self.deviceID = deviceID
 
         self.plantsMonitors = []
@@ -86,8 +85,7 @@ class IrrigationSystem(FloraNode):
     def run(self: "IrrigationSystem") -> None:
         super().run()
         for plantMonitor in self.plantsMonitors:
-            plantThread = threading.Thread(target=plantMonitor.main, daemon=True)  # type: ignore
-            self.activeThreads.append(plantThread)
+            plantThread = threading.Thread(target=plantMonitor.main, daemon=True)
 
             self.logger.debug("Started monitoring plant thread")
             plantThread.start()

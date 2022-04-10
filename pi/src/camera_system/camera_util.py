@@ -10,7 +10,7 @@ lock = threading.Lock()
 image_buffer: List[Any] = [None]
 
 
-def PI_capture_frame(cam: "cv.Camera", dim: Tuple[int, int, int] = (240, 320, 3)) -> Tuple["cv.Image", bytes]:
+def PI_capture_frame(cam: "cv.Camera", dim: Tuple[int, int, int] = (240, 320, 3)) -> "np.ndarray[Any, np.dtype[np.uint8]]":
     cam.resolution = (320, 240)
     cam.framerate = 24
     time.sleep(2)

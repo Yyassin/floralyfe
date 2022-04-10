@@ -2,15 +2,14 @@ from queue import Queue
 from typing import Any, cast
 from vital_system.VitalSystem import SenseIcon, VitalStates, VitalSystem
 from util.Logger import Logger
-from config.io_config import pins
-from Sensors import Sensors
+from Sensors import Sensors     # type: ignore
 from datetime import datetime
 from dateutil import parser
 from deepdiff import DeepDiff
 
 queue = Queue()     # type: Queue[Any]
-sensors = Sensors(pins)
-vitals = VitalSystem(queue, sensors, cast(Any, None))
+sensors = Sensors(False)
+vitals = VitalSystem(queue, sensors, cast(Any, None), "", "")
 logger = Logger("test_vitals")
 
 
@@ -23,7 +22,7 @@ def test_vitals_test_function() -> None:
 
 def test_vitals_singleton() -> None:
     """Vitals :: Vitals is Singleton"""
-    is_singleton = vitals == VitalSystem(queue, sensors, cast(Any, None))
+    is_singleton = vitals == VitalSystem(queue, sensors, cast(Any, None), "", "")
     logger.debug(f"Testing vitals is singleton, got: {is_singleton}")
     assert is_singleton
 
@@ -32,16 +31,14 @@ def test_vitals_state_machine_happy_path() -> None:
     """Vitals :: Excercise State Machine Happy Path"""
     vitals.state = VitalStates.IDLE
 
-    water_level = pins["water_level"]
-    moisture = pins["channel_1"]["moisture"]
-    water_level.value = 0.5
-    moisture.value = 0.7
+    water_level = 96
+    moisture = 97
 
     expected_vital = {
-        "soilMoisture": moisture.value,
+        "soilMoisture": moisture,
         "temperature": 35.15,
         "airHumidity": 22.42,
-        "waterLevel": water_level.value,
+        "waterLevel": water_level,
         "light": 0.4980,
         "greenGrowth": 10.0610,
         "plantID": "yousef-plant",
@@ -91,16 +88,14 @@ def test_vitals_state_machine_not_happy_path() -> None:
     """Vitals :: Excercise State Machine Un-Happy Path"""
     vitals.state = VitalStates.IDLE
 
-    water_level = pins["water_level"]
-    moisture = pins["channel_1"]["moisture"]
-    water_level.value = 0.1
-    moisture.value = 0.2
+    water_level = 0.1
+    moisture = 0.2
 
     expected_vital = {
-        "soilMoisture": moisture.value,
+        "soilMoisture": moisture,
         "temperature": 35.15,
         "airHumidity": 22.42,
-        "waterLevel": water_level.value,
+        "waterLevel": water_level,
         "light": 0.4980,
         "greenGrowth": 10.0610,
         "plantID": "yousef-plant",

@@ -1,11 +1,11 @@
 from queue import Queue
 from typing import Any, cast
 from irrigation_system.IrrigationSystem import IrrigationSystem
-from Sensors import Sensors
+from Sensors import Sensors     # type: ignore
 
 queue = Queue()     # type: Queue[Any]
-sensors = Sensors()
-irrigation = IrrigationSystem(queue, sensors, cast(Any, None))
+sensors = Sensors(False)
+irrigation = IrrigationSystem(queue, sensors, cast(Any, None), "")
 
 
 def test_irrigation_test_function() -> None:
@@ -13,4 +13,4 @@ def test_irrigation_test_function() -> None:
 
 
 def test_irrigation_singleton() -> None:
-    assert irrigation == IrrigationSystem(queue, sensors, cast(Any, None))
+    assert irrigation == IrrigationSystem(queue, sensors, cast(Any, None), "")

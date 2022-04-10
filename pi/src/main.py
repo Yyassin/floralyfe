@@ -10,7 +10,7 @@ import sys
 from typing import Any
 from queue import Queue
 import uuid
-from Sensors import Sensors
+from Sensors import Sensors     # type: ignore
 from camera_system import CameraSystem
 from irrigation_system import IrrigationSystem
 from query.user_query import login, update_user

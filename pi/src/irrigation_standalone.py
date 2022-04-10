@@ -7,12 +7,12 @@
 """
 
 from irrigation_system.IrrigationSystem import IrrigationSystem
-from Sensors import Sensors
+from Sensors import Sensors     # type: ignore
 # from irrigation_system.Irrigation_simulation import main
 
 
 def test_IrregationSystem() -> None:
-    sensors = Sensors()
+    sensors = Sensors(False)
     irrigation = IrrigationSystem(None, sensors, None)    # type: ignore
     irrigation.main()
     sensors.cleanup()

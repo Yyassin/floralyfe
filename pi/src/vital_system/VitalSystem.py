@@ -12,7 +12,7 @@ from time import sleep
 from queue import Queue
 from flora_node.FloraNode import FloraNode
 from datetime import datetime
-from Sensors import Sensors
+from Sensors import Sensors     # type: ignore
 from enum import Enum
 from camera_system.camera_util import image_buffer
 from query.create_notification import create_notification
@@ -130,7 +130,7 @@ class VitalSystem(FloraNode):
         self.deviceID = deviceID
         self.email = email
         self.vitals: Dict[str, Any] = {}
-        self.plant_optima = {}
+        self.plant_optima: Dict[str, float] = {}
         self.optima: Dict[str, bool] = {}
         self.optima_to_icon_enum = {
             "temperature": SenseIcon.THERMOMETER,
@@ -172,11 +172,11 @@ class VitalSystem(FloraNode):
         elif topic == "toggle-water":
             self.sensors.set_water_mean(0.1 if self.sensors.water_mean > 0.5 else 0.95)
         elif topic == "toggle-channel-1":
-            self.sensors.set_moisture_mean(0.15 if self.sensors.channel[1]["mean"] > 0.5 else 0.9, 1)   # type: ignore
+            self.sensors.set_moisture_mean(0.15 if self.sensors.channel[1]["mean"] > 0.5 else 0.9, 1)
         elif topic == "toggle-channel-2":
-            self.sensors.set_moisture_mean(0.0 if self.sensors.channel[2]["mean"] > 0.5 else 0.82, 2)    # type: ignore
+            self.sensors.set_moisture_mean(0.0 if self.sensors.channel[2]["mean"] > 0.5 else 0.82, 2)
         elif topic == "increase-channel":
-            self.sensors.set_moisture_mean(self.sensors.channel[2]["mean"] + 0.05, 2)    # type: ignore
+            self.sensors.set_moisture_mean(self.sensors.channel[2]["mean"] + 0.05, 2)
 
     def idle(self: "VitalSystem") -> None:
         self.logger.debug("IDLE")
@@ -356,7 +356,7 @@ class VitalSystem(FloraNode):
         if msg:
             icon_enum = msg["icon"]
             self.logger.debug(f"Got client msg, setting sense icon: {icon_enum}")
-            self.sensors.set_sense_mat(self.enum_to_icon[SenseIcon(icon_enum)])      # type: ignore
+            self.sensors.set_sense_mat(self.enum_to_icon[SenseIcon(icon_enum)])
             self.state = VitalStates.IDLE
             return
 
@@ -375,12 +375,12 @@ class VitalSystem(FloraNode):
                 self.send(msg, topic)
                 self.logger.warn(f"sent {msg}")
 
-                self.sensors.set_sense_mat(self.enum_to_icon[icon_enum])  # type: ignore
+                self.sensors.set_sense_mat(self.enum_to_icon[icon_enum])
 
                 self.state = VitalStates.IDLE
                 return
 
-        self.sensors.set_sense_mat(self.enum_to_icon[SenseIcon.HAPPY])  # type: ignore
+        self.sensors.set_sense_mat(self.enum_to_icon[SenseIcon.HAPPY])
         self.logger.debug(f"Setting sense icon: {SenseIcon.HAPPY}")
 
         msg = {
@@ -403,12 +403,12 @@ class VitalSystem(FloraNode):
             VitalStates.PUBLISH_VITAL: self.publish_vital,
             VitalStates.SET_SENSE_ICON: self.set_sense_icon
         }
-        stateOperation = cast(Dict[VitalStates, Callable[..., Any]], stateOperation)
+        stateOperation = cast(Dict[VitalStates, Any], stateOperation)
 
         def default() -> None:
             self.state = VitalStates.IDLE
 
-        stateOperation.get(self.state, default)()
+        stateOperation.get(self.state, default)()   # type: ignore
 
     def start_state_machine(self: "VitalSystem") -> None:
         self.state = VitalStates.MEASURE_VITALS
