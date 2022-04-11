@@ -1,3 +1,11 @@
+/**
+ * notification.controller.ts
+ * 
+ * Notification controller route endpoint
+ * logic for sending emails with nodemailer.
+ * @author Yousef 
+ */
+
 // Load env variables.
 require("dotenv").config();
 
@@ -11,6 +19,7 @@ interface EmailPayload {
     html: String;
 }
 
+// Email transporter config
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
@@ -25,12 +34,21 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+/**
+ * Route helper that processes and sends
+ * the specified email payload.
+ * @param emailPayload EmailPayload, the email to send.
+ */
 const sendEmail = async (emailPayload: EmailPayload) => {
+    // Add the from address.
     const mailOptions = {
         from: "floralyfe",
         ...emailPayload,
     };
-    deepLog(mailOptions)
+
+    //deepLog(mailOptions)
+
+    // Send the email
     await transporter.sendMail(mailOptions, (error, info) => {
         console.log("Sent")
         if (error) {
@@ -42,31 +60,20 @@ const sendEmail = async (emailPayload: EmailPayload) => {
     });
 };
 
+/**
+ * Test endpoint for jest.
+ * @param req, the request.
+ * @param res, the response.
+ */
 const notificationTest = (req, res) => {
     res.status(200).send("Test passed!");
 };
 
-const emailTest = (req, res) => {
-    const emailPayload = {
-        to: "you.ayassin@gmail.com, youyawng303@gmail.com",
-        subject: "Your Plant - PlantName - needs your attention!",
-        text: "Hey there",
-        html: "<b>Hey there</b>",
-    };
-
-    try {
-        sendEmail(emailPayload);
-        res.status(200).send("Sent Email!");
-    } catch (error) {
-        res.status(500).send({
-            error: {
-                message: "Error sending email",
-                error,
-            },
-        });
-    }
-};
-
+/**
+ * Send email wrapper to process request.
+ * @param req, the request - contains the email payload.
+ * @param res, the response.
+ */
 const sendEmailRouteHandler = (req, res) => {
     deepLog(req.body)
     const { email } = req.body;
@@ -85,7 +92,7 @@ const sendEmailRouteHandler = (req, res) => {
 
 const controller = {
     notificationTest,
-    emailTest,
     sendEmailRouteHandler
 } as const;
+
 export default controller;

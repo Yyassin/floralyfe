@@ -1,3 +1,10 @@
+/**
+ * vitals.test.ts
+ * 
+ * Tests graphql endpoints for Vitals.
+ * @author Yousef
+ */
+
 import "mocha";
 import { expect } from "chai";
 import { graphQLPort } from "../src/server";
@@ -6,8 +13,10 @@ import { before } from "mocha";
 import { Vital } from "../src/models";
 import { debug, deepLog } from "../src/util";
 
+// Connect to the server.
 const request = superwstest(`http://localhost:${graphQLPort}`);
 
+// Expected values.
 const gql = String.raw;
 const expected = {
     soilMoisture: 9,
@@ -19,6 +28,7 @@ const expected = {
     deviceID: "device-id"
 }
 
+// Create vital query.
 const createVitalQuery = gql`
     mutation{
         createVital(
@@ -42,6 +52,11 @@ const createVitalQuery = gql`
     }
 `;
 
+/**
+ * Vital query for before each - warms up
+ * the test suite so the rest of the tests
+ * execute quickly.
+ */
 const getVitalsQuery = gql`
     query view_vitals($plantID: ID!){
         vitals(plantID: $plantID){
@@ -59,6 +74,9 @@ const getVitalsQuery = gql`
 expected.plantID = expected.plantID.replace(/['"]+/g, '');
 expected.plantID = expected.plantID.replace(/['"]+/g, '');
 
+/**
+ * Tests reading, writing and updating a Vital.
+ */
 let id: string;
 describe("GraphQL Vitals", () => {
     before(async function () {
@@ -71,6 +89,7 @@ describe("GraphQL Vitals", () => {
     });
 
     it("vital::Should create and read vital", async () => {
+        // Create a vital
         const response = await request
             .post("/graphql")
             .send({query: createVitalQuery});
@@ -80,7 +99,7 @@ describe("GraphQL Vitals", () => {
         deepLog("CREATED VITAL")
         deepLog(expected)
 
-
+        // Validate the vital against expected.
         const vital = response.body.data.createVital as Vital.IVital;
         expect(vital.id).to.be.a("string");
         expect(vital.soilMoisture).to.eq(expected.soilMoisture)
@@ -94,6 +113,7 @@ describe("GraphQL Vitals", () => {
 
         expect(diffTime).to.below(10);
 
+        // Validate that the vital was properly comitted to the database.
         const document = await Vital.vital.get(vital.id);
 
         debug("\nREADING VITAL with id: " + vital.id)
