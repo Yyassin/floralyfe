@@ -1,5 +1,13 @@
+"""
+test_sensors.py
+=========================
+Excercises and validates all
+functionality from the sensor interface.
+"""
+
+__author__ = "yousef"
+
 from Sensors import Sensors     # type: ignore
-import config.io_config as io
 from util.Logger import Logger
 from config.config import SW_TEST
 import numpy as np
@@ -8,8 +16,7 @@ import cv2 as cv
 
 logger = Logger("test_sensors")
 
-pins = io.pins
-sensors = Sensors(pins)
+sensors = Sensors(False)
 
 
 def test_sensors_sense_hat_temperature() -> None:

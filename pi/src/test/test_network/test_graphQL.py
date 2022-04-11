@@ -1,3 +1,12 @@
+"""
+test_graphQL.py
+=========================
+Tests that the Pi can make
+graphql quries and mutations.
+"""
+
+__author__ = "abdalla & zakariyya"
+
 import sys
 import graphql_requests
 

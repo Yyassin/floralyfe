@@ -1,3 +1,12 @@
+"""
+test_camera_subsystem.py
+=========================
+Graphical tkinter simulation
+of the camera monitoring subsystem.
+"""
+
+__author__ = "zakariyya"
+
 from time import sleep
 from Camera_subsystem import CameraSubsystem, CameraStates
 from gpiozero import AngularServo, LED

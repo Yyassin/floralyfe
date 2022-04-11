@@ -35,27 +35,50 @@ Once the environment and dependencies have been setup. Navigate to `src/` and ex
 
 #### Additional Notes
 - The pi node implements a unit test workflow, to help develop code that passes these tests, follow [these instructions](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/blob/main/pi/Linting.md) to setup linting for VSCode.
-- Tests can be executed using the `srcipts/test.sh` or `.\scripts\test.bat` scripts. Alternatively, use the `pytest -v --mocha test/` command in `src`. *All unit tests should be added to the `test/` directory with a `test_` prefix for both the file and test functions within.
+- Tests can be executed using the `srcipts/test.sh` or `.\scripts\test.bat` scripts. Alternatively, use the `pytest -v --mocha test/` command in `src`. *All unit tests should be added to the `test/` directory with a `test_` prefix for both the file and test functions within. Tests can be ignored with the `--ignore=<file_path>` argument.
 
 - **Attention:** Standalone testing of modules ***must*** be performed from within `src/` such that
 `src/` remains the root of the application and imports keep working. See `camera_standalone.py` and `irrigation_standalone.py` for examples.
 - Run `mypy --strict --implicit-reexport $(git ls-files '*.py')` before making any pull requests and ensure all tests pass.
 - Anytime you install a module, run `pip freeze > requirements.txt` to save it. 
 - **Note**: Make sure to change the following package versions to avoid installation errors in the future:
-    ```s
-    numpy==1.19.5
-    opencv-python==4.5.3.56
-    tomli>=1.0
-    websockets==9.1
-    Pillow==8.4.0
-    scipy==1.5.4
-    pkg_resources==0.0.0        # remove this
-    picamera==1.13              # remove this
-    RTIMULib==7.2.1             # remove this
-    ```
+
+```s
+numpy==1.19.5
+opencv-python==4.5.3.56
+tomli>=1.0
+websockets==9.1
+Pillow==8.4.0
+scipy==1.5.4
+pkg_resources==0.0.0        # remove this
+picamera==1.13              # remove this
+RTIMULib==7.2.1             # remove this
+```
 
 ### server
 The server node is written in TypeScript and manages communication accross application nodes. The node exposes a GraphQL API to encapsulate the database layer and also exposes an explicit WebSocket Server. The dedicated WebSocket has been setup for client <-> system messaging in addition to pubsub based WebSockets abstracted by GraphQL subscriptions. 
+
+There are several services used by the server that require corresponding API keys. You'll need to create a `.env` file in the server root that looks like this:
+
+```s
+EXPRESS_PORT=5000
+GRAPHQL_PORT=5001
+DEVELOPMENT=1
+
+# Firebase Authentication Credentials
+FIREBASE_API_KEY=
+FIREBASE_AUTH_DOMAIN=
+FIREBASE_PROJECT_ID=
+FIREBASE_STORAGE_BUCKET=
+FIREBASE_MESSAGING_SENDER_ID=
+FIREBASE_APP_ID=
+
+# Notification Email Sender Credentials
+EMAIL_USER = # The email address
+EMAIL_PASS = # The email password
+```
+
+Once that's done, you can initialize and start the server with the following commands:
 
 1. Run `npm i` to install all dependencies
 2. Run `npm run emulator-test` to run unit tests (that require a Firestore emulator).
@@ -63,7 +86,15 @@ The server node is written in TypeScript and manages communication accross appli
 
 
 ### client
-The client is based on Next and is used as the user's primary interface to the system. It is subscribed to messages sent to the logged in user at the WebSocket and GraphQL subscription channels and can also send messages through the WS connection.
+The client is based on NextJS+ChakraUI and is used as the user's primary interface to the system. It is subscribed to messages sent to the logged in user at the WebSocket and GraphQL subscription channels and can also send messages through the WS connection.
+
+The client uses [Plant Id](https://web.plant.id/plant-identification-api/) to provide plant recognition. To enable this feature, you'll need to create a `.env.local` file in the client root with the following.
+
+```s
+# PlantID
+NEXT_PUBLIC_PLANT_ID_API_KEY=
+NEXT_PUBLIC_DEVELOPMENT=true
+```
 
 1. Run `npm i` to install all dependencies
 3. Run `npm run dev` to start the client in development on port 3000.

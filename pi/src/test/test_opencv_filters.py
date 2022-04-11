@@ -1,3 +1,12 @@
+"""
+test_opencv_filters.py
+=======================
+Tests that opencv filters for estimating
+green growth and perceived luminescense are working correctly.
+"""
+
+__author__ = "yousef"
+
 from camera_system.opencv_filters import luminescense, cv_green_mask
 import numpy as np
 

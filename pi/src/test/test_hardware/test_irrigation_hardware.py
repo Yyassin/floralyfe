@@ -1,3 +1,12 @@
+"""
+test_irrigation_hardware.py
+=========================
+Tests proper functionality of irrigation
+system hardware.
+"""
+
+__author__ = "abdalla"
+
 import busio
 import digitalio
 import board
@@ -6,7 +15,6 @@ from adafruit_mcp3xxx.analog_in import AnalogIn
 import RPi.GPIO as GPIO
 from time import sleep
 from gpiozero import AngularServo
-from gpiozero.pins.pigpio import PiGPIOFactory
 
 
 def test_moisture_water() -> None:
