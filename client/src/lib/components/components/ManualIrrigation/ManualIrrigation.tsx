@@ -1,23 +1,14 @@
+/**
+ * ManualIrrigation.tsx
+ *
+ * Renders a button to trigger automatic
+ * irrigation event on the RPi.
+ * @author Yousef
+ */
+
 import React from "react";
-import {
-    ExternalLinkIcon,
-    MoonIcon,
-    PhoneIcon,
-    StarIcon,
-    ViewIcon,
-} from "@chakra-ui/icons";
-import {
-    Badge,
-    Box,
-    Center,
-    Flex,
-    Image,
-    Text,
-    useColorMode,
-} from "@chakra-ui/react";
+import { Box, Center, Flex } from "@chakra-ui/react";
 import { useStore } from "lib/store/store";
-import { useEffect, useState } from "react";
-import { deepLog } from "lib/components/hooks/validate";
 import useWebSocket from "lib/components/hooks/useWebSocket";
 import { config } from "lib/config";
 import { BsWater } from "react-icons/bs";
@@ -27,16 +18,21 @@ const ManualIrrigation = () => {
     const { user } = useStore((state) => ({
         user: state.user,
     }));
+
+    /**
+     * Sends a automatic irrigation
+     * requests to the RPi to water the selected plant.
+     */
     const waterPlant = () => {
         const msg = {
             topic: "irrigation-topic",
             userID: user?.id,
             payload: {
-                topic: "pump-override-topic"
-            }
-        }
+                topic: "pump-override-topic",
+            },
+        };
 
-        ws.send(msg)
+        ws.send(msg);
     };
 
     return (
@@ -83,7 +79,7 @@ const ManualIrrigation = () => {
                         height={50}
                         width={50}
                     >
-                        <BsWater color="white" fontSize={30}/>
+                        <BsWater color="white" fontSize={30} />
                     </Center>
                 </Flex>
             </Box>

@@ -1,134 +1,68 @@
-import { Button, Flex, Text } from "@chakra-ui/react";
-import { deepLog } from "lib/components/hooks/validate";
-import { Vital } from "lib/store/slices/vitalSlice";
+/**
+ * VitalsTelemetry.tsx
+ *
+ * Renders collection of live vitals
+ * with according icons and their values.
+ * @author Yousef
+ */
+
+import { Flex, Text } from "@chakra-ui/react";
 import { useStore } from "lib/store/store";
-import dynamic from "next/dynamic";
-import React, { Component, useRef } from "react";
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-import {
-    getDayOffset,
-    lineChartData,
-    lineChartOptions,
-    plantVitals,
-} from "../../../store/mock";
+import React, { useRef } from "react";
 import VitalStatistic from "../VitalStatistic/VitalStatistics";
 
 const VitalsTelemetry = () => {
-    const counter = useRef(0);
-    const { selectedPlantID, vitals, addPersistedVital, setLiveVital, loadVitals } =
-        useStore((state) => ({
-            selectedPlantID: state.selectedPlantID,
-            vitals: state.vitals,
-            addPersistedVital: state.addPersistedVital,
-            setLiveVital: state.setLiveVital,
-            loadVitals: state.loadVitals
-        }));
+    const { selectedPlantID, vitals } = useStore((state) => ({
+        selectedPlantID: state.selectedPlantID,
+        vitals: state.vitals,
+        addPersistedVital: state.addPersistedVital,
+        setLiveVital: state.setLiveVital,
+        loadVitals: state.loadVitals,
+    }));
 
     const plantVitals = vitals[selectedPlantID]; // Make this selected plant id eventually
-    const live: any = plantVitals?.live
+    const live: any = plantVitals?.live;
 
-    const getRandomInt = (max: number) => {
-        return Math.floor(Math.random() * max);
-      }
-
-    const clearVitals = () => {
-        loadVitals(selectedPlantID, [])
-        setLiveVital({plantID: selectedPlantID} as any)
-    };
-
-    const updateLiveVital = () => {
-        const vital: Vital = {
-            id: selectedPlantID,
-            plantID: selectedPlantID,
-            critical: getRandomInt(2) > 0,
-            temperature: getRandomInt(100) / 100,
-            airHumidity: getRandomInt(100) / 100,
-            soilMoisture: getRandomInt(100) / 100,
-            light: getRandomInt(100) / 100,
-            greenGrowth: getRandomInt(100) / 100,
-            date: getDayOffset(counter.current).toString(),
-        }
-        deepLog("NEW LIVE VITAL")
-        deepLog(vital)
-        setLiveVital(vital)
-        counter.current += getRandomInt(5);
-    };
-
-    const addVital = () => {
-        const vital: Vital = {
-            id: selectedPlantID,
-            plantID: selectedPlantID,
-            critical: getRandomInt(1) > 0,
-            temperature: getRandomInt(100) / 100,
-            airHumidity: getRandomInt(100) / 100,
-            soilMoisture: getRandomInt(100) / 100,
-            light: getRandomInt(100) / 100,
-            greenGrowth: getRandomInt(100) / 100,
-            date: getDayOffset(counter.current).toString(),
-        }
-
-        deepLog("RECEIVED PERIODIC VITAL");
-        deepLog(vital)
-
-        addPersistedVital(vital);
-        counter.current += 2 + getRandomInt(5);
-    };
-
-    const loadVitalsWrapper = () => {
-        for (let i = 0; i < 100; i++) {
-            addVital()
-        }
-    }
-
+    /**
+     * Formats live vital measurements to be displayed
+     * according to vital type.
+     * @param name string, the vital name.
+     * @param value any, the vital value.
+     * @returns string, the formatted display string.
+     */
     const formatVital = (name: string, value: any) => {
-        switch(name) {
+        switch (name) {
             case "temperature": {
-                return `${value.toFixed(2)} C`
+                return `${value.toFixed(2)} C`;
             }
 
             case "airHumidity": {
-                return `${value.toFixed(2)}%`
+                return `${value.toFixed(2)}%`;
             }
 
             default:
-                return `${(value * 100).toFixed(2)}%`
+                return `${(value * 100).toFixed(2)}%`;
         }
-    }
+    };
 
     return (
-        <Flex 
-            flexDir={"column"}
-        >
+        <Flex flexDir={"column"}>
             <Flex>
-                {/* <Button mr={5} onClick={clearVitals}>
-                    Clear Vitals
-                </Button>
-                <Button mr={5} onClick={updateLiveVital}>
-                    updateLiveVital
-                </Button>
-                <Button mr={5} onClick={addVital}>
-                    AddVital
-                </Button>
-                <Button mr={5} onClick={loadVitalsWrapper}>
-                    Add Many Vitals
-                </Button> */}
-            </Flex>
-            <Flex>
-            {!live ? (
-                <Text>No vitals received</Text>
-            ) : (
-                Object.keys(live || []).map(
-                    (vital: any, idx: number) =>
-                        typeof live[vital] === "number" && (
-                            <VitalStatistic
-                                key={`selectedPlantID-${idx}`}
-                                name={vital}
-                                value={formatVital(vital, live[vital])}
-                                percentage={live[vital]}
-                            />
-                        )
-                )
-            )}
+                {!live ? (
+                    <Text>No vitals received</Text>
+                ) : (
+                    Object.keys(live || []).map(
+                        (vital: any, idx: number) =>
+                            typeof live[vital] === "number" && (
+                                <VitalStatistic
+                                    key={`selectedPlantID-${idx}`}
+                                    name={vital}
+                                    value={formatVital(vital, live[vital])}
+                                    percentage={live[vital]}
+                                />
+                            )
+                    )
+                )}
             </Flex>
         </Flex>
     );

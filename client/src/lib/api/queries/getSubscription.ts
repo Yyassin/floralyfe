@@ -1,3 +1,9 @@
+/**
+ * getSubscription.ts
+ * 
+ * The vital and notification subscription queries.
+ */
+
 import { gql } from "@apollo/client";
 
 export const GET_VITALS = gql`

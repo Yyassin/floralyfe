@@ -1,5 +1,8 @@
 /**
- * Global application store.
+ * store.ts
+ * 
+ * Global application store for managing state.
+ * @author Yousef
  */
 
 import create from "zustand";
@@ -23,15 +26,15 @@ export type StoreState = (
 // Define store structure
 type Store = {
     cameraEncoded: string;                                      // Base64 encoded camera feed frame
-    selectedPlantID: string;
-    senseIcon: string;
-    setCameraEncoded: (encoded: string) => void;                // Setter
-    setSelectedPlantID: (id: string) => void;
-    setSenseIcon: (icon: string) => void;
+    selectedPlantID: string;                                    // Selected plant's id.
+    senseIcon: string;                                          // The current SenseHat Icon
+    setCameraEncoded: (encoded: string) => void;                // Camera base64 encoded setter
+    setSelectedPlantID: (id: string) => void;                   // Plant id setter
+    setSenseIcon: (icon: string) => void;                       // SenseHat icon setter
 };
 
 // Creates the store and associated actions.
-// Exposes the store through a hook.
+// Joins store slices.Exposes the store through a hook.
 const useStore = create<StoreState>(devtools(persist((set, get) => ({
     ...createNoteSlice(set, get),
     ...createUserSlice(set, get),
@@ -41,19 +44,19 @@ const useStore = create<StoreState>(devtools(persist((set, get) => ({
     cameraEncoded: "",
     senseIcon: "HAPPY",
     selectedPlantID: "",
-    setCameraEncoded(text: string) {
+    setCameraEncoded(text: string) {    // Sets base 64 encoded live stream frame
         set((state) => ({
             ...state,
             cameraEncoded: text,
         }));
     },
-    setSelectedPlantID(id: string) {
+    setSelectedPlantID(id: string) {    // Sets the selected plant id
         set((state) => ({
             ...state,
             selectedPlantID: id,
         }));
     },
-    setSenseIcon(icon: string) {
+    setSenseIcon(icon: string) {        // Sets the sense icon
         set((state) => ({
             ...state,
             senseIcon: icon,

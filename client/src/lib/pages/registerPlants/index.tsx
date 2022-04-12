@@ -1,3 +1,10 @@
+/**
+ * registerPlants.ts
+ *
+ * Plant registration page.
+ * @author Yousef
+ */
+
 import React, { useEffect, useState } from "react";
 import {
     Box,
@@ -6,7 +13,6 @@ import {
     Flex,
     FormControl,
     FormLabel,
-    Heading,
     Input,
     Modal,
     ModalBody,
@@ -32,7 +38,7 @@ import { identifyPlant, toBase64 } from "lib/api/plantId";
 import { useStore } from "lib/store/store";
 import { deepLog } from "lib/components/hooks/validate";
 import { useRouter } from "next/router";
-import { config, topics } from "../../config";
+import { config } from "../../config";
 import useWebSocket from "lib/components/hooks/useWebSocket";
 import { GET_USER } from "lib/api/queries";
 import { createQuery } from "lib/api/createQuery";
@@ -40,6 +46,7 @@ import { CREATE_PLANT } from "lib/api/queries/createPlant";
 import { toastSuccess, dismissAll } from "../../components/util/toast";
 
 const RegisterPlants = () => {
+    // WebSocket connection
     const ws = useWebSocket(config.WS_URL, 5, 1500);
     const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -55,8 +62,8 @@ const RegisterPlants = () => {
         })
     );
     const initialRef = useRef<any>();
-    const firstPlant = useRef<any>(true);
 
+    // Form state persistence
     const [imageUrl, setImageUrl] = useState("");
     const [name, setName] = useState("");
     const [species, setSpecies] = useState("");
@@ -69,62 +76,47 @@ const RegisterPlants = () => {
     const [plantRecognitionAPIFlag, setPlantRecognitionAPIFlag] =
         useState(false);
 
+    // If user isn't authenticated, redirect back to login.
     useEffect(() => {
         if (!user) router.push("/login");
     }, []);
 
-    const first = {
-        suggestions: [
-            {
-                plant_details: {
-                    common_names: ["Pepper"],
-                    scientific_name: "Capsicum annuum",
-                    url: "https://en.wikipedia.org/wiki/Capsicum_annuum",
-                    wiki_description: {
-                        value: "Capsicum annuum is a species of the plant genus Capsicum native to southern North America, the Caribbean, and northern South America.[2][5] This species is the most common and extensively cultivated of the five domesticated capsicums. The species encompasses a wide variety of shapes and sizes of peppers, both mild and hot, such as bell peppers, jalapeños, New Mexico chile, and cayenne peppers. Cultivars descended from the wild American bird pepper are still found in warmer regions of the Americas.[6] In the past, some woody forms of this species have been called C. frutescens, but the features that were used to distinguish those forms appear in many populations of C. annuum and are not consistently recognizable features in C. frutescens species.",
-                    }
-                        
-                },
-            },
-        ],
-    };
-
+    /**
+     * Registers the currently specified plant.
+     */
     const register = async () => {
+        // Open the registration modal
         onOpen();
+
+        // Abort if we already called the recogition 
+        // API and haven't registerd yet.
         if (plantRecognitionAPIFlag) return;
+
+        // Timeout to wait for recognition response.
         const tid = setTimeout(() => {
             setPlantRecognitionAPIFlag(true);
         }, 3000);
 
+        // Invoke the plant recognition API and persist the response.
         const url = `data:image/png;base64,${cameraEncoded}`.replace(
             /(\r\n|\n|\r)/gm,
             ""
         );
 
-        const firstData = new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve(first)
-            }, 1500)
-        })
-
-        //@ts-ignore
-        const data: any = firstPlant.current ? await firstData : await identifyPlant(url);
-        // clearTimeout(tid);
+        const data: any = await identifyPlant(url);
+        clearTimeout(tid);
         const details = data.suggestions[0].plant_details;
-
-        // https://cdn.harvesttotable.com/htt/2009/03/23182755/Peppers-on-vertical-wire.jpg
-        // https://minnetonkaorchards.com/wp-content/uploads/2021/04/Red-Sour-Cherries.jpg
 
         const common = details.common_names[0];
         const scientific = details.scientific_name;
         const wikiLink = details.url;
         const description = details.wiki_description;
 
-        deepLog("GOT RECOGNITION DATA");
-        deepLog(common);
-        deepLog(scientific);
-        deepLog(wikiLink);
-        deepLog(description);
+        // deepLog("GOT RECOGNITION DATA");
+        // deepLog(common);
+        // deepLog(scientific);
+        // deepLog(wikiLink);
+        // deepLog(description);
 
         setName(common);
         setSpecies(scientific);
@@ -134,32 +126,19 @@ const RegisterPlants = () => {
         setPlantRecognitionAPIFlag(true);
     };
 
-    const sendMsg = () => {
-        const msg = {
-            id: "plant-id2",
-            topic: "register-plant",
-            optima: {
-                temperature: 39,
-                airHumidity: 21,
-                moisture: 12,
-            },
-            angle: 15,
-            registeredChannel: 2,
-        };
-
-        // const msg = {
-        //     topic: "servo-turn-plant",
-        //     plantID: "plant-id"
-        // }
-
-        ws.send(msg);
-    };
-
+    /**
+     * Confirms plant registration with
+     * the current persisted plant data.
+     */
     const confirm = async () => {
+        // Dismiss all toasts (if any)
         dismissAll();
+
+        // Close the modal
         onClose();
         deepLog("REGISTER PLANT");
 
+        // Create a plant on the database
         const response = await createQuery(CREATE_PLANT, {
             name,
             species,
@@ -173,6 +152,8 @@ const RegisterPlants = () => {
         });
         deepLog(response);
 
+        // Send a plant creation message to device
+        // so it may register the plant on the local database.
         const msg = {
             topic: "register-plant",
             ...response.data.createPlant,
@@ -187,10 +168,17 @@ const RegisterPlants = () => {
             },
         });
 
+        // Display registration toast.
         toastSuccess("Registered Plant.");
 
-        addPlant({ ...msg, wiki: firstPlant.current ? wiki : null, description: firstPlant.current ? description : null });
-        firstPlant.current = false;
+        // Add the plant to state
+        addPlant({
+            ...msg,
+            wiki: null,
+            description: null,
+        });
+
+        // Reset form
         setPlantRecognitionAPIFlag(false);
         setName("");
         setSpecies("");
@@ -200,6 +188,10 @@ const RegisterPlants = () => {
         setTemperature(0);
     };
 
+    /**
+     * Refetch user until they've logged into their device
+     * and paired.
+     */
     const refetchUser = async () => {
         const { data } = await createQuery(GET_USER, {
             email: user!.email,
@@ -212,6 +204,9 @@ const RegisterPlants = () => {
         }
     };
 
+    /**
+     * Sends subscription request to user's device id.
+     */
     useEffect(() => {
         const subscriptionMessage = {
             topic: "subscribe",
@@ -272,19 +267,6 @@ const RegisterPlants = () => {
                             src={imageUrl}
                         />
                         <Stack spacing={10} margin={10}>
-                            {/* <FormControl>
-                                    <FormLabel>
-                                        Image Url (camera frame)
-                                    </FormLabel>
-                                    <Input
-                                        type="text"
-                                        placeholder="url"
-                                        value={imageUrl}
-                                        onChange={(evt) =>
-                                            setImageUrl(evt.target.value)
-                                        }
-                                    />
-                                </FormControl> */}
                             <Button
                                 bg={"green.400"}
                                 color={"white"}
@@ -296,17 +278,6 @@ const RegisterPlants = () => {
                                 disabled={Object.keys(plants).length >= 2}
                             >
                                 Register Plant
-                            </Button>
-                            <Button
-                                bg={"green.400"}
-                                color={"white"}
-                                _hover={{
-                                    bg: "green.500",
-                                }}
-                                width={300}
-                                onClick={sendMsg} // resetPlants
-                            >
-                                Clear Plants
                             </Button>
                         </Stack>
                         <ChannelTelemetry />

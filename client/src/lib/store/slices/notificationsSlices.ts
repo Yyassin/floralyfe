@@ -1,5 +1,10 @@
-import { uuid } from "lib/components/util/util";
-import { notifications } from "../mock";
+/**
+ * notificationSlices.ts
+ * 
+ * Manages state for plant notifications.
+ * @author Yousef
+ */
+
 import { StoreState } from "../store";
 import { StoreSlice } from "../storeSlice";
 
@@ -12,17 +17,29 @@ export interface Notification {
 }
 
 export type NotificationSlice = {
-    notifications: {
+    notifications: {                                                                // Notifications, array per plant id
         [id: string]: Notification[]
     },
-    addNotification: (notification: Notification) => void;
-    loadNotifications: (plantID: string, notifications: Notification[]) => void; 
+    addNotification: (notification: Notification) => void;                          // Adds a notification to state
+    loadNotifications: (plantID: string, notifications: Notification[]) => void;    // loads multiple notifications
 }
 
+/**
+ * Adds the specified notification to state.
+ * @param notifications Notification[], the current notification state.
+ * @param notification Notification, the notification to add.
+ * @returns Notification[], the updated state.
+ */
 const addNotification = (notifications: Notification[], notification: Notification) => {
     return ([notification,...notifications]);
 }
 
+/**
+ * Creates a notification store slice.
+ * @param set, sets the store state.
+ * @param get, reads the store state.
+ * @returns the store slice.
+ */
 export const createNotificationSlice: StoreSlice<NotificationSlice> = (set, get) => ({
     notifications: {},
     addNotification: (notification: Notification) =>

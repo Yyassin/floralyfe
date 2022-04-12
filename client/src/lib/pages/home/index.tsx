@@ -1,10 +1,11 @@
-import React from "react";
-import { Box } from "@chakra-ui/react";
-import HomePage from "lib/components/layout/Home/Home";
+/**
+ * index.ts
+ * 
+ * Serves the homepage.
+ */
 
-import CTASection from "lib/components/samples/CTASection";
-import SomeImage from "lib/components/samples/SomeImage";
-import SomeText from "lib/components/samples/SomeText";
+import React from "react";
+import HomePage from "lib/components/layout/Home/Home";
 
 const Home = () => {
   return (

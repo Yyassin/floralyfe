@@ -1,10 +1,16 @@
+/**
+ * LineChart.tsx
+ *
+ * Displays line chart with vital statistics.
+ * @author Yousef
+ */
+
 import { Box } from "@chakra-ui/react";
-import { deepLog } from "lib/components/hooks/validate";
 import { useStore } from "lib/store/store";
 import dynamic from "next/dynamic";
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-import { barChartOptions, lineChartData, lineChartOptions } from "../../../store/mock";
+import { lineChartOptions } from "../../../store/mock";
 
 const LineChart = () => {
     const { selectedPlantID, vitals } = useStore((state) => ({
@@ -15,34 +21,46 @@ const LineChart = () => {
     const [data, setData] = useState<any>([]);
     const [categories, setCategories] = useState<any>([]);
 
+    /**
+     * Formats vital data into data points
+     * to be rendered on chart.
+     */
     useEffect(() => {
-        const persisted = vitals[selectedPlantID]?.persisted;    // Use selected id
+        const persisted = vitals[selectedPlantID]?.persisted; // Use selected id
         //deepLog(persisted);
 
-        const data = !persisted ? [] : persisted.reduce(
-            (acc: any, dp, idx) => {
-                acc.temperature.push((dp.temperature).toFixed(3));
-                acc.humidity.push((dp.airHumidity).toFixed(3));
-                acc.moisture.push((dp.soilMoisture * 100).toFixed(3));
-                acc.growth.push((dp.greenGrowth * 100).toFixed(3));
+        // Generate a data point for each vital based on creation date.
+        const data = !persisted
+            ? []
+            : persisted.reduce(
+                  (acc: any, dp, idx) => {
+                      acc.temperature.push(dp.temperature.toFixed(3));
+                      acc.humidity.push(dp.airHumidity.toFixed(3));
+                      acc.moisture.push((dp.soilMoisture * 100).toFixed(3));
+                      acc.growth.push((dp.greenGrowth * 100).toFixed(3));
 
-                // @ts-ignore
-                const date = new Date(dp.createdAt);    
+                      // @ts-ignore
+                      const date = new Date(dp.createdAt);
 
-                acc.dates.push(
-                  `${date.getMonth() + 1}/${date.getDay()}/${date.getFullYear()}:${date.getHours() + 1}`
-                );
-                return acc;
-            },
-            {
-                temperature: [],
-                humidity: [],
-                moisture: [],
-                growth: [],
-                dates: [],
-            }
-        );
+                      acc.dates.push(
+                          `${
+                              date.getMonth() + 1
+                          }/${date.getDay()}/${date.getFullYear()}:${
+                              date.getHours() + 1
+                          }`
+                      );
+                      return acc;
+                  },
+                  {
+                      temperature: [],
+                      humidity: [],
+                      moisture: [],
+                      growth: [],
+                      dates: [],
+                  }
+              );
 
+        // Split the vitals based on vital type.
         const lineChartData = [
             {
                 name: "Temperature",
@@ -61,7 +79,9 @@ const LineChart = () => {
                 data: data.growth,
             },
         ];
-        setData(lineChartData)
+
+        // Set the line chart data to display.
+        setData(lineChartData);
         setCategories(data.dates ? data.dates : ["No data"]);
     }, [vitals, selectedPlantID]);
     return (
@@ -77,11 +97,11 @@ const LineChart = () => {
             <Chart
                 //@ts-ignore
                 options={{
-                  ...lineChartOptions,
-                  xaxis: {
-                    ...lineChartOptions.xaxis,
-                    categories
-                  }
+                    ...lineChartOptions,
+                    xaxis: {
+                        ...lineChartOptions.xaxis,
+                        categories,
+                    },
                 }}
                 //@ts-ignore
                 series={data}
