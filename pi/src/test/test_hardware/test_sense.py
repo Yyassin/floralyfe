@@ -1,3 +1,11 @@
+"""
+test_sense.py
+=========================
+Tests proper functionality of the SenseHat.
+"""
+
+__author__ = "abdalla"
+
 from Sensors import Sensors     # type: ignore
 from vital_system.VitalSystem import HAPPY_ICON, SUN_ICON, MOISTURE_ICON, WATER_LEVEL_ICON, THERMOMETER_ICON
 from util.Logger import Logger

@@ -1,3 +1,12 @@
+"""
+test_irrigation_software.py
+=========================
+Excercises and validates the Irrigation
+state machine.
+"""
+
+__author__ = "abdalla"
+
 from irrigation_system.Irrigation_Subsystem import IrregationSubsystem, IrregationStates
 from gpiozero import LED
 from tkgpio import TkCircuit

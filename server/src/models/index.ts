@@ -1,3 +1,10 @@
+/**
+ * index.ts
+ * 
+ * Joins and exports all models. 
+ * @author Yousef
+ */
+
 import * as Vital from "./Vital";
 import * as User from "./User";
 import * as Note from "./Note";

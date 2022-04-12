@@ -1,3 +1,9 @@
+/**
+ * createPlant.ts
+ * 
+ * The create plant query. 
+ */
+
 const gql = String.raw;
 
 export const CREATE_PLANT = gql`

@@ -1,3 +1,10 @@
+"""
+config.py
+==========
+System variables - API endpoints and testing ids.
+"""
+
+
 # Defaults
 GRAPHQL_URL = "http://5999-174-112-246-246.ngrok.io/graphql"
 API_SERVER = "http://65e9-174-112-246-246.ngrok.io"

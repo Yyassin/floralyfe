@@ -3,15 +3,11 @@ ws.py
 ======
 Websocket Receiver Class Implementation
 
-Purpose:
 A threaded instance that connects to and receives
 messages from the specified WebSocket server. Processes
 the message each time on is received and places the
 contents into a specified listener queue (listening to
 a specified message topic).
-
-FLAKE8 Output:
-< >                    (nothing - everything was fixed)
 """
 
 __author__ = "yousef"
@@ -21,7 +17,6 @@ from typing import Any, Dict, cast
 from queue import Queue
 from json import dumps, loads
 from util import Logger, Singleton
-import config.config as config
 import time
 import websocket
 

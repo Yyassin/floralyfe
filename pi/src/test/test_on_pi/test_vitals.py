@@ -1,3 +1,12 @@
+"""
+test_vitals.py
+=========================
+Excercises and validates all
+functionality from the vital system.
+"""
+
+__author__ = "yousef"
+
 from queue import Queue
 from typing import Any, cast
 from vital_system.VitalSystem import SenseIcon, VitalStates, VitalSystem
@@ -11,13 +20,6 @@ queue = Queue()     # type: Queue[Any]
 sensors = Sensors(False)
 vitals = VitalSystem(queue, sensors, cast(Any, None), "", "")
 logger = Logger("test_vitals")
-
-
-def test_vitals_test_function() -> None:
-    """Vitals :: Test Function - Vitals is connected"""
-    actual = vitals.test_function()
-    logger.debug(f"Testing vitals test function, got: {actual}.")
-    assert actual == "test"
 
 
 def test_vitals_singleton() -> None:

@@ -1,17 +1,36 @@
+/**
+ * ChannelTelemetry.tsx
+ * 
+ * Renders live registration vitals
+ * on registration screen.
+ * @author Yousef
+ */
+
 import React, { useEffect, useState } from "react";
 import { Box, Button, Center, Flex, Heading, Text } from "@chakra-ui/react";
 import { deepLog } from "lib/components/hooks/validate";
 import { useStore } from "lib/store/store";
 
 const ChannelTelemetry = () => {
+    /**
+     * The channel telemetry data live from state.
+     */
     const { data } = useStore((state) => ({
         data: state.channelTelemetry
     }));
 
+    /**
+     * Generates a random number between 0 and max (for testing).
+     * @param max number, the maximum bound.
+     * @returns number, the random number.
+     */
     const getRandomInt = (max: number) => {
         return Math.floor(Math.random() * max);
     };
 
+    /**
+     * Simulates a randomly generated registration vital (for testing).
+     */
     const simulate = () => {
         const dataset = {
             common: {
@@ -57,6 +76,7 @@ const ChannelTelemetry = () => {
                             </Center>
 
                             {Object.keys(channelMeta).map((key, idx) => {
+                                // Format the data according to type.
                                 let value = channelMeta[key];
 
                                 switch (key) {

@@ -4,6 +4,8 @@ Logger.py
 Logging class to format and colour logs.
 """
 
+__author__ = "yousef"
+
 import logging
 import logging.config
 from colorama import Fore, Style

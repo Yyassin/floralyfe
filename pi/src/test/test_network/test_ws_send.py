@@ -1,3 +1,13 @@
+"""
+test_ws_send.py
+=========================
+Tests that the websocket client
+can send a message over the websocket
+(and that the client receives it).
+"""
+
+__author__ = "yousef"
+
 from pprint import pprint
 from ws import WSClient
 from typing import Dict, Any

@@ -1,5 +1,8 @@
 /**
+ * util.ts
+ * 
  * Contains general utility funtions
+ * @author Yousef
  */
 
 import { inspect } from "util";

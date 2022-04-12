@@ -19,6 +19,7 @@ const props: Plant = {
     id: "demo-id",
     name: "demo-name",
     species: "demo-species",
+    angle: 0,
     channel: 1,
     description: "demo-description",
     optima: {

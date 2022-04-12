@@ -1,3 +1,9 @@
+/**
+ * createUSer.ts
+ * 
+ * The create user query. 
+ */
+
 const gql = String.raw;
 
 export const CREATE_USER = gql`

@@ -1,3 +1,12 @@
+"""
+Irrigation_system_simulation.py
+=========================
+Graphical tkinter simulation
+of the irrigation subsystem.
+"""
+
+__author__ = "abdalla"
+
 from email.message import EmailMessage
 from typing import Any
 from enum import Enum

@@ -1,3 +1,9 @@
+/**
+ * index.ts
+ * 
+ * Signup page.
+ * @author Yousef
+ */
 import React from "react";
 import {
     Flex,
@@ -23,6 +29,7 @@ import { createQuery } from "lib/api/createQuery";
 import { toastSuccess, toastError, dismissAll } from "../../components/util/toast";
 
 export default function SignupCard() {
+    // Form persistence
     const [showPassword, setShowPassword] = useState(false);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -30,7 +37,12 @@ export default function SignupCard() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
+    /**
+     * Signs up a user with the stored
+     * form credentials.
+     */
     const signUp = async () => {
+        // Dismiss all toasts.
         dismissAll();
         deepLog("SIGN UP");
 
@@ -41,6 +53,8 @@ export default function SignupCard() {
             username,
             password
         ];
+
+        // Ensure no empty fields.
         if (fields.includes("")) {
             deepLog(
                 "At least one empty field. Retry."
@@ -49,6 +63,7 @@ export default function SignupCard() {
             return;
         }
 
+        // Ensure valid email address
         const validateEmail = (email: string) => {
             return String(email)
                 .toLowerCase()
@@ -63,6 +78,7 @@ export default function SignupCard() {
             return;
         }
         
+        // Create the user
         const response =  await createQuery(CREATE_USER,
             {
                 firstName,
@@ -72,6 +88,7 @@ export default function SignupCard() {
                 password
             });
 
+        // Display sign up success
         toastSuccess("Signed up successfully.");
         //console.log(response);
         return response;

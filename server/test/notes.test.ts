@@ -1,3 +1,10 @@
+/**
+ * notes.test.ts
+ * 
+ * Tests graphql endpoints for Notes.
+ * @author Yousef
+ */
+
 import "mocha";
 import { expect } from "chai";
 import { graphQLPort } from "../src/server";
@@ -6,6 +13,9 @@ import { before } from "mocha";
 import { Note } from "../src/models";
 import { debug, deepLog } from "../src/util";
 
+/**
+ * Connect to the server instance
+ */
 const request = superwstest(`http://localhost:${graphQLPort}`);
 
 const gql = String.raw;
@@ -15,6 +25,9 @@ const expected = {
     plantID: "demo-plantID"
 }
 
+/**
+ * Create note query.
+ */
 const createNoteQuery = gql`
     mutation create_note ($title: String!, $text: String!, $plantID: String!){
         createNote(title: $title, text: $text, plantID: $plantID){
@@ -27,6 +40,11 @@ const createNoteQuery = gql`
     }
 `;
 
+/**
+ * Vital query for before each - warms up
+ * the test suite so the rest of the tests
+ * execute quickly.
+ */
 const getVitalsQuery = gql`
     query view_vitals($plantID: ID!){
         vitals(plantID: $plantID){
@@ -43,6 +61,9 @@ const getVitalsQuery = gql`
 `
 
 let id: string;
+/**
+ * Tests reading, writing and updating a Note.
+ */
 describe("GraphQL Note", () => {
     before(async function () {
         this.timeout(0);
@@ -54,6 +75,7 @@ describe("GraphQL Note", () => {
     });
 
     it("note::Should create and read a note", async () => {
+        // Create the note.
         const response = await request
             .post("/graphql")
             .send({query: createNoteQuery, variables: expected});
@@ -63,6 +85,7 @@ describe("GraphQL Note", () => {
         deepLog("CREATED NOTE")
         deepLog(expected)
 
+        // Validate the note against expected.
         const note = response.body.data.createNote as Note.INote;
         const noteDate = Date.parse(note.updatedAt);
         delete note["updatedAt"]
@@ -74,6 +97,7 @@ describe("GraphQL Note", () => {
 
         expect(diffTime).to.below(10);
 
+        // Validate that note was properly created in db
         expect(note).to.deep.equal({...expected, id: note.id})
 
         const document = await Note.note.get(note.id);

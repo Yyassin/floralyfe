@@ -1,3 +1,12 @@
+"""
+test_ws_client.py
+==================
+Tests that the WebSocket client can receive
+and route messages to the correct queue.
+"""
+
+__author__ = "yousef"
+
 from ws import WSClient
 from typing import Any
 from queue import Queue

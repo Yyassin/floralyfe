@@ -1,4 +1,6 @@
 /**
+ * server.ts
+ * 
  * Creates an express HTTP server which hosts
  * WebSocket and GraphQL servers.
  * @author yousef
@@ -67,6 +69,8 @@ gqlServer()
         debug(`GraphQL server started at http://localhost:${graphQLPort}`);
     });
 
+// Local Tunnel stopped working for some reason - using ngrok for now
+
 // Setup a tunnel to both server ports so they're remotely accessible
 // const tunnels = Object.keys(tunnelConfig).reduce((acc: Tunnel[], subdomain: string, _): Tunnel[] => {
 //     const port = tunnelConfig[subdomain];
@@ -104,6 +108,7 @@ const cleanup = async () => {
     }, 10 * 1000);
 }
 
+// Cleanup callback on termination
 process.on('SIGINT', cleanup);
 process.on("SIGTERM", cleanup);
 

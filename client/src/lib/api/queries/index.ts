@@ -1,3 +1,9 @@
+/**
+ * index.ts
+ * 
+ * Joins and exports all queries. 
+ */
+
 import { CREATE_USER } from "./createUser";
 import { GET_USER } from "./getUser";
 import { GET_VITALS, NOTIFICATIONS_SUBCRIPTION, VITALS_SUBCRIPTION } from "./getSubscription";

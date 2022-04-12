@@ -1,3 +1,11 @@
+/**
+ * Note.ts
+ * 
+ * The Note model. Defines the Note
+ * type and associated resolvers.
+ * @author Yousef 
+ */
+
 import { Collections, ID } from "./common";
 import { DocumentData } from "@firebase/firestore-types";
 import FirestoreDocument from "./FirestoreDocument";
@@ -13,6 +21,7 @@ interface INote {
 type updateNoteArgs = Omit<INote, "updatedAt">;
 type createNoteArgs = Omit<INote, "id" | "updatedAt">;
 
+// The GraphQL Schema Type
 const gql = String.raw;
 const schemaType = gql`
     type Note {
@@ -24,6 +33,7 @@ const schemaType = gql`
     }
 `;
 
+// The GraphQL mutation interfaces
 const mutation = gql`
     createNote(
         title: String!
@@ -40,15 +50,24 @@ const mutation = gql`
     deleteNote(id: ID!): Boolean!
 `;
 
+// The GraphQL query interfaces
 const query = gql`
     notes(plantID: ID!): [Note]
 `;
 
+/**
+ * Note model helper.
+ */
 class Note extends FirestoreDocument<INote, createNoteArgs> {
     constructor() {
         super(Collections.NOTES);
     }
 
+    /**
+     * Returns notes filtered by the specified plantID.
+     * @param plantID string, the plantID to filter by.
+     * @returns Promise<INote[]>, the notes matching the specified plant id.
+     */
     public async getByPlantID(plantID: string): Promise<INote[]> {
         const snapshot = await this.model.where("plantID", "==", plantID).get();
         return snapshot.docs.map((doc: DocumentData) => ({
@@ -60,10 +79,20 @@ class Note extends FirestoreDocument<INote, createNoteArgs> {
 
 const note = new Note();
 
+/**
+ * Returns the notes matching the specified plantID.
+ * @param args, the plant ID to filter with.
+ * @returns Promise<INote[]>, the notes matching the specified plant id.
+ */
 const getNotesByPlantID = async (args: { plantID: string }) => {
     return await note.getByPlantID(args.plantID);
 }
 
+/**
+ * Creates a note with the specified parameters.
+ * @param args, the information to create a note with.
+ * @returns Promise<INote[]>, the created note.
+ */
 const createNote = async (
     args: createNoteArgs
 ): Promise<INote> => {
@@ -79,6 +108,11 @@ const createNote = async (
     return snapshot;
 }
 
+/**
+ * Updates a note with the specified parameters.
+ * @param args, the information to update the note with.
+ * @returns Promise<INote[]>, the created note.
+ */
 const updateNote = async (
     args: updateNoteArgs
 ): Promise<Boolean> => {
@@ -92,6 +126,11 @@ const updateNote = async (
     return true;
 }
 
+/**
+ * Deletes the note with the specified id.
+ * @param args, the id of the note to delete.
+ * @returns Promise<Boolean>, returns true if deleted successfully.
+ */
 const deleteNote = async (
     { id }: any
 ): Promise<Boolean> => {
@@ -100,10 +139,12 @@ const deleteNote = async (
     return true;
 };
 
+// All note queries
 const queries = () => ({
     notes: (_, args) => getNotesByPlantID(args),
 });
 
+// All note mutations
 const mutations = () => ({
     createNote: (_, args) => createNote(args),
     updateNote: (_, args) => updateNote(args),

@@ -1,8 +1,16 @@
+"""
+Camera_subsystem.py
+=========================
+Graphical tkinter simulation
+of the camera monitoring subsystem.
+"""
+
+__author__ = "zakariyya"
+
 from typing import Any
 from enum import Enum
 from time import sleep
 from gpiozero.pins.mock import MockFactory
-
 
 class CameraStates(Enum):
     IDLE = 1

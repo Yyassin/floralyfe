@@ -1,3 +1,9 @@
+/**
+ * mock.ts
+ * 
+ * Mock data for testing. 
+ */
+
 export const user = {
     firstName: "Yousef",
     lastName: "Yassin",
@@ -21,30 +27,30 @@ export const plantVitals: any = {
     },
 };
 
-// export const plantData: PlantCardProps[] = [
-//     {
-//         name: "Aloe",
-//         species: "Aloe Vera",
-//         notificationCount: 5,
-//         health: true,
-//         channel: 1,
-//         id: "aloe",
-//         vitals: {
-//             waterFillEvents: 15,
-//         },
-//     },
-//     {
-//         name: "Lemon",
-//         species: "Citrullus lanatus",
-//         notificationCount: 19,
-//         health: false,
-//         channel: 2,
-//         id: "lemon",
-//         vitals: {
-//             waterFillEvents: 9,
-//         },
-//     },
-// ];
+export const plantData: any[] = [
+    {
+        name: "Aloe",
+        species: "Aloe Vera",
+        notificationCount: 5,
+        health: true,
+        channel: 1,
+        id: "aloe",
+        vitals: {
+            waterFillEvents: 15,
+        },
+    },
+    {
+        name: "Lemon",
+        species: "Citrullus lanatus",
+        notificationCount: 19,
+        health: false,
+        channel: 2,
+        id: "lemon",
+        vitals: {
+            waterFillEvents: 9,
+        },
+    },
+];
 
 export const barChartData = [
     {

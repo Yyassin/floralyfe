@@ -1,8 +1,23 @@
+"""
+user_query.py
+=======================
+GraphQL queries to create and
+update a user on the cloud database.
+"""
+
+__author__ = "abdalla"
+
 from typing import Dict, Any
 from query.query import get_gql_request
 
 
 def login(email: str, password: str) -> Dict[str, Any]:
+    """
+    Authenticates a user with the specified credentials.
+
+    :param email: str, the login email address.
+    :param password: str, the login password.
+    """
     variables = {
         "email": email,
         "password": password
@@ -26,6 +41,11 @@ def login(email: str, password: str) -> Dict[str, Any]:
 
 
 def update_user(variables: Dict[str, Any]) -> Dict[str, bool]:
+    """
+    Updates the user according to the specified variables.
+
+    :param variables: Dict[str, Any], the query variables.
+    """
     user_mutation = """
     mutation update_user ($id: ID!,
                             $firstName: String,

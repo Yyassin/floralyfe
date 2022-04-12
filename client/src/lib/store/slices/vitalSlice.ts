@@ -1,4 +1,10 @@
-import { uuid } from "lib/components/util/util";
+/**
+ * vitalSlice.ts
+ * 
+ * Manages state for plant vitals
+ * @author Yousef
+ */
+
 import { StoreState } from "../store";
 import { StoreSlice } from "../storeSlice";
 
@@ -15,19 +21,25 @@ export interface Vital {
 }
 
 export type VitalSlice = {
-    vitals: {
+    vitals: {                       // Vitals, organized by plant id: each has one live and collection of persisted.
         [id: string]: {
             live: Vital;
             persisted: Vital[]
         }
     },
-    channelTelemetry: any,
-    setLiveVital: (vital: Vital) => void;
-    addPersistedVital: (vital: Vital) => void;
-    setChannelTelemetry: (vital: any) => void;
-    loadVitals: (plantID: string, vitals: Vital[]) => void;
+    channelTelemetry: any,          // Currently received channel telemetry vital (during registration)
+    setLiveVital: (vital: Vital) => void;                       // Sets live vital
+    addPersistedVital: (vital: Vital) => void;                  // Adds persisted vital
+    setChannelTelemetry: (vital: any) => void;                  // Sets channel telemetry
+    loadVitals: (plantID: string, vitals: Vital[]) => void;     // Loads multiple vitals
 }
 
+/**
+ * Adds a persisted vital
+ * @param vitals Vital[], the vital state.
+ * @param vital Vital, the vital to add.
+ * @returns Vital[], the updated vital state.
+ */
 const addPersistedVital = (vitals: Vital[], vital: Vital) => {
     return ([
         ...vitals,
@@ -35,6 +47,12 @@ const addPersistedVital = (vitals: Vital[], vital: Vital) => {
     ])
 }
 
+/**
+ * Creates a vital store slice.
+ * @param set, sets the store state.
+ * @param get, reads the store state.
+ * @returns the store slice.
+ */
 export const createVitalSlice: StoreSlice<VitalSlice> = (set, get) => ({
     vitals: {},
     channelTelemetry: {},

@@ -1,3 +1,12 @@
+"""
+Irrigation_simulation.py
+=========================
+Graphical tkinter simulation
+of the irrigation subsystem.
+"""
+
+__author__ = "abdalla"
+
 from tkgpio import TkCircuit
 from time import sleep
 from irrigation_system.Irrigation_Subsystem import IrregationSubsystem

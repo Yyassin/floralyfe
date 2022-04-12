@@ -1,3 +1,12 @@
+"""
+validate_message.py
+====================
+Validates messages received from client over WebSockets
+in end-to-end testing suite on client.
+"""
+
+__author__ = "yousef"
+
 from typing import Any, Dict
 from util.Logger import Logger
 
@@ -26,6 +35,12 @@ logger = Logger(">>>Validator")
 
 
 def validate_message(message: Dict[str, Any]) -> None:
+    """
+    Validates the specified message against the expected
+    ones defined below.
+
+    :param message: Dict[str, Any], the json message to validate.
+    """
     if not message.get("topic", False):
         assert message["status"] == 200
         assert message["message"] == "Successfully subscribed to yousef"

@@ -1,3 +1,13 @@
+"""
+Camera_simulation.py
+=========================
+Graphical tkinter simulation
+of the camera monitoring subsystem.
+"""
+
+__author__ = "zakariyya"
+
+
 from tkgpio import TkCircuit
 from time import sleep
 from Camera_subsystem import CameraSubsystem

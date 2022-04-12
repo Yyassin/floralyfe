@@ -1,3 +1,10 @@
+/**
+ * NoteList.tsx
+ *
+ * Renders all notes for the selected plant
+ * @author Yousef.
+ */
+
 import * as React from "react";
 import { Button, Input, Flex, Checkbox, Heading, Box } from "@chakra-ui/react";
 import { useStore } from "lib/store/store";
@@ -6,12 +13,7 @@ function NoteListItems() {
     const store = useStore((state) => state);
 
     return (
-        <Box
-            height={300}
-            overflow={"auto"}
-            className="sd"
-            zIndex={-1}
-        >
+        <Box height={300} overflow={"auto"} className="sd" zIndex={-1}>
             {(store.notes[store.selectedPlantID] || []).map((note) => (
                 <Flex pt={2} key={note.id}>
                     <Checkbox

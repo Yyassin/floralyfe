@@ -7,6 +7,7 @@ Defines a class that can only be instantiated once.
 """
 # Source: https://www.python.org/download/releases/2.2/descrintro/#__new__
 
+__author__ = "yousef"
 
 from typing import Type, Any
 

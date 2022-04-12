@@ -1,5 +1,19 @@
+/**
+ * createQuery.ts
+ * 
+ * Helper to create GraphQL requests.
+ * @author Yousef 
+ */
+
 import { config } from "lib/config";
 
+/**
+ * Creates a generic GraphQL request with the specified query
+ * and variables.
+ * @param query string, the GraphQL query to request.
+ * @param variables any, the query variables.
+ * @returns Promise<any>, the query json response.
+ */
 const createQuery = async (query: string, variables = {} as any) => {
 	const options = {
 		endpoint: config.GRAPHQL_URL + "/graphql",

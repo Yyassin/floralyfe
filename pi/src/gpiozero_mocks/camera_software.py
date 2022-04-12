@@ -1,3 +1,12 @@
+"""
+camera_software.py
+=========================
+Graphical tkinter simulation
+of the camera monitoring subsystem - software specific.
+"""
+
+__author__ = "zakariyya"
+
 from time import sleep
 from Camera_subsystem import CameraSubsystem, CameraStates
 from gpiozero import AngularServo, LED

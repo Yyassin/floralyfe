@@ -1,4 +1,11 @@
-import { clamp, uuid } from "lib/components/util/util";
+/**
+ * plantSlice.ts
+ * 
+ * Manages state for plants
+ * @author Yousef
+ */
+
+import { clamp } from "lib/components/util/util";
 import { StoreState } from "../store";
 import { StoreSlice } from "../storeSlice";
 
@@ -19,13 +26,19 @@ export interface Plant {
 };
 
 export type PlantSlice = {
-    plants: Record<string, Plant>,
-    angle: number,
-    addPlant: (plant: Plant) => void
-    resetPlants: () => void,
-    setAngle: (angle: number) => void;
+    plants: Record<string, Plant>,      // Registered plants
+    angle: number,                      // Servo camera angle
+    addPlant: (plant: Plant) => void    // Adds a registered plant
+    resetPlants: () => void,            // Clears all registered plants
+    setAngle: (angle: number) => void;  // Sets the servo angle.
 }
 
+/**
+ * Adds a registered plant to state.
+ * @param plants Record<string, Plant>, the current plant state.
+ * @param plant Plant, the plant to add.
+ * @returns Record<string, Plant>, the updated plant state.
+ */
 const addPlant = (plants: Record<string, Plant>, plant: Plant) => {
     if (Object.keys(plants).length >= 2) return plants;
     // @ts-ignore
@@ -40,6 +53,12 @@ const addPlant = (plants: Record<string, Plant>, plant: Plant) => {
     }
 }
 
+/**
+ * Creates a plant store slice.
+ * @param set, sets the store state.
+ * @param get, reads the store state.
+ * @returns the store slice.
+ */
 export const createPlantSlice: StoreSlice<PlantSlice> = (set, get) => ({
     plants: {},
     angle: 90,

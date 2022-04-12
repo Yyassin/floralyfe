@@ -1,34 +1,43 @@
 """
 main.py
 ========
-Application main entrypoint. Initializes and starts nodes.
+Application main entrypoint. Initializes and
+starts all system nodes.
 """
 
 __author__ = "yousef"
 
 import sys
-from typing import Any
-from queue import Queue
 import uuid
-from Sensors import Sensors     # type: ignore
+import time
+from typing import Any, Tuple
+from queue import Queue
+from Sensors import Sensors  # type: ignore
 from camera_system import CameraSystem
 from irrigation_system import IrrigationSystem
 from query.user_query import login, update_user
 from vital_system import VitalSystem
 from ws import WSClient
 import config.config as config
-import time
 from database import db, User, Photos, Plant, Device
 
+# Database models
 MODELS = (User, Photos, Plant, Device)
 
 
-def login_prompt() -> tuple[str, str, str]:
+def login_prompt() -> Tuple[str, str, str]:
+    """
+    Prompts the user to login with a stored account or with a new one.
+    If new, binds the user's devices to their cloud account.
+
+    Returns a tuple with the user's id, this device's id and the user's email.
+    """
     users = list(User.select())
     print(users)
 
     command = ""
 
+    # Prompt the user if they'd like to login with an existing account stored on the device.
     if len(users) > 0:
         user = users[0]
         command = input(f"Found logged in user {user.email}. Would you like to reset? (Y/N)")
@@ -36,6 +45,7 @@ def login_prompt() -> tuple[str, str, str]:
         if command == "N":
             return user.userID, user.deviceID, user.email
 
+    # Otherwise, prompt them for login credentials and fetch their user.
     user = None
     while user is None:
         email = input("Please enter your account email: ")
@@ -48,10 +58,12 @@ def login_prompt() -> tuple[str, str, str]:
 
     print(f"Successful login, welcome {user['firstName']}")
 
+    # Make a new deviceID if there isn't one.
     deviceID = user["deviceID"]
     if deviceID is None:
         deviceID = str(uuid.uuid4())
 
+    # Store the credentials in the database.
     print(deviceID)
     update_user({"id": user["id"], "deviceID": deviceID})
     db.drop_tables(MODELS)
@@ -64,17 +76,22 @@ def login_prompt() -> tuple[str, str, str]:
 
 
 def main() -> None:
+    """
+    Floralyfe RPi main entrypoint. Authenticates the user,
+    initializes all system nodes and starts them.
+    """
+
+    # Setup the local database and login
     db.connect()
     db.create_tables([User, Photos, Plant, Device])
     subscription_id, device_id, email = login_prompt()
 
-    # Creates shared worker queues
+    # Creates shared worker (subscription) queues
     camera_task_queue = Queue()             # type: Queue[Any]
     irrigation_task_queue = Queue()         # type: Queue[Any]
     vitals_task_queue = Queue()             # type: Queue[Any]
 
     # Map each queue to the topic it's listening to
-    # TODO: think about listening to multiple topics, multiple queues for one topic
     queues = {
         "camera-topic": camera_task_queue,
         "irrigation-topic": irrigation_task_queue,
@@ -83,26 +100,26 @@ def main() -> None:
 
     # Instantiate modules
     sensors = Sensors(True)
-    ws = WSClient(queues, config.WS_URL, subscription_id, device_id)                                         # WebSocket Receiver
-    camera_system = CameraSystem.CameraSystem(camera_task_queue, sensors, ws)                    # Camera Monitoring Subsystem
-    irrigation_system = IrrigationSystem.IrrigationSystem(irrigation_task_queue, sensors, ws, device_id)    # Irrigation Subsystem
-    vital_system = VitalSystem.VitalSystem(vitals_task_queue, sensors, ws, device_id, email)                       # Irrigation Subsystem
+    ws = WSClient(queues, config.WS_URL, subscription_id, device_id)                                            # WebSocket Client
+    camera_system = CameraSystem.CameraSystem(camera_task_queue, sensors, ws)                                   # Camera Monitoring Subsystem
+    irrigation_system = IrrigationSystem.IrrigationSystem(irrigation_task_queue, sensors, ws, device_id)        # Irrigation Subsystem
+    vital_system = VitalSystem.VitalSystem(vitals_task_queue, sensors, ws, device_id, email)                    # Vital Subsystem
 
-    # Start the system nodes
+    # Start the system nodes (threads)
     try:
         ws.run()
-        time.sleep(5)
+        time.sleep(5)                               # Wait a bit to ensure successful websocket connection.
         camera_system.run()
         irrigation_system.run()
         vital_system.run()
 
         print("Press Ctrl+C to terminate...")
-        input()                                                                              # Pause the main thread
+        input()                                     # Pause the main thread (to persist all daemons)
+
     except (KeyboardInterrupt, SystemExit):
         print("Cleanup. Exiting..")
-        # cleanup here
         sensors.cleanup()
-        sys.exit()
+        sys.exit()                                  # Daemon threads will terminate with main
 
 
 if __name__ == "__main__":

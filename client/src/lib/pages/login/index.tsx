@@ -1,3 +1,10 @@
+/**
+ * index.ts
+ * 
+ * Serves the login page.
+ * @author Yousef 
+ */
+
 import React from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
@@ -25,27 +32,37 @@ import { toastSuccess, toastError, dismissAll } from "../../components/util/toas
 
 // source: https://chakra-templates.dev/forms/authentication
 
+/**
+ * The login page.
+ * @returns The login page component.
+ */
 const Login = () => {
-    const { setUser, setIsAuth } = useStore((state) => ({
+    const { setUser, setIsAuth } = useStore((state) => ({       // Authentication mutators
         setIsAuth: state.setIsAuth,
         setUser: state.setUser,
     }));
     const [showPassword, setShowPassword] = useState(false);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("");                     // Stores input email
+    const [password, setPassword] = useState("");               // Stores input password
     const router = useRouter();
     
-
+    /**
+     * Attempts to authenticate a user with the 
+     * email and password in state.
+     */
     const signIn = async () => {
+        // Dismiss all toasts (if any)
         dismissAll();
         deepLog(`Attempted login: email=${email}, password=${password}`);
         
+        // Fetch the user from the server
         const response =  await createQuery(GET_USER,
             {
                 email,
                 password
             });
 
+        // If there isn't a response, abort.
         if (!response) {
             deepLog("Incorrect email or password.");
             toastError("Incorrect email or password.");
@@ -57,12 +74,14 @@ const Login = () => {
 
         //console.log(user)
 
+        // If there isn't a user, email or password was incorrect, abort.
         if (!user) {
             deepLog("Incorrect email or password.");
             toastError("Incorrect email or password.");
             return;
         }
 
+        // Otherwise, successful login - authenticate and push to application.
         deepLog(`Successful authentication`);
         toastSuccess("Successfully logged in!.");
         setIsAuth(true);

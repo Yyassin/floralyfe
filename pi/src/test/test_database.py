@@ -1,11 +1,19 @@
+"""
+test_database.py
+=================
+Validates and unit tests the local peewee SQLite database.
+"""
+
+__author__ = "zakariyya"
+
 from database import db, User, Photos, Plant, Device
 import json
 from util.Logger import Logger
 from peewee import CharField
 
+# Initialization and expected values.
 plantIns = Plant()
 photoIns = Photos()
-
 
 userID = 'userIDOne'
 email = 'userIDDone@gmail.com'
@@ -30,6 +38,9 @@ logger = Logger("DataBase Test")
 
 
 def write_users() -> None:
+    """
+    Tests writing a user to the database.
+    """
     User.create(userID=userID, email=email, password=password)
     print("[USER WRITING]:", userID, email, password)
 
@@ -37,6 +48,9 @@ def write_users() -> None:
 
 
 def write_photos() -> None:
+    """
+    Tests writing a photo to the database.
+    """
     Photos.create(photoID=photoID, picture=picture, plantID=plantID, createdAt=createdAt)
     print("[PHOTOS WRITING]:", photoID, picture, plantID, createdAt)
 
@@ -44,6 +58,9 @@ def write_photos() -> None:
 
 
 def write_plant() -> None:
+    """
+    Tests writing a plant to the database.
+    """
     Plant.create(registeredPlant=registeredPlant, optima=optima_string, angle=angle, registeredChannel=registeredChannel)
     print("[PLANT WRITING]:", registeredPlant, optima, angle, registeredChannel)
 
@@ -51,6 +68,9 @@ def write_plant() -> None:
 
 
 def write_device() -> None:
+    """
+    Tests writing a device meta to the database.
+    """
     Device.create(deviceID=deviceID, sensehat_icon=sensehat_icon)
     print("[DEVICE WRITING]:", deviceID, sensehat_icon)
 
@@ -58,6 +78,9 @@ def write_device() -> None:
 
 
 def read_users() -> None:
+    """
+    Tests reading a user from the database.
+    """
     user = User.get(User.userID == userID)
     assert user.userID == userID
     assert user.email == email
@@ -67,6 +90,9 @@ def read_users() -> None:
 
 
 def read_photos() -> None:
+    """
+    Tests reading photos from the database.
+    """
     photos = Photos.get(Photos.photoID == photoID)
     assert photos.photoID == photoID
     assert photos.picture == picture
@@ -77,10 +103,16 @@ def read_photos() -> None:
 
 
 def read_photos_from_ID(id: CharField) -> None:
+    """
+    Tests reading photos by id.
+    """
     photoIns.getByPlantID(id)
 
 
 def read_plant() -> None:
+    """
+    Tests reading a plant from the database.
+    """
     plant = Plant.get(Plant.registeredPlant == registeredPlant)
     assert plant.registeredPlant == registeredPlant
     assert plant.optima == optima
@@ -91,10 +123,16 @@ def read_plant() -> None:
 
 
 def read_plant_from_ID(id: CharField) -> None:
+    """
+    Tests reading plant by ID.
+    """
     plantIns.getByID(id)
 
 
 def read_device() -> None:
+    """
+    Tests reading a device meta from the database.
+    """
     device = Device.get(Device.deviceID == deviceID)
     assert device.deviceID == deviceID
     assert device.sensehat_icon == sensehat_icon
@@ -103,6 +141,9 @@ def read_device() -> None:
 
 
 def main() -> None:
+    """
+    Runs all database unit tests.
+    """
     db.connect()
     db.create_tables([User, Photos, Plant, Device])
     write_users()

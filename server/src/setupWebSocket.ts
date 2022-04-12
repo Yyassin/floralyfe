@@ -1,4 +1,6 @@
 /**
+ * setupWebSockets.ts
+ * 
  * Sets up and attaches a WebSocket
  * to a specified express server.
  * @author yousef

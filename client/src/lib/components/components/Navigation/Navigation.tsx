@@ -1,3 +1,11 @@
+/**
+ * Navigation.tsx
+ *
+ * Primary site navigation. No comments as this
+ * is primarily html with self explanatory callbacks.
+ * @author Yousef
+ */
+
 import React from "react";
 import {
     Box,
@@ -28,28 +36,27 @@ import {
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { auth } from "lib/store/mock";
 import { useStore } from "lib/store/store";
 import logo from "../../../../assets/logo.png";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
 export default function Navigation() {
-    const { selectedPlantID, 
-			setSelectedPlantID, 
-			isAuth, 
-			setIsAuth, 
-			setUser,
-			plants
-		 } =
-        useStore((state) => ({
-            selectedPlantID: state.selectedPlantID,
-            setSelectedPlantID: state.setSelectedPlantID,
-            isAuth: state.isAuth,
-            setIsAuth: state.setIsAuth,
-            setUser: state.setUser,
-			plants: state.plants
-        }));
+    const {
+        selectedPlantID,
+        setSelectedPlantID,
+        isAuth,
+        setIsAuth,
+        setUser,
+        plants,
+    } = useStore((state) => ({
+        selectedPlantID: state.selectedPlantID,
+        setSelectedPlantID: state.setSelectedPlantID,
+        isAuth: state.isAuth,
+        setIsAuth: state.setIsAuth,
+        setUser: state.setUser,
+        plants: state.plants,
+    }));
     const router = useRouter();
     const isSelected = (id: any) => id === selectedPlantID;
 

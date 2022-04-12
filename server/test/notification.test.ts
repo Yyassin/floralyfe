@@ -1,3 +1,10 @@
+/**
+ * notification.test.ts
+ * 
+ * Tests graphql endpoints for Notifications.
+ * @author Yousef
+ */
+
 import "mocha";
 import { expect } from "chai";
 import { graphQLPort } from "../src/server";
@@ -6,8 +13,10 @@ import { before } from "mocha";
 import { Notification } from "../src/models";
 import { debug, deepLog } from "../src/util";
 
+// Connect to the server.
 const request = superwstest(`http://localhost:${graphQLPort}`);
 
+// Expected value
 const gql = String.raw;
 const expected = {
     label: "demo-label",
@@ -16,6 +25,9 @@ const expected = {
     deviceID: "demo-deviceID"
 }
 
+/**
+ * Create notification query.
+ */
 const createNotificationQuery = gql`
     mutation create_notification($label: String!,
                                     $type: String!,
@@ -34,6 +46,11 @@ const createNotificationQuery = gql`
     }
 `;
 
+/**
+ * Vital query for before each - warms up
+ * the test suite so the rest of the tests
+ * execute quickly.
+ */
 const getVitalsQuery = gql`
     query view_vitals($plantID: ID!){
         vitals(plantID: $plantID){
@@ -49,6 +66,9 @@ const getVitalsQuery = gql`
     }
 `
 
+/**
+ * Tests reading, writing and updating a Notification.
+ */
 let id: string;
 describe("GraphQL Notifications", () => {
     before(async function () {
@@ -61,6 +81,7 @@ describe("GraphQL Notifications", () => {
     });
 
     it("notification::Should create and read a notification", async () => {
+        // Create the notification
         const response = await request
             .post("/graphql")
             .send({query: createNotificationQuery, variables: expected});
@@ -72,6 +93,7 @@ describe("GraphQL Notifications", () => {
         deepLog("CREATED NOTIFICATION")
         deepLog(expected)
 
+        // Validate notification against expected.
         const notification = response.body.data.createNotification as Notification.INotification;
         const notificationDate = Date.parse(notification.createdAt);
         delete notification["createdAt"]
@@ -85,6 +107,7 @@ describe("GraphQL Notifications", () => {
 
         expect(notification).to.deep.equal({...expected, id: notification.id})
 
+        // Validate that note was created properly in database.
         const document = await Notification.notification.get(notification.id);
         delete document["createdAt"]
         delete document["updatedAt"]

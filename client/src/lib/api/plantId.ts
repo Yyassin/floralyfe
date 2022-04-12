@@ -1,4 +1,11 @@
-/** @author Yousef Yassin */
+/**
+ * plantId.ts
+ * 
+ * Helpers to request plant recongition
+ * data from Plant Id API.
+ * 
+ * @author Yousef
+ */
 
 /**
  * Type definitions for PlantID API.
