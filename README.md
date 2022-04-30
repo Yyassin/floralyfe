@@ -104,7 +104,7 @@ The floralyfe system consists of three primary nodes: a NextJS-Chakra Client, an
 - Assuming that you have acquired all the hardware components described in the hardware requirements above, refer to **section 4: Hardware Design** in the [Detailed Design Document](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/blob/main/documentation/Floralyfe_Detailed_Design.pdf) for hardware connection. Connect the hardware components to the Raspberry Pi as described by the provided circuit diagrams. Any changes to the provided GPIO ports need to be reflected in `Sensors.py` module in the `pi/src` directory.
 
 #### Software
-- There are several steps to configuring the three system nodes with regards to software. For brevity, these have been omitted from this primary README and included in a dedicated discussion: [installation.md](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/blob/52-cleanup-documentation/documentation/installation.md).
+- There are several steps to configuring the three system nodes with regards to software. For brevity, these have been omitted from this primary README and included in a dedicated discussion: [installation.md](https://github.com/Yyassin/floralyfe/blob/main/documentation/installation.md).
 
 ### Setting up the Development Environment
 - The pi node implements a unit test workflow, to help develop code that passes these tests, follow [these instructions](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/blob/main/pi/Linting.md) to setup linting for VSCode.
