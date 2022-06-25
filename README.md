@@ -14,7 +14,6 @@
  </p>
 </span>
 
-https://github.com/Yyassin/floralyfe
 [![pi](https://github.com/Yyassin/floralyfe/actions/workflows/pi.yml/badge.svg)](https://github.com/Yyassin/floralyfe/actions/workflows/pi.yml)
 [![node](https://github.com/Yyassin/floralyfe/actions/workflows/node.yml/badge.svg)](https://github.com/Yyassin/floralyfe/actions/workflows/node.yml)
 
