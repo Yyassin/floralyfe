@@ -14,9 +14,9 @@
  </p>
 </span>
 
-
-[![pi](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/actions/workflows/pi.yml/badge.svg)](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/actions/workflows/pi.yml)
-[![node](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/actions/workflows/node.yml/badge.svg)](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/actions/workflows/node.yml)
+https://github.com/Yyassin/floralyfe
+[![pi](https://github.com/Yyassin/floralyfe/actions/workflows/pi.yml/badge.svg)](https://github.com/Yyassin/floralyfe/actions/workflows/pi.yml)
+[![node](https://github.com/Yyassin/floralyfe/actions/workflows/node.yml/badge.svg)](https://github.com/Yyassin/floralyfe/actions/workflows/node.yml)
 
 ## Table of Contents
 <!--ts-->
@@ -107,7 +107,7 @@ The floralyfe system consists of three primary nodes: a NextJS-Chakra Client, an
 - There are several steps to configuring the three system nodes with regards to software. For brevity, these have been omitted from this primary README and included in a dedicated discussion: [installation.md](https://github.com/Yyassin/floralyfe/blob/main/documentation/installation.md).
 
 ### Setting up the Development Environment
-- The pi node implements a unit test workflow, to help develop code that passes these tests, follow [these instructions](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/blob/main/pi/Linting.md) to setup linting for VSCode.
+- The pi node implements a unit test workflow, to help develop code that passes these tests, follow [these instructions](https://github.com/Yyassin/floralyfe/blob/main/pi/Linting.md) to setup linting for VSCode.
 - We recommend using the [Remote SSH](https://code.visualstudio.com/docs/remote/ssh) extension on VSCode when developping on the Raspberry Pi.
 
 ### Running in Development
@@ -245,7 +245,7 @@ The client is also written in TypeScript and uses the NextJS framework along wit
 - Querying registered plants in our database to suggest plant optima to users.
 
 ## Documentation
-For more information regarding the project, please reference the `documentation/` directory. There, you'll find the [project proposal](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/blob/main/documentation/Floralyfe_Proposal.pdf) and [detailed design](https://github.com/AbdallaAbdelhadi/SYSC3010W22_L3_G5/blob/main/documentation/Floralyfe_Detailed_Design.pdf) .
+For more information regarding the project, please reference the `documentation/` directory. There, you'll find the [project proposal](https://github.com/Yyassin/floralyfe/blob/main/documentation/Floralyfe_Proposal.pdf) and [detailed design](https://github.com/Yyassin/floralyfe/blob/main/documentation/Floralyfe_Detailed_Design.pdf) .
 
 ## References
 - The web-interface client uses the [nextarter-chakra](https://github.com/sozonome/nextarter-chakra) boilerplate. 
